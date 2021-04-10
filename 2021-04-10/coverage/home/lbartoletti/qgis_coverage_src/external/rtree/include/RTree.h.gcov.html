@@ -1,0 +1,1417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - /home/lbartoletti/qgis_coverage_src/external/rtree/include/RTree.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../index.html">top level</a> - <a href="index.html">home/lbartoletti/qgis_coverage_src/external/rtree/include</a> - RTree.h<span style="font-size: 80%;"> (source / <a href="RTree.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">408</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-10 08:29:14</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : //</a>
+<a name="2"><span class="lineNum">       2 </span>                :            : // RTree.h</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : //</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : #ifndef RTREE_H</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : #define RTREE_H</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : </a>
+<a name="7"><span class="lineNum">       7 </span>                :            : #include &lt;cassert&gt;</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : #include &lt;algorithm&gt;</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : #include &lt;functional&gt;</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : #include &lt;type_traits&gt;</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : #include &lt;cmath&gt;</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : </a>
+<a name="13"><span class="lineNum">      13 </span>                :            : #define RTreeAssert assert // RTree uses RTreeAssert( condition )</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : </a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : #define RTREE_DONT_USE_MEMPOOLS         // This version does not contain a fixed memory allocator, fill in lines with EXAMPLE to implement one.</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : #define RTREE_USE_SPHERICAL_VOLUME      // Better split classification, may be slower on some systems</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : </a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : // Because there is not stream support, this is a quick and dirty file I/O helper.</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : // Users will likely replace its usage with a Stream implementation from their favorite API.</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : class RTFileStream {</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : public:</a>
+<a name="24"><span class="lineNum">      24 </span>                :            :     RTFileStream() = default;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : </a>
+<a name="26"><span class="lineNum">      26 </span>                :            :     ~RTFileStream() {</a>
+<a name="27"><span class="lineNum">      27 </span>                :            :         Close();</a>
+<a name="28"><span class="lineNum">      28 </span>                :            :     }</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :            :     bool OpenRead(const char* a_fileName) {</a>
+<a name="31"><span class="lineNum">      31 </span>                :            :         m_file = fopen(a_fileName, &quot;rb&quot;);</a>
+<a name="32"><span class="lineNum">      32 </span>                :            :         if (!m_file) {</a>
+<a name="33"><span class="lineNum">      33 </span>                :            :             return false;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            :         }</a>
+<a name="35"><span class="lineNum">      35 </span>                :            :         return true;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            :     }</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>                :            :     bool OpenWrite(const char* a_fileName) {</a>
+<a name="39"><span class="lineNum">      39 </span>                :            :         m_file = fopen(a_fileName, &quot;wb&quot;);</a>
+<a name="40"><span class="lineNum">      40 </span>                :            :         if (!m_file) {</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :             return false;</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :         }</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :         return true;</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :     }</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : </a>
+<a name="46"><span class="lineNum">      46 </span>                :            :     void Close() {</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :         if (m_file) {</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :             fclose(m_file);</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :             m_file = nullptr;</a>
+<a name="50"><span class="lineNum">      50 </span>                :            :         }</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :     }</a>
+<a name="52"><span class="lineNum">      52 </span>                :            : </a>
+<a name="53"><span class="lineNum">      53 </span>                :            :     template&lt; typename TYPE &gt;</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :     size_t Write(const TYPE&amp; a_value) {</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :         RTreeAssert(m_file);</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :         return fwrite((void*)&amp;a_value, sizeof(a_value), 1, m_file);</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :     }</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :            :     template&lt; typename TYPE &gt;</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :     size_t WriteArray(const TYPE* a_array, int a_count) {</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :         RTreeAssert(m_file);</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :         return fwrite((void*)a_array, sizeof(TYPE) * a_count, 1, m_file);</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :     }</a>
+<a name="64"><span class="lineNum">      64 </span>                :            : </a>
+<a name="65"><span class="lineNum">      65 </span>                :            :     template&lt; typename TYPE &gt;</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :     size_t Read(TYPE&amp; a_value) {</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :         RTreeAssert(m_file);</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :         return fread((void*)&amp;a_value, sizeof(a_value), 1, m_file);</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :     }</a>
+<a name="70"><span class="lineNum">      70 </span>                :            : </a>
+<a name="71"><span class="lineNum">      71 </span>                :            :     template&lt; typename TYPE &gt;</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :     size_t ReadArray(TYPE* a_array, int a_count) {</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :         RTreeAssert(m_file);</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :         return fread((void*)a_array, sizeof(TYPE) * a_count, 1, m_file);</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :     }</a>
+<a name="76"><span class="lineNum">      76 </span>                :            : </a>
+<a name="77"><span class="lineNum">      77 </span>                :            : private:</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :     FILE* m_file = nullptr;</a>
+<a name="79"><span class="lineNum">      79 </span>                :            : };</a>
+<a name="80"><span class="lineNum">      80 </span>                :            : </a>
+<a name="81"><span class="lineNum">      81 </span>                :            : </a>
+<a name="82"><span class="lineNum">      82 </span>                :            : /// \class RTree</a>
+<a name="83"><span class="lineNum">      83 </span>                :            : /// Implementation of RTree, a multidimensional bounding rectangle tree.</a>
+<a name="84"><span class="lineNum">      84 </span>                :            : /// Example usage: For a 3-dimensional tree use RTree&lt;Object*, float, 3&gt; myTree;</a>
+<a name="85"><span class="lineNum">      85 </span>                :            : ///</a>
+<a name="86"><span class="lineNum">      86 </span>                :            : /// This modified, templated C++ version by Greg Douglas at Auran (http://www.auran.com)</a>
+<a name="87"><span class="lineNum">      87 </span>                :            : ///</a>
+<a name="88"><span class="lineNum">      88 </span>                :            : /// _DataType Referenced data, should be int, void*, obj* etc. no larger than sizeof&lt;void*&gt; and simple type</a>
+<a name="89"><span class="lineNum">      89 </span>                :            : /// _ElementType Type of element such as int or float</a>
+<a name="90"><span class="lineNum">      90 </span>                :            : /// _NumDimensions Number of dimensions such as 2 or 3</a>
+<a name="91"><span class="lineNum">      91 </span>                :            : /// _ElementTypeReal Type of element that allows fractional and large values such as float or double, for use in volume calcs</a>
+<a name="92"><span class="lineNum">      92 </span>                :            : ///</a>
+<a name="93"><span class="lineNum">      93 </span>                :            : /// NOTES: Inserting and removing data requires the knowledge of its constant Minimal Bounding Rectangle.</a>
+<a name="94"><span class="lineNum">      94 </span>                :            : ///        This version uses new/delete for nodes, I recommend using a fixed size allocator for efficiency.</a>
+<a name="95"><span class="lineNum">      95 </span>                :            : ///        Instead of using a callback function for returned results, I recommend and efficient pre-sized, grow-only memory</a>
+<a name="96"><span class="lineNum">      96 </span>                :            : ///        array similar to MFC CArray or STL Vector for returning search query result.</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : ///</a>
+<a name="98"><span class="lineNum">      98 </span>                :            : template&lt;class _DataType, class _ElementType, int _NumDimensions, </a>
+<a name="99"><span class="lineNum">      99 </span>                :            :     class _ElementTypeReal = _ElementType, int _MaxNodeCount = 8, int _MinNodeCount = _MaxNodeCount / 2&gt;</a>
+<a name="100"><span class="lineNum">     100 </span>                :            : class RTree</a>
+<a name="101"><span class="lineNum">     101 </span>                :            : {</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :     static_assert(1 &lt; _NumDimensions, &quot;_NumDimensions must be larger than 1&quot;);</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :     static_assert(0 &lt; _MinNodeCount, &quot;_MinNodeCount must be larger than 0&quot;);</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :     static_assert(_MinNodeCount &lt; _MaxNodeCount, &quot;_MaxNodeCount must be larger than _MinNodeCount&quot;);</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :     static_assert(std::is_floating_point&lt;_ElementTypeReal&gt;::value, &quot;_ElementTypeReal must be floating point type&quot;);</a>
+<a name="106"><span class="lineNum">     106 </span>                :            : protected:</a>
+<a name="107"><span class="lineNum">     107 </span>                :            : </a>
+<a name="108"><span class="lineNum">     108 </span>                :            :     struct Node;  // Fwd decl.  Used by other internal structs and iterator</a>
+<a name="109"><span class="lineNum">     109 </span>                :            : </a>
+<a name="110"><span class="lineNum">     110 </span>                :            : public:</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :     using DataType = _DataType;</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :     using ElementType = _ElementType;</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :     using ElementTypeReal = _ElementTypeReal;</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :     using Element = ElementType[_NumDimensions];</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     constexpr static const int kNumDimensions = _NumDimensions;</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :     constexpr static const int kMaxNodeCount = _MaxNodeCount;</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :     constexpr static const int kMinNodeCount = _MinNodeCount;</a>
+<a name="119"><span class="lineNum">     119 </span>                :            : </a>
+<a name="120"><span class="lineNum">     120 </span>                :            :     template&lt;typename ValueType&gt;</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :     constexpr static ElementType CastElementType(const ValueType val) noexcept {</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :         return static_cast&lt;ElementType&gt;(val);</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :     }</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     template&lt;typename ValueType&gt;</a>
+<a name="125"><span class="lineNum">     125 </span>                :<span class="lineNoCov">          0 :     constexpr static ElementTypeReal CastElementTypeReal(const ValueType val) noexcept {</span></a>
+<a name="126"><span class="lineNum">     126 </span>                :<span class="lineNoCov">          0 :         return static_cast&lt;ElementTypeReal&gt;(val);</span></a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     }</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     constexpr static const ElementTypeReal kElementTypeRealOne = CastElementTypeReal(1.0);</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :     constexpr static const ElementTypeReal kElementTypeRealZero = CastElementTypeReal(0.0);</a>
+<a name="130"><span class="lineNum">     130 </span>                :            : </a>
+<a name="131"><span class="lineNum">     131 </span>                :<span class="lineNoCov">          0 :     RTree() {</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :            :         // Precomputed volumes of the unit spheres for the first few dimensions</a>
+<a name="133"><span class="lineNum">     133 </span>                :<span class="lineNoCov">          0 :         constexpr const ElementTypeReal kUnitSphereVolumes[] = {</span></a>
+<a name="134"><span class="lineNum">     134 </span>                :            :           CastElementTypeReal(0.000000), CastElementTypeReal(2.000000), CastElementTypeReal(3.141593), // Dimension  0,1,2</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :           CastElementTypeReal(4.188790), CastElementTypeReal(4.934802), CastElementTypeReal(5.263789), // Dimension  3,4,5</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :           CastElementTypeReal(5.167713), CastElementTypeReal(4.724766), CastElementTypeReal(4.058712), // Dimension  6,7,8</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :           CastElementTypeReal(3.298509), CastElementTypeReal(2.550164), CastElementTypeReal(1.884104), // Dimension  9,10,11</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :           CastElementTypeReal(1.335263), CastElementTypeReal(0.910629), CastElementTypeReal(0.599265), // Dimension  12,13,14</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :           CastElementTypeReal(0.381443), CastElementTypeReal(0.235331), CastElementTypeReal(0.140981), // Dimension  15,16,17</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :           CastElementTypeReal(0.082146), CastElementTypeReal(0.046622), CastElementTypeReal(0.025807), // Dimension  18,19,20 </a>
+<a name="141"><span class="lineNum">     141 </span>                :            :         };</a>
+<a name="142"><span class="lineNum">     142 </span>                :            : </a>
+<a name="143"><span class="lineNum">     143 </span>                :<span class="lineNoCov">          0 :         this-&gt;m_root = this-&gt;AllocNode();</span></a>
+<a name="144"><span class="lineNum">     144 </span>                :<span class="lineNoCov">          0 :         this-&gt;m_root-&gt;m_level = 0;</span></a>
+<a name="145"><span class="lineNum">     145 </span>                :<span class="lineNoCov">          0 :         this-&gt;m_unitSphereVolume = kUnitSphereVolumes[kNumDimensions];</span></a>
+<a name="146"><span class="lineNum">     146 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="147"><span class="lineNum">     147 </span>                :            : </a>
+<a name="148"><span class="lineNum">     148 </span>                :            :     RTree(const RTree&amp; other) : RTree() {</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :         this-&gt;CopyRec(this-&gt;m_root, other.m_root);</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :     }</a>
+<a name="151"><span class="lineNum">     151 </span>                :            : </a>
+<a name="152"><span class="lineNum">     152 </span>                :<span class="lineNoCov">          0 :     ~RTree() {</span></a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :         this-&gt;Reset();</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="155"><span class="lineNum">     155 </span>                :            : </a>
+<a name="156"><span class="lineNum">     156 </span>                :            :     /// Insert entry</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :     /// \param a_min Min of bounding rect</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :     /// \param a_max Max of bounding rect</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :     /// \param a_dataId Positive Id of data.  Maybe zero, but negative numbers not allowed.</a>
+<a name="160"><span class="lineNum">     160 </span>                :<span class="lineNoCov">          0 :     void Insert(const Element&amp; a_min, const Element&amp; a_max, const DataType&amp; a_dataId) {</span></a>
+<a name="161"><span class="lineNum">     161 </span>                :            : #ifdef _DEBUG</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :             RTreeAssert(a_min[index] &lt;= a_max[index]);</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :         }</a>
+<a name="165"><span class="lineNum">     165 </span>                :            : #endif //_DEBUG</a>
+<a name="166"><span class="lineNum">     166 </span>                :            : </a>
+<a name="167"><span class="lineNum">     167 </span>                :<span class="lineNoCov">          0 :         Branch branch;</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :<span class="lineNoCov">          0 :         branch.m_data = a_dataId;</span></a>
+<a name="169"><span class="lineNum">     169 </span>                :<span class="lineNoCov">          0 :         branch.m_child = nullptr;</span></a>
+<a name="170"><span class="lineNum">     170 </span>                :            : </a>
+<a name="171"><span class="lineNum">     171 </span>                :<span class="lineNoCov">          0 :         for (int axis = 0; axis &lt; kNumDimensions; ++axis) {</span></a>
+<a name="172"><span class="lineNum">     172 </span>                :<span class="lineNoCov">          0 :             branch.m_rect.m_min[axis] = a_min[axis];</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :<span class="lineNoCov">          0 :             branch.m_rect.m_max[axis] = a_max[axis];</span></a>
+<a name="174"><span class="lineNum">     174 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="175"><span class="lineNum">     175 </span>                :            : </a>
+<a name="176"><span class="lineNum">     176 </span>                :<span class="lineNoCov">          0 :         InsertRect(branch, &amp;m_root, 0);</span></a>
+<a name="177"><span class="lineNum">     177 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="178"><span class="lineNum">     178 </span>                :            : </a>
+<a name="179"><span class="lineNum">     179 </span>                :            :     /// Remove entry</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :     /// \param a_min Min of bounding rect</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :     /// \param a_max Max of bounding rect</a>
+<a name="182"><span class="lineNum">     182 </span>                :            :     /// \param a_dataId Positive Id of data.  Maybe zero, but negative numbers not allowed.</a>
+<a name="183"><span class="lineNum">     183 </span>                :<span class="lineNoCov">          0 :     void Remove(const Element&amp; a_min, const Element&amp; a_max, const DataType&amp; a_dataId) {</span></a>
+<a name="184"><span class="lineNum">     184 </span>                :            : #ifdef _DEBUG</a>
+<a name="185"><span class="lineNum">     185 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="186"><span class="lineNum">     186 </span>                :            :             RTreeAssert(a_min[index] &lt;= a_max[index]);</a>
+<a name="187"><span class="lineNum">     187 </span>                :            :         }</a>
+<a name="188"><span class="lineNum">     188 </span>                :            : #endif //_DEBUG</a>
+<a name="189"><span class="lineNum">     189 </span>                :            : </a>
+<a name="190"><span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 :         Rect rect;</span></a>
+<a name="191"><span class="lineNum">     191 </span>                :            : </a>
+<a name="192"><span class="lineNum">     192 </span>                :<span class="lineNoCov">          0 :         for (int axis = 0; axis &lt; kNumDimensions; ++axis) {</span></a>
+<a name="193"><span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 :             rect.m_min[axis] = a_min[axis];</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :<span class="lineNoCov">          0 :             rect.m_max[axis] = a_max[axis];</span></a>
+<a name="195"><span class="lineNum">     195 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="196"><span class="lineNum">     196 </span>                :            : </a>
+<a name="197"><span class="lineNum">     197 </span>                :<span class="lineNoCov">          0 :         RemoveRect(&amp;rect, a_dataId, &amp;m_root);</span></a>
+<a name="198"><span class="lineNum">     198 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="199"><span class="lineNum">     199 </span>                :            : </a>
+<a name="200"><span class="lineNum">     200 </span>                :            :     /// Find all within search rectangle</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :     /// \param a_min Min of search bounding rect</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :     /// \param a_max Max of search bounding rect</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :     /// \param a_searchResult Search result array.  Caller should set grow size. Function will reset, not append to array.</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :     /// \param a_resultCallback Callback function to return result.  Callback should return 'true' to continue searching</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :     /// \param a_context User context to pass as parameter to a_resultCallback</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :     /// \return Returns the number of entries found</a>
+<a name="207"><span class="lineNum">     207 </span>                :<span class="lineNoCov">          0 :     int Search(const Element&amp; a_min, const Element&amp; a_max, std::function&lt;bool(const DataType&amp;)&gt; callback) const {</span></a>
+<a name="208"><span class="lineNum">     208 </span>                :            : #ifdef _DEBUG</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :             RTreeAssert(a_min[index] &lt;= a_max[index]);</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :         }</a>
+<a name="212"><span class="lineNum">     212 </span>                :            : #endif //_DEBUG</a>
+<a name="213"><span class="lineNum">     213 </span>                :            : </a>
+<a name="214"><span class="lineNum">     214 </span>                :<span class="lineNoCov">          0 :         Rect rect;</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :            : </a>
+<a name="216"><span class="lineNum">     216 </span>                :<span class="lineNoCov">          0 :         for (int axis = 0; axis &lt; kNumDimensions; ++axis) {</span></a>
+<a name="217"><span class="lineNum">     217 </span>                :<span class="lineNoCov">          0 :             rect.m_min[axis] = a_min[axis];</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :<span class="lineNoCov">          0 :             rect.m_max[axis] = a_max[axis];</span></a>
+<a name="219"><span class="lineNum">     219 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="220"><span class="lineNum">     220 </span>                :            : </a>
+<a name="221"><span class="lineNum">     221 </span>                :            :         // NOTE: May want to return search result another way, perhaps returning the number of found elements here.</a>
+<a name="222"><span class="lineNum">     222 </span>                :            : </a>
+<a name="223"><span class="lineNum">     223 </span>                :<span class="lineNoCov">          0 :         int foundCount = 0;</span></a>
+<a name="224"><span class="lineNum">     224 </span>                :<span class="lineNoCov">          0 :         Search(m_root, &amp;rect, foundCount, callback);</span></a>
+<a name="225"><span class="lineNum">     225 </span>                :            : </a>
+<a name="226"><span class="lineNum">     226 </span>                :<span class="lineNoCov">          0 :         return foundCount;</span></a>
+<a name="227"><span class="lineNum">     227 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="228"><span class="lineNum">     228 </span>                :            : </a>
+<a name="229"><span class="lineNum">     229 </span>                :            :     /// Remove all entries from tree</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :     void RemoveAll() {</a>
+<a name="231"><span class="lineNum">     231 </span>                :            : </a>
+<a name="232"><span class="lineNum">     232 </span>                :            :         // Delete all existing nodes</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :         Reset();</a>
+<a name="234"><span class="lineNum">     234 </span>                :            : </a>
+<a name="235"><span class="lineNum">     235 </span>                :            :         m_root = AllocNode();</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :         m_root-&gt;m_level = 0;</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :     }</a>
+<a name="238"><span class="lineNum">     238 </span>                :            : </a>
+<a name="239"><span class="lineNum">     239 </span>                :            :     /// Count the data elements in this container.  This is slow as no internal counter is maintained.</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :     int Count() const {</a>
+<a name="241"><span class="lineNum">     241 </span>                :            : </a>
+<a name="242"><span class="lineNum">     242 </span>                :            :         int count = 0;</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :         CountRec(m_root, count);</a>
+<a name="244"><span class="lineNum">     244 </span>                :            : </a>
+<a name="245"><span class="lineNum">     245 </span>                :            :         return count;</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :     }</a>
+<a name="247"><span class="lineNum">     247 </span>                :            : </a>
+<a name="248"><span class="lineNum">     248 </span>                :            :     /// Load tree contents from file</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :     bool Load(const char* a_fileName) {</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :         RemoveAll(); // Clear existing tree</a>
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<a name="252"><span class="lineNum">     252 </span>                :            :         RTFileStream stream;</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :         if (!stream.OpenRead(a_fileName)) {</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :             return false;</a>
+<a name="255"><span class="lineNum">     255 </span>                :            :         }</a>
+<a name="256"><span class="lineNum">     256 </span>                :            : </a>
+<a name="257"><span class="lineNum">     257 </span>                :            :         bool result = Load(stream);</a>
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<a name="259"><span class="lineNum">     259 </span>                :            :         stream.Close();</a>
+<a name="260"><span class="lineNum">     260 </span>                :            : </a>
+<a name="261"><span class="lineNum">     261 </span>                :            :         return result;</a>
+<a name="262"><span class="lineNum">     262 </span>                :            :     }</a>
+<a name="263"><span class="lineNum">     263 </span>                :            :     /// Load tree contents from stream</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :     bool Load(RTFileStream&amp; a_stream) {</a>
+<a name="265"><span class="lineNum">     265 </span>                :            :         // Write some kind of header</a>
+<a name="266"><span class="lineNum">     266 </span>                :            :         int _dataFileId = ('R' &lt;&lt; 0) | ('T' &lt;&lt; 8) | ('R' &lt;&lt; 16) | ('E' &lt;&lt; 24);</a>
+<a name="267"><span class="lineNum">     267 </span>                :            :         int _dataSize = sizeof(DataType);</a>
+<a name="268"><span class="lineNum">     268 </span>                :            :         int _dataNumDims = kNumDimensions;</a>
+<a name="269"><span class="lineNum">     269 </span>                :            :         int _dataElemSize = sizeof(ElementType);</a>
+<a name="270"><span class="lineNum">     270 </span>                :            :         int _dataElemRealSize = sizeof(ElementTypeReal);</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :         int _dataMaxNodes = kMaxNodeCount;</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :         int _dataMinNodes = kMinNodeCount;</a>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<a name="274"><span class="lineNum">     274 </span>                :            :         int dataFileId = 0;</a>
+<a name="275"><span class="lineNum">     275 </span>                :            :         int dataSize = 0;</a>
+<a name="276"><span class="lineNum">     276 </span>                :            :         int dataNumDims = 0;</a>
+<a name="277"><span class="lineNum">     277 </span>                :            :         int dataElemSize = 0;</a>
+<a name="278"><span class="lineNum">     278 </span>                :            :         int dataElemRealSize = 0;</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :         int dataMaxNodes = 0;</a>
+<a name="280"><span class="lineNum">     280 </span>                :            :         int dataMinNodes = 0;</a>
+<a name="281"><span class="lineNum">     281 </span>                :            : </a>
+<a name="282"><span class="lineNum">     282 </span>                :            :         a_stream.Read(dataFileId);</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :         a_stream.Read(dataSize);</a>
+<a name="284"><span class="lineNum">     284 </span>                :            :         a_stream.Read(dataNumDims);</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :         a_stream.Read(dataElemSize);</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :         a_stream.Read(dataElemRealSize);</a>
+<a name="287"><span class="lineNum">     287 </span>                :            :         a_stream.Read(dataMaxNodes);</a>
+<a name="288"><span class="lineNum">     288 </span>                :            :         a_stream.Read(dataMinNodes);</a>
+<a name="289"><span class="lineNum">     289 </span>                :            : </a>
+<a name="290"><span class="lineNum">     290 </span>                :            :         bool result = false;</a>
+<a name="291"><span class="lineNum">     291 </span>                :            : </a>
+<a name="292"><span class="lineNum">     292 </span>                :            :         // Test if header was valid and compatible</a>
+<a name="293"><span class="lineNum">     293 </span>                :            :         if ((dataFileId == _dataFileId)</a>
+<a name="294"><span class="lineNum">     294 </span>                :            :             &amp;&amp; (dataSize == _dataSize)</a>
+<a name="295"><span class="lineNum">     295 </span>                :            :             &amp;&amp; (dataNumDims == _dataNumDims)</a>
+<a name="296"><span class="lineNum">     296 </span>                :            :             &amp;&amp; (dataElemSize == _dataElemSize)</a>
+<a name="297"><span class="lineNum">     297 </span>                :            :             &amp;&amp; (dataElemRealSize == _dataElemRealSize)</a>
+<a name="298"><span class="lineNum">     298 </span>                :            :             &amp;&amp; (dataMaxNodes == _dataMaxNodes)</a>
+<a name="299"><span class="lineNum">     299 </span>                :            :             &amp;&amp; (dataMinNodes == _dataMinNodes)</a>
+<a name="300"><span class="lineNum">     300 </span>                :            :             ) {</a>
+<a name="301"><span class="lineNum">     301 </span>                :            :             // Recursively load tree</a>
+<a name="302"><span class="lineNum">     302 </span>                :            :             result = LoadRec(m_root, a_stream);</a>
+<a name="303"><span class="lineNum">     303 </span>                :            :         }</a>
+<a name="304"><span class="lineNum">     304 </span>                :            : </a>
+<a name="305"><span class="lineNum">     305 </span>                :            :         return result;</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :     }</a>
+<a name="307"><span class="lineNum">     307 </span>                :            : </a>
+<a name="308"><span class="lineNum">     308 </span>                :            : </a>
+<a name="309"><span class="lineNum">     309 </span>                :            :     /// Save tree contents to file</a>
+<a name="310"><span class="lineNum">     310 </span>                :            :     bool Save(const char* a_fileName) {</a>
+<a name="311"><span class="lineNum">     311 </span>                :            : </a>
+<a name="312"><span class="lineNum">     312 </span>                :            :         RTFileStream stream;</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :         if (!stream.OpenWrite(a_fileName)) {</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :             return false;</a>
+<a name="315"><span class="lineNum">     315 </span>                :            :         }</a>
+<a name="316"><span class="lineNum">     316 </span>                :            : </a>
+<a name="317"><span class="lineNum">     317 </span>                :            :         bool result = Save(stream);</a>
+<a name="318"><span class="lineNum">     318 </span>                :            : </a>
+<a name="319"><span class="lineNum">     319 </span>                :            :         stream.Close();</a>
+<a name="320"><span class="lineNum">     320 </span>                :            : </a>
+<a name="321"><span class="lineNum">     321 </span>                :            :         return result;</a>
+<a name="322"><span class="lineNum">     322 </span>                :            :     }</a>
+<a name="323"><span class="lineNum">     323 </span>                :            :     /// Save tree contents to stream</a>
+<a name="324"><span class="lineNum">     324 </span>                :            :     bool Save(RTFileStream&amp; a_stream) {</a>
+<a name="325"><span class="lineNum">     325 </span>                :            : </a>
+<a name="326"><span class="lineNum">     326 </span>                :            :         // Write some kind of header</a>
+<a name="327"><span class="lineNum">     327 </span>                :            :         int dataFileId = ('R' &lt;&lt; 0) | ('T' &lt;&lt; 8) | ('R' &lt;&lt; 16) | ('E' &lt;&lt; 24);</a>
+<a name="328"><span class="lineNum">     328 </span>                :            :         int dataSize = sizeof(DataType);</a>
+<a name="329"><span class="lineNum">     329 </span>                :            :         int dataNumDims = kNumDimensions;</a>
+<a name="330"><span class="lineNum">     330 </span>                :            :         int dataElemSize = sizeof(ElementType);</a>
+<a name="331"><span class="lineNum">     331 </span>                :            :         int dataElemRealSize = sizeof(ElementTypeReal);</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :         int dataMaxNodes = kMaxNodeCount;</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :         int dataMinNodes = kMinNodeCount;</a>
+<a name="334"><span class="lineNum">     334 </span>                :            : </a>
+<a name="335"><span class="lineNum">     335 </span>                :            :         a_stream.Write(dataFileId);</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :         a_stream.Write(dataSize);</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :         a_stream.Write(dataNumDims);</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :         a_stream.Write(dataElemSize);</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :         a_stream.Write(dataElemRealSize);</a>
+<a name="340"><span class="lineNum">     340 </span>                :            :         a_stream.Write(dataMaxNodes);</a>
+<a name="341"><span class="lineNum">     341 </span>                :            :         a_stream.Write(dataMinNodes);</a>
+<a name="342"><span class="lineNum">     342 </span>                :            : </a>
+<a name="343"><span class="lineNum">     343 </span>                :            :         // Recursively save tree</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :         bool result = SaveRec(m_root, a_stream);</a>
+<a name="345"><span class="lineNum">     345 </span>                :            : </a>
+<a name="346"><span class="lineNum">     346 </span>                :            :         return result;</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :     }</a>
+<a name="348"><span class="lineNum">     348 </span>                :            : </a>
+<a name="349"><span class="lineNum">     349 </span>                :            :     /// Iterator is not remove safe.</a>
+<a name="350"><span class="lineNum">     350 </span>                :            :     class Iterator</a>
+<a name="351"><span class="lineNum">     351 </span>                :            :     {</a>
+<a name="352"><span class="lineNum">     352 </span>                :            :     private:</a>
+<a name="353"><span class="lineNum">     353 </span>                :            : </a>
+<a name="354"><span class="lineNum">     354 </span>                :            :         constexpr static const int kMaxStackSize = 32;  //  Max stack size. Allows almost n^32 where n is number of branches in node</a>
+<a name="355"><span class="lineNum">     355 </span>                :            : </a>
+<a name="356"><span class="lineNum">     356 </span>                :            :         struct StackElement</a>
+<a name="357"><span class="lineNum">     357 </span>                :            :         {</a>
+<a name="358"><span class="lineNum">     358 </span>                :            :             Node* m_node = nullptr;</a>
+<a name="359"><span class="lineNum">     359 </span>                :            :             int m_branchIndex = 0;</a>
+<a name="360"><span class="lineNum">     360 </span>                :            :         };</a>
+<a name="361"><span class="lineNum">     361 </span>                :            : </a>
+<a name="362"><span class="lineNum">     362 </span>                :            :     public:</a>
+<a name="363"><span class="lineNum">     363 </span>                :            : </a>
+<a name="364"><span class="lineNum">     364 </span>                :            :         Iterator() { Init(); }</a>
+<a name="365"><span class="lineNum">     365 </span>                :            : </a>
+<a name="366"><span class="lineNum">     366 </span>                :            :         ~Iterator() = default;</a>
+<a name="367"><span class="lineNum">     367 </span>                :            : </a>
+<a name="368"><span class="lineNum">     368 </span>                :            :         /// Is iterator invalid</a>
+<a name="369"><span class="lineNum">     369 </span>                :            :         bool IsNull() const noexcept { return (m_tos &lt;= 0); }</a>
+<a name="370"><span class="lineNum">     370 </span>                :            : </a>
+<a name="371"><span class="lineNum">     371 </span>                :            :         /// Is iterator pointing to valid data</a>
+<a name="372"><span class="lineNum">     372 </span>                :            :         bool IsNotNull() const noexcept { return (m_tos &gt; 0); }</a>
+<a name="373"><span class="lineNum">     373 </span>                :            : </a>
+<a name="374"><span class="lineNum">     374 </span>                :            :         /// Access the current data element. Caller must be sure iterator is not NULL first.</a>
+<a name="375"><span class="lineNum">     375 </span>                :            :         DataType&amp; operator*()</a>
+<a name="376"><span class="lineNum">     376 </span>                :            :         {</a>
+<a name="377"><span class="lineNum">     377 </span>                :            :             RTreeAssert(IsNotNull());</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :             auto&amp; curTos = m_stack[m_tos - 1];</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :             return curTos.m_node-&gt;m_branch[curTos.m_branchIndex].m_data;</a>
+<a name="380"><span class="lineNum">     380 </span>                :            :         }</a>
+<a name="381"><span class="lineNum">     381 </span>                :            : </a>
+<a name="382"><span class="lineNum">     382 </span>                :            :         /// Access the current data element. Caller must be sure iterator is not NULL first.</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :         const DataType&amp; operator*() const</a>
+<a name="384"><span class="lineNum">     384 </span>                :            :         {</a>
+<a name="385"><span class="lineNum">     385 </span>                :            :             RTreeAssert(IsNotNull());</a>
+<a name="386"><span class="lineNum">     386 </span>                :            :             auto&amp; curTos = m_stack[m_tos - 1];</a>
+<a name="387"><span class="lineNum">     387 </span>                :            :             return curTos.m_node-&gt;m_branch[curTos.m_branchIndex].m_data;</a>
+<a name="388"><span class="lineNum">     388 </span>                :            :         }</a>
+<a name="389"><span class="lineNum">     389 </span>                :            : </a>
+<a name="390"><span class="lineNum">     390 </span>                :            :         /// Find the next data element</a>
+<a name="391"><span class="lineNum">     391 </span>                :            :         bool operator++() { return FindNextData(); }</a>
+<a name="392"><span class="lineNum">     392 </span>                :            : </a>
+<a name="393"><span class="lineNum">     393 </span>                :            :         /// Get the bounds for this node</a>
+<a name="394"><span class="lineNum">     394 </span>                :            :         void GetBounds(Element&amp; a_min, Element&amp; a_max)</a>
+<a name="395"><span class="lineNum">     395 </span>                :            :         {</a>
+<a name="396"><span class="lineNum">     396 </span>                :            :             RTreeAssert(IsNotNull());</a>
+<a name="397"><span class="lineNum">     397 </span>                :            :             auto&amp; curTos = m_stack[m_tos - 1];</a>
+<a name="398"><span class="lineNum">     398 </span>                :            :             auto&amp; curBranch = curTos.m_node-&gt;m_branch[curTos.m_branchIndex];</a>
+<a name="399"><span class="lineNum">     399 </span>                :            : </a>
+<a name="400"><span class="lineNum">     400 </span>                :            :             for (int index = 0; index &lt; kNumDimensions; ++index)</a>
+<a name="401"><span class="lineNum">     401 </span>                :            :             {</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :                 a_min[index] = curBranch.m_rect.m_min[index];</a>
+<a name="403"><span class="lineNum">     403 </span>                :            :                 a_max[index] = curBranch.m_rect.m_max[index];</a>
+<a name="404"><span class="lineNum">     404 </span>                :            :             }</a>
+<a name="405"><span class="lineNum">     405 </span>                :            :         }</a>
+<a name="406"><span class="lineNum">     406 </span>                :            : </a>
+<a name="407"><span class="lineNum">     407 </span>                :            :     private:</a>
+<a name="408"><span class="lineNum">     408 </span>                :            : </a>
+<a name="409"><span class="lineNum">     409 </span>                :            :         /// Reset iterator</a>
+<a name="410"><span class="lineNum">     410 </span>                :            :         void Init() { m_tos = 0; }</a>
+<a name="411"><span class="lineNum">     411 </span>                :            : </a>
+<a name="412"><span class="lineNum">     412 </span>                :            :         /// Find the next data element in the tree (For internal use only)</a>
+<a name="413"><span class="lineNum">     413 </span>                :            :         bool FindNextData()</a>
+<a name="414"><span class="lineNum">     414 </span>                :            :         {</a>
+<a name="415"><span class="lineNum">     415 </span>                :            :             for (;;)</a>
+<a name="416"><span class="lineNum">     416 </span>                :            :             {</a>
+<a name="417"><span class="lineNum">     417 </span>                :            :                 if (m_tos &lt;= 0)</a>
+<a name="418"><span class="lineNum">     418 </span>                :            :                 {</a>
+<a name="419"><span class="lineNum">     419 </span>                :            :                     return false;</a>
+<a name="420"><span class="lineNum">     420 </span>                :            :                 }</a>
+<a name="421"><span class="lineNum">     421 </span>                :            :                 auto curTos = Pop(); // Copy stack top cause it may change as we use it</a>
+<a name="422"><span class="lineNum">     422 </span>                :            : </a>
+<a name="423"><span class="lineNum">     423 </span>                :            :                 if (curTos.m_node-&gt;IsLeaf())</a>
+<a name="424"><span class="lineNum">     424 </span>                :            :                 {</a>
+<a name="425"><span class="lineNum">     425 </span>                :            :                     // Keep walking through data while we can</a>
+<a name="426"><span class="lineNum">     426 </span>                :            :                     if (curTos.m_branchIndex + 1 &lt; curTos.m_node-&gt;m_count)</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :                     {</a>
+<a name="428"><span class="lineNum">     428 </span>                :            :                         // There is more data, just point to the next one</a>
+<a name="429"><span class="lineNum">     429 </span>                :            :                         Push(curTos.m_node, curTos.m_branchIndex + 1);</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :                         return true;</a>
+<a name="431"><span class="lineNum">     431 </span>                :            :                     }</a>
+<a name="432"><span class="lineNum">     432 </span>                :            :                     // No more data, so it will fall back to previous level</a>
+<a name="433"><span class="lineNum">     433 </span>                :            :                 }</a>
+<a name="434"><span class="lineNum">     434 </span>                :            :                 else</a>
+<a name="435"><span class="lineNum">     435 </span>                :            :                 {</a>
+<a name="436"><span class="lineNum">     436 </span>                :            :                     if (curTos.m_branchIndex + 1 &lt; curTos.m_node-&gt;m_count)</a>
+<a name="437"><span class="lineNum">     437 </span>                :            :                     {</a>
+<a name="438"><span class="lineNum">     438 </span>                :            :                         // Push sibling on for future tree walk</a>
+<a name="439"><span class="lineNum">     439 </span>                :            :                         // This is the 'fall back' node when we finish with the current level</a>
+<a name="440"><span class="lineNum">     440 </span>                :            :                         Push(curTos.m_node, curTos.m_branchIndex + 1);</a>
+<a name="441"><span class="lineNum">     441 </span>                :            :                     }</a>
+<a name="442"><span class="lineNum">     442 </span>                :            :                     // Since cur node is not a leaf, push first of next level to get deeper into the tree</a>
+<a name="443"><span class="lineNum">     443 </span>                :            :                     auto nextLevelnode = curTos.m_node-&gt;m_branch[curTos.m_branchIndex].m_child;</a>
+<a name="444"><span class="lineNum">     444 </span>                :            :                     Push(nextLevelnode, 0);</a>
+<a name="445"><span class="lineNum">     445 </span>                :            : </a>
+<a name="446"><span class="lineNum">     446 </span>                :            :                     // If we pushed on a new leaf, exit as the data is ready at TOS</a>
+<a name="447"><span class="lineNum">     447 </span>                :            :                     if (nextLevelnode-&gt;IsLeaf())</a>
+<a name="448"><span class="lineNum">     448 </span>                :            :                     {</a>
+<a name="449"><span class="lineNum">     449 </span>                :            :                         return true;</a>
+<a name="450"><span class="lineNum">     450 </span>                :            :                     }</a>
+<a name="451"><span class="lineNum">     451 </span>                :            :                 }</a>
+<a name="452"><span class="lineNum">     452 </span>                :            :             }</a>
+<a name="453"><span class="lineNum">     453 </span>                :            :         }</a>
+<a name="454"><span class="lineNum">     454 </span>                :            : </a>
+<a name="455"><span class="lineNum">     455 </span>                :            :         /// Push node and branch onto iteration stack (For internal use only)</a>
+<a name="456"><span class="lineNum">     456 </span>                :            :         void Push(Node* a_node, int a_branchIndex)</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :         {</a>
+<a name="458"><span class="lineNum">     458 </span>                :            :             m_stack[m_tos].m_node = a_node;</a>
+<a name="459"><span class="lineNum">     459 </span>                :            :             m_stack[m_tos].m_branchIndex = a_branchIndex;</a>
+<a name="460"><span class="lineNum">     460 </span>                :            :             ++m_tos;</a>
+<a name="461"><span class="lineNum">     461 </span>                :            :             RTreeAssert(m_tos &lt;= kMaxStackSize);</a>
+<a name="462"><span class="lineNum">     462 </span>                :            :         }</a>
+<a name="463"><span class="lineNum">     463 </span>                :            : </a>
+<a name="464"><span class="lineNum">     464 </span>                :            :         /// Pop element off iteration stack (For internal use only)</a>
+<a name="465"><span class="lineNum">     465 </span>                :            :         StackElement&amp; Pop()</a>
+<a name="466"><span class="lineNum">     466 </span>                :            :         {</a>
+<a name="467"><span class="lineNum">     467 </span>                :            :             RTreeAssert(m_tos &gt; 0);</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :             --m_tos;</a>
+<a name="469"><span class="lineNum">     469 </span>                :            :             return m_stack[m_tos];</a>
+<a name="470"><span class="lineNum">     470 </span>                :            :         }</a>
+<a name="471"><span class="lineNum">     471 </span>                :            : </a>
+<a name="472"><span class="lineNum">     472 </span>                :            :         StackElement m_stack[kMaxStackSize];          ///&lt; Stack as we are doing iteration instead of recursion</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :         int m_tos = 0;                                ///&lt; Top Of Stack index</a>
+<a name="474"><span class="lineNum">     474 </span>                :            : </a>
+<a name="475"><span class="lineNum">     475 </span>                :            :         friend class RTree; // Allow hiding of non-public functions while allowing manipulation by logical owner</a>
+<a name="476"><span class="lineNum">     476 </span>                :            :     };</a>
+<a name="477"><span class="lineNum">     477 </span>                :            : </a>
+<a name="478"><span class="lineNum">     478 </span>                :            :     /// Get 'first' for iteration</a>
+<a name="479"><span class="lineNum">     479 </span>                :            :     void GetFirst(Iterator&amp; a_it) const</a>
+<a name="480"><span class="lineNum">     480 </span>                :            :     {</a>
+<a name="481"><span class="lineNum">     481 </span>                :            :         a_it.Init();</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :         auto first = m_root;</a>
+<a name="483"><span class="lineNum">     483 </span>                :            :         while (first)</a>
+<a name="484"><span class="lineNum">     484 </span>                :            :         {</a>
+<a name="485"><span class="lineNum">     485 </span>                :            :             if (first-&gt;IsInternalNode() &amp;&amp; first-&gt;m_count &gt; 1)</a>
+<a name="486"><span class="lineNum">     486 </span>                :            :             {</a>
+<a name="487"><span class="lineNum">     487 </span>                :            :                 a_it.Push(first, 1); // Descend sibling branch later</a>
+<a name="488"><span class="lineNum">     488 </span>                :            :             }</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :             else if (first-&gt;IsLeaf())</a>
+<a name="490"><span class="lineNum">     490 </span>                :            :             {</a>
+<a name="491"><span class="lineNum">     491 </span>                :            :                 if (first-&gt;m_count)</a>
+<a name="492"><span class="lineNum">     492 </span>                :            :                 {</a>
+<a name="493"><span class="lineNum">     493 </span>                :            :                     a_it.Push(first, 0);</a>
+<a name="494"><span class="lineNum">     494 </span>                :            :                 }</a>
+<a name="495"><span class="lineNum">     495 </span>                :            :                 break;</a>
+<a name="496"><span class="lineNum">     496 </span>                :            :             }</a>
+<a name="497"><span class="lineNum">     497 </span>                :            :             first = first-&gt;m_branch[0].m_child;</a>
+<a name="498"><span class="lineNum">     498 </span>                :            :         }</a>
+<a name="499"><span class="lineNum">     499 </span>                :            :     }</a>
+<a name="500"><span class="lineNum">     500 </span>                :            : </a>
+<a name="501"><span class="lineNum">     501 </span>                :            :     /// Get Next for iteration</a>
+<a name="502"><span class="lineNum">     502 </span>                :            :     void GetNext(Iterator&amp; a_it) const { ++a_it; }</a>
+<a name="503"><span class="lineNum">     503 </span>                :            : </a>
+<a name="504"><span class="lineNum">     504 </span>                :            :     /// Is iterator NULL, or at end?</a>
+<a name="505"><span class="lineNum">     505 </span>                :            :     bool IsNull(const Iterator&amp; a_it) const { return a_it.IsNull(); }</a>
+<a name="506"><span class="lineNum">     506 </span>                :            : </a>
+<a name="507"><span class="lineNum">     507 </span>                :            :     /// Get object at iterator position</a>
+<a name="508"><span class="lineNum">     508 </span>                :            :     DataType&amp; GetAt(Iterator&amp; a_it) { return *a_it; }</a>
+<a name="509"><span class="lineNum">     509 </span>                :            : </a>
+<a name="510"><span class="lineNum">     510 </span>                :            : protected:</a>
+<a name="511"><span class="lineNum">     511 </span>                :            : </a>
+<a name="512"><span class="lineNum">     512 </span>                :            :     /// Minimal bounding rectangle (n-dimensional)</a>
+<a name="513"><span class="lineNum">     513 </span>                :<span class="lineNoCov">          0 :     struct Rect</span></a>
+<a name="514"><span class="lineNum">     514 </span>                :            :     {</a>
+<a name="515"><span class="lineNum">     515 </span>                :<span class="lineNoCov">          0 :         ElementType m_min[kNumDimensions] = { 0, };                      ///&lt; Min dimensions of bounding box </span></a>
+<a name="516"><span class="lineNum">     516 </span>                :<span class="lineNoCov">          0 :         ElementType m_max[kNumDimensions] = { 0, };                      ///&lt; Max dimensions of bounding box </span></a>
+<a name="517"><span class="lineNum">     517 </span>                :            :     };</a>
+<a name="518"><span class="lineNum">     518 </span>                :            : </a>
+<a name="519"><span class="lineNum">     519 </span>                :            :     /// May be data or may be another subtree</a>
+<a name="520"><span class="lineNum">     520 </span>                :            :     /// The parents level determines this.</a>
+<a name="521"><span class="lineNum">     521 </span>                :            :     /// If the parents level is 0, then this is data</a>
+<a name="522"><span class="lineNum">     522 </span>                :<span class="lineNoCov">          0 :     struct Branch</span></a>
+<a name="523"><span class="lineNum">     523 </span>                :            :     {</a>
+<a name="524"><span class="lineNum">     524 </span>                :            :         Rect m_rect;                                  ///&lt; Bounds</a>
+<a name="525"><span class="lineNum">     525 </span>                :<span class="lineNoCov">          0 :         Node* m_child = nullptr;                      ///&lt; Child node</span></a>
+<a name="526"><span class="lineNum">     526 </span>                :            :         DataType m_data;                             ///&lt; Data Id</a>
+<a name="527"><span class="lineNum">     527 </span>                :            :     };</a>
+<a name="528"><span class="lineNum">     528 </span>                :            : </a>
+<a name="529"><span class="lineNum">     529 </span>                :            :     /// Node for each branch level</a>
+<a name="530"><span class="lineNum">     530 </span>                :<span class="lineNoCov">          0 :     struct Node</span></a>
+<a name="531"><span class="lineNum">     531 </span>                :            :     {</a>
+<a name="532"><span class="lineNum">     532 </span>                :<span class="lineNoCov">          0 :         bool IsInternalNode() const noexcept { return (m_level &gt; 0); } // Not a leaf, but a internal node</span></a>
+<a name="533"><span class="lineNum">     533 </span>                :            :         bool IsLeaf() const noexcept { return (m_level == 0); }        // A leaf, contains data</a>
+<a name="534"><span class="lineNum">     534 </span>                :            : </a>
+<a name="535"><span class="lineNum">     535 </span>                :<span class="lineNoCov">          0 :         int m_count = 0;                              ///&lt; Count</span></a>
+<a name="536"><span class="lineNum">     536 </span>                :<span class="lineNoCov">          0 :         int m_level = 0;                              ///&lt; Leaf is zero, others positive</span></a>
+<a name="537"><span class="lineNum">     537 </span>                :            :         Branch m_branch[_MaxNodeCount];               ///&lt; Branch</a>
+<a name="538"><span class="lineNum">     538 </span>                :            :     };</a>
+<a name="539"><span class="lineNum">     539 </span>                :            : </a>
+<a name="540"><span class="lineNum">     540 </span>                :            :     /// A link list of nodes for reinsertion after a delete operation</a>
+<a name="541"><span class="lineNum">     541 </span>                :<span class="lineNoCov">          0 :     struct ListNode</span></a>
+<a name="542"><span class="lineNum">     542 </span>                :            :     {</a>
+<a name="543"><span class="lineNum">     543 </span>                :<span class="lineNoCov">          0 :         ListNode* m_next = nullptr;                   ///&lt; Next in list</span></a>
+<a name="544"><span class="lineNum">     544 </span>                :<span class="lineNoCov">          0 :         Node* m_node = nullptr;                       ///&lt; Node</span></a>
+<a name="545"><span class="lineNum">     545 </span>                :            :     };</a>
+<a name="546"><span class="lineNum">     546 </span>                :            : </a>
+<a name="547"><span class="lineNum">     547 </span>                :            :     /// Variables for finding a split partition</a>
+<a name="548"><span class="lineNum">     548 </span>                :<span class="lineNoCov">          0 :     struct PartitionVars</span></a>
+<a name="549"><span class="lineNum">     549 </span>                :            :     {</a>
+<a name="550"><span class="lineNum">     550 </span>                :            :         constexpr static const int kNotTaken = -1; // indicates that position</a>
+<a name="551"><span class="lineNum">     551 </span>                :            : </a>
+<a name="552"><span class="lineNum">     552 </span>                :<span class="lineNoCov">          0 :         int m_partition[_MaxNodeCount + 1] = { 0, };</span></a>
+<a name="553"><span class="lineNum">     553 </span>                :<span class="lineNoCov">          0 :         int m_total = 0;</span></a>
+<a name="554"><span class="lineNum">     554 </span>                :<span class="lineNoCov">          0 :         int m_minFill = 0;</span></a>
+<a name="555"><span class="lineNum">     555 </span>                :<span class="lineNoCov">          0 :         int m_count[2] = { 0, };</span></a>
+<a name="556"><span class="lineNum">     556 </span>                :            :         Rect m_cover[2];</a>
+<a name="557"><span class="lineNum">     557 </span>                :<span class="lineNoCov">          0 :         ElementTypeReal m_area[2] = { kElementTypeRealZero, };</span></a>
+<a name="558"><span class="lineNum">     558 </span>                :            : </a>
+<a name="559"><span class="lineNum">     559 </span>                :            :         Branch m_branchBuf[_MaxNodeCount + 1];</a>
+<a name="560"><span class="lineNum">     560 </span>                :<span class="lineNoCov">          0 :         int m_branchCount = 0;</span></a>
+<a name="561"><span class="lineNum">     561 </span>                :            :         Rect m_coverSplit;</a>
+<a name="562"><span class="lineNum">     562 </span>                :<span class="lineNoCov">          0 :         ElementTypeReal m_coverSplitArea = kElementTypeRealZero;</span></a>
+<a name="563"><span class="lineNum">     563 </span>                :            :     };</a>
+<a name="564"><span class="lineNum">     564 </span>                :            : </a>
+<a name="565"><span class="lineNum">     565 </span>                :<span class="lineNoCov">          0 :     Node* AllocNode() {</span></a>
+<a name="566"><span class="lineNum">     566 </span>                :            :         Node* newNode;</a>
+<a name="567"><span class="lineNum">     567 </span>                :            : #ifdef RTREE_DONT_USE_MEMPOOLS</a>
+<a name="568"><span class="lineNum">     568 </span>                :<span class="lineNoCov">          0 :         newNode = new Node;</span></a>
+<a name="569"><span class="lineNum">     569 </span>                :            : #else // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="570"><span class="lineNum">     570 </span>                :            :         // EXAMPLE</a>
+<a name="571"><span class="lineNum">     571 </span>                :            : #endif // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="572"><span class="lineNum">     572 </span>                :<span class="lineNoCov">          0 :         InitNode(newNode);</span></a>
+<a name="573"><span class="lineNum">     573 </span>                :<span class="lineNoCov">          0 :         return newNode;</span></a>
+<a name="574"><span class="lineNum">     574 </span>                :            :     }</a>
+<a name="575"><span class="lineNum">     575 </span>                :            : </a>
+<a name="576"><span class="lineNum">     576 </span>                :<span class="lineNoCov">          0 :     void FreeNode(Node* a_node) {</span></a>
+<a name="577"><span class="lineNum">     577 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="578"><span class="lineNum">     578 </span>                :            : </a>
+<a name="579"><span class="lineNum">     579 </span>                :            : #ifdef RTREE_DONT_USE_MEMPOOLS</a>
+<a name="580"><span class="lineNum">     580 </span>                :<span class="lineNoCov">          0 :         delete a_node;</span></a>
+<a name="581"><span class="lineNum">     581 </span>                :            : #else // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="582"><span class="lineNum">     582 </span>                :            :         // EXAMPLE</a>
+<a name="583"><span class="lineNum">     583 </span>                :            : #endif // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="584"><span class="lineNum">     584 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="585"><span class="lineNum">     585 </span>                :            : </a>
+<a name="586"><span class="lineNum">     586 </span>                :<span class="lineNoCov">          0 :     void InitNode(Node* a_node) {</span></a>
+<a name="587"><span class="lineNum">     587 </span>                :<span class="lineNoCov">          0 :         a_node-&gt;m_count = 0;</span></a>
+<a name="588"><span class="lineNum">     588 </span>                :<span class="lineNoCov">          0 :         a_node-&gt;m_level = -1;</span></a>
+<a name="589"><span class="lineNum">     589 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="590"><span class="lineNum">     590 </span>                :            : </a>
+<a name="591"><span class="lineNum">     591 </span>                :            :     void InitRect(Rect* a_rect) {</a>
+<a name="592"><span class="lineNum">     592 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="593"><span class="lineNum">     593 </span>                :            :             a_rect-&gt;m_min[index] = CastElementType(0);</a>
+<a name="594"><span class="lineNum">     594 </span>                :            :             a_rect-&gt;m_max[index] = CastElementType(0);</a>
+<a name="595"><span class="lineNum">     595 </span>                :            :         }</a>
+<a name="596"><span class="lineNum">     596 </span>                :            :     }</a>
+<a name="597"><span class="lineNum">     597 </span>                :            : </a>
+<a name="598"><span class="lineNum">     598 </span>                :            :     // Inserts a new data rectangle into the index structure.</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :     // Recursively descends tree, propagates splits back up.</a>
+<a name="600"><span class="lineNum">     600 </span>                :            :     // Returns 0 if node was not split.  Old node updated.</a>
+<a name="601"><span class="lineNum">     601 </span>                :            :     // If node was split, returns 1 and sets the pointer pointed to by</a>
+<a name="602"><span class="lineNum">     602 </span>                :            :     // new_node to point to the new node.  Old node updated to become one of two.</a>
+<a name="603"><span class="lineNum">     603 </span>                :            :     // The level argument specifies the number of steps up from the leaf</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :     // level to insert; e.g. a data rectangle goes in at level = 0.</a>
+<a name="605"><span class="lineNum">     605 </span>                :<span class="lineNoCov">          0 :     bool InsertRectRec(const Branch&amp; a_branch, Node* a_node, Node** a_newNode, int a_level) {</span></a>
+<a name="606"><span class="lineNum">     606 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node &amp;&amp; a_newNode);</span></a>
+<a name="607"><span class="lineNum">     607 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_level &gt;= 0 &amp;&amp; a_level &lt;= a_node-&gt;m_level);</span></a>
+<a name="608"><span class="lineNum">     608 </span>                :            : </a>
+<a name="609"><span class="lineNum">     609 </span>                :            :         // recurse until we reach the correct level for the new record. data records</a>
+<a name="610"><span class="lineNum">     610 </span>                :            :         // will always be called with a_level == 0 (leaf)</a>
+<a name="611"><span class="lineNum">     611 </span>                :<span class="lineNoCov">          0 :         if (a_node-&gt;m_level &gt; a_level) {</span></a>
+<a name="612"><span class="lineNum">     612 </span>                :            :             // Still above level for insertion, go down tree recursively</a>
+<a name="613"><span class="lineNum">     613 </span>                :            :             Node* otherNode;</a>
+<a name="614"><span class="lineNum">     614 </span>                :            : </a>
+<a name="615"><span class="lineNum">     615 </span>                :            :             // find the optimal branch for this record</a>
+<a name="616"><span class="lineNum">     616 </span>                :<span class="lineNoCov">          0 :             int index = PickBranch(&amp;a_branch.m_rect, a_node);</span></a>
+<a name="617"><span class="lineNum">     617 </span>                :            : </a>
+<a name="618"><span class="lineNum">     618 </span>                :            :             // recursively insert this record into the picked branch</a>
+<a name="619"><span class="lineNum">     619 </span>                :<span class="lineNoCov">          0 :             bool childWasSplit = InsertRectRec(a_branch, a_node-&gt;m_branch[index].m_child, &amp;otherNode, a_level);</span></a>
+<a name="620"><span class="lineNum">     620 </span>                :            : </a>
+<a name="621"><span class="lineNum">     621 </span>                :<span class="lineNoCov">          0 :             if (!childWasSplit) {</span></a>
+<a name="622"><span class="lineNum">     622 </span>                :            :                 // Child was not split. Merge the bounding box of the new record with the</a>
+<a name="623"><span class="lineNum">     623 </span>                :            :                 // existing bounding box</a>
+<a name="624"><span class="lineNum">     624 </span>                :<span class="lineNoCov">          0 :                 a_node-&gt;m_branch[index].m_rect = CombineRect(&amp;a_branch.m_rect, &amp;(a_node-&gt;m_branch[index].m_rect));</span></a>
+<a name="625"><span class="lineNum">     625 </span>                :<span class="lineNoCov">          0 :                 return false;</span></a>
+<a name="626"><span class="lineNum">     626 </span>                :            :             } else {</a>
+<a name="627"><span class="lineNum">     627 </span>                :            :                 // Child was split. The old branches are now re-partitioned to two nodes</a>
+<a name="628"><span class="lineNum">     628 </span>                :            :                 // so we have to re-calculate the bounding boxes of each node</a>
+<a name="629"><span class="lineNum">     629 </span>                :<span class="lineNoCov">          0 :                 a_node-&gt;m_branch[index].m_rect = NodeCover(a_node-&gt;m_branch[index].m_child);</span></a>
+<a name="630"><span class="lineNum">     630 </span>                :<span class="lineNoCov">          0 :                 Branch branch;</span></a>
+<a name="631"><span class="lineNum">     631 </span>                :<span class="lineNoCov">          0 :                 branch.m_child = otherNode;</span></a>
+<a name="632"><span class="lineNum">     632 </span>                :<span class="lineNoCov">          0 :                 branch.m_rect = NodeCover(otherNode);</span></a>
+<a name="633"><span class="lineNum">     633 </span>                :            : </a>
+<a name="634"><span class="lineNum">     634 </span>                :            :                 // The old node is already a child of a_node. Now add the newly-created</a>
+<a name="635"><span class="lineNum">     635 </span>                :            :                 // node to a_node as well. a_node might be split because of that.</a>
+<a name="636"><span class="lineNum">     636 </span>                :<span class="lineNoCov">          0 :                 return AddBranch(&amp;branch, a_node, a_newNode);</span></a>
+<a name="637"><span class="lineNum">     637 </span>                :            :             }</a>
+<a name="638"><span class="lineNum">     638 </span>                :<span class="lineNoCov">          0 :         } else if (a_node-&gt;m_level == a_level) {</span></a>
+<a name="639"><span class="lineNum">     639 </span>                :            :             // We have reached level for insertion. Add rect, split if necessary</a>
+<a name="640"><span class="lineNum">     640 </span>                :<span class="lineNoCov">          0 :             return AddBranch(&amp;a_branch, a_node, a_newNode);</span></a>
+<a name="641"><span class="lineNum">     641 </span>                :            :         } else {</a>
+<a name="642"><span class="lineNum">     642 </span>                :            :             // Should never occur</a>
+<a name="643"><span class="lineNum">     643 </span>                :<span class="lineNoCov">          0 :             RTreeAssert(0);</span></a>
+<a name="644"><span class="lineNum">     644 </span>                :            :             return false;</a>
+<a name="645"><span class="lineNum">     645 </span>                :            :         }</a>
+<a name="646"><span class="lineNum">     646 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="647"><span class="lineNum">     647 </span>                :            : </a>
+<a name="648"><span class="lineNum">     648 </span>                :            :     // Insert a data rectangle into an index structure.</a>
+<a name="649"><span class="lineNum">     649 </span>                :            :     // InsertRect provides for splitting the root;</a>
+<a name="650"><span class="lineNum">     650 </span>                :            :     // returns 1 if root was split, 0 if it was not.</a>
+<a name="651"><span class="lineNum">     651 </span>                :            :     // The level argument specifies the number of steps up from the leaf</a>
+<a name="652"><span class="lineNum">     652 </span>                :            :     // level to insert; e.g. a data rectangle goes in at level = 0.</a>
+<a name="653"><span class="lineNum">     653 </span>                :            :     // InsertRect2 does the recursion.</a>
+<a name="654"><span class="lineNum">     654 </span>                :<span class="lineNoCov">          0 :     bool InsertRect(const Branch&amp; a_branch, Node** a_root, int a_level) {</span></a>
+<a name="655"><span class="lineNum">     655 </span>                :            : </a>
+<a name="656"><span class="lineNum">     656 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_root);</span></a>
+<a name="657"><span class="lineNum">     657 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_level &gt;= 0 &amp;&amp; a_level &lt;= (*a_root)-&gt;m_level);</span></a>
+<a name="658"><span class="lineNum">     658 </span>                :            : #ifdef _DEBUG</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="660"><span class="lineNum">     660 </span>                :            :             RTreeAssert(a_branch.m_rect.m_min[index] &lt;= a_branch.m_rect.m_max[index]);</a>
+<a name="661"><span class="lineNum">     661 </span>                :            :         }</a>
+<a name="662"><span class="lineNum">     662 </span>                :            : #endif //_DEBUG  </a>
+<a name="663"><span class="lineNum">     663 </span>                :            : </a>
+<a name="664"><span class="lineNum">     664 </span>                :            :         Node* newNode;</a>
+<a name="665"><span class="lineNum">     665 </span>                :            : </a>
+<a name="666"><span class="lineNum">     666 </span>                :<span class="lineNoCov">          0 :         if (InsertRectRec(a_branch, *a_root, &amp;newNode, a_level))  // Root split</span></a>
+<a name="667"><span class="lineNum">     667 </span>                :            :         {</a>
+<a name="668"><span class="lineNum">     668 </span>                :            :             // Grow tree taller and new root</a>
+<a name="669"><span class="lineNum">     669 </span>                :<span class="lineNoCov">          0 :             Node* newRoot = AllocNode();</span></a>
+<a name="670"><span class="lineNum">     670 </span>                :<span class="lineNoCov">          0 :             newRoot-&gt;m_level = (*a_root)-&gt;m_level + 1;</span></a>
+<a name="671"><span class="lineNum">     671 </span>                :            : </a>
+<a name="672"><span class="lineNum">     672 </span>                :<span class="lineNoCov">          0 :             Branch branch;</span></a>
+<a name="673"><span class="lineNum">     673 </span>                :            : </a>
+<a name="674"><span class="lineNum">     674 </span>                :            :             // add old root node as a child of the new root</a>
+<a name="675"><span class="lineNum">     675 </span>                :<span class="lineNoCov">          0 :             branch.m_rect = NodeCover(*a_root);</span></a>
+<a name="676"><span class="lineNum">     676 </span>                :<span class="lineNoCov">          0 :             branch.m_child = *a_root;</span></a>
+<a name="677"><span class="lineNum">     677 </span>                :<span class="lineNoCov">          0 :             AddBranch(&amp;branch, newRoot, nullptr);</span></a>
+<a name="678"><span class="lineNum">     678 </span>                :            : </a>
+<a name="679"><span class="lineNum">     679 </span>                :            :             // add the split node as a child of the new root</a>
+<a name="680"><span class="lineNum">     680 </span>                :<span class="lineNoCov">          0 :             branch.m_rect = NodeCover(newNode);</span></a>
+<a name="681"><span class="lineNum">     681 </span>                :<span class="lineNoCov">          0 :             branch.m_child = newNode;</span></a>
+<a name="682"><span class="lineNum">     682 </span>                :<span class="lineNoCov">          0 :             AddBranch(&amp;branch, newRoot, nullptr);</span></a>
+<a name="683"><span class="lineNum">     683 </span>                :            : </a>
+<a name="684"><span class="lineNum">     684 </span>                :            :             // set the new root as the root node</a>
+<a name="685"><span class="lineNum">     685 </span>                :<span class="lineNoCov">          0 :             *a_root = newRoot;</span></a>
+<a name="686"><span class="lineNum">     686 </span>                :            : </a>
+<a name="687"><span class="lineNum">     687 </span>                :<span class="lineNoCov">          0 :             return true;</span></a>
+<a name="688"><span class="lineNum">     688 </span>                :            :         }</a>
+<a name="689"><span class="lineNum">     689 </span>                :            : </a>
+<a name="690"><span class="lineNum">     690 </span>                :<span class="lineNoCov">          0 :         return false;</span></a>
+<a name="691"><span class="lineNum">     691 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="692"><span class="lineNum">     692 </span>                :            : </a>
+<a name="693"><span class="lineNum">     693 </span>                :            :     // Find the smallest rectangle that includes all rectangles in branches of a node.</a>
+<a name="694"><span class="lineNum">     694 </span>                :<span class="lineNoCov">          0 :     Rect NodeCover(Node* a_node) {</span></a>
+<a name="695"><span class="lineNum">     695 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="696"><span class="lineNum">     696 </span>                :            : </a>
+<a name="697"><span class="lineNum">     697 </span>                :<span class="lineNoCov">          0 :         Rect rect = a_node-&gt;m_branch[0].m_rect;</span></a>
+<a name="698"><span class="lineNum">     698 </span>                :<span class="lineNoCov">          0 :         for (int index = 1; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="699"><span class="lineNum">     699 </span>                :<span class="lineNoCov">          0 :             rect = CombineRect(&amp;rect, &amp;(a_node-&gt;m_branch[index].m_rect));</span></a>
+<a name="700"><span class="lineNum">     700 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="701"><span class="lineNum">     701 </span>                :            : </a>
+<a name="702"><span class="lineNum">     702 </span>                :<span class="lineNoCov">          0 :         return rect;</span></a>
+<a name="703"><span class="lineNum">     703 </span>                :            :     }</a>
+<a name="704"><span class="lineNum">     704 </span>                :            : </a>
+<a name="705"><span class="lineNum">     705 </span>                :            :     // Add a branch to a node.  Split the node if necessary.</a>
+<a name="706"><span class="lineNum">     706 </span>                :            :     // Returns 0 if node not split.  Old node updated.</a>
+<a name="707"><span class="lineNum">     707 </span>                :            :     // Returns 1 if node split, sets *new_node to address of new node.</a>
+<a name="708"><span class="lineNum">     708 </span>                :            :     // Old node updated, becomes one of two.</a>
+<a name="709"><span class="lineNum">     709 </span>                :<span class="lineNoCov">          0 :     bool AddBranch(const Branch* a_branch, Node* a_node, Node** a_newNode) {</span></a>
+<a name="710"><span class="lineNum">     710 </span>                :            : </a>
+<a name="711"><span class="lineNum">     711 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_branch);</span></a>
+<a name="712"><span class="lineNum">     712 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="713"><span class="lineNum">     713 </span>                :            : </a>
+<a name="714"><span class="lineNum">     714 </span>                :<span class="lineNoCov">          0 :         if (a_node-&gt;m_count &lt; _MaxNodeCount)  // Split won't be necessary</span></a>
+<a name="715"><span class="lineNum">     715 </span>                :            :         {</a>
+<a name="716"><span class="lineNum">     716 </span>                :<span class="lineNoCov">          0 :             a_node-&gt;m_branch[a_node-&gt;m_count] = *a_branch;</span></a>
+<a name="717"><span class="lineNum">     717 </span>                :<span class="lineNoCov">          0 :             ++a_node-&gt;m_count;</span></a>
+<a name="718"><span class="lineNum">     718 </span>                :            : </a>
+<a name="719"><span class="lineNum">     719 </span>                :<span class="lineNoCov">          0 :             return false;</span></a>
+<a name="720"><span class="lineNum">     720 </span>                :            :         } else {</a>
+<a name="721"><span class="lineNum">     721 </span>                :<span class="lineNoCov">          0 :             RTreeAssert(a_newNode);</span></a>
+<a name="722"><span class="lineNum">     722 </span>                :            : </a>
+<a name="723"><span class="lineNum">     723 </span>                :<span class="lineNoCov">          0 :             SplitNode(a_node, a_branch, a_newNode);</span></a>
+<a name="724"><span class="lineNum">     724 </span>                :<span class="lineNoCov">          0 :             return true;</span></a>
+<a name="725"><span class="lineNum">     725 </span>                :            :         }</a>
+<a name="726"><span class="lineNum">     726 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="727"><span class="lineNum">     727 </span>                :            : </a>
+<a name="728"><span class="lineNum">     728 </span>                :            :     // Disconnect a dependent node.</a>
+<a name="729"><span class="lineNum">     729 </span>                :            :     // Caller must return (or stop using iteration index) after this as count has changed</a>
+<a name="730"><span class="lineNum">     730 </span>                :<span class="lineNoCov">          0 :     void DisconnectBranch(Node* a_node, int a_index) {</span></a>
+<a name="731"><span class="lineNum">     731 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node &amp;&amp; (a_index &gt;= 0) &amp;&amp; (a_index &lt; _MaxNodeCount));</span></a>
+<a name="732"><span class="lineNum">     732 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node-&gt;m_count &gt; 0);</span></a>
+<a name="733"><span class="lineNum">     733 </span>                :            : </a>
+<a name="734"><span class="lineNum">     734 </span>                :            :         // Remove element by swapping with the last element to prevent gaps in array</a>
+<a name="735"><span class="lineNum">     735 </span>                :<span class="lineNoCov">          0 :         a_node-&gt;m_branch[a_index] = a_node-&gt;m_branch[a_node-&gt;m_count - 1];</span></a>
+<a name="736"><span class="lineNum">     736 </span>                :            : </a>
+<a name="737"><span class="lineNum">     737 </span>                :<span class="lineNoCov">          0 :         --a_node-&gt;m_count;</span></a>
+<a name="738"><span class="lineNum">     738 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="739"><span class="lineNum">     739 </span>                :            : </a>
+<a name="740"><span class="lineNum">     740 </span>                :            :     // Pick a branch.  Pick the one that will need the smallest increase</a>
+<a name="741"><span class="lineNum">     741 </span>                :            :     // in area to accomodate the new rectangle.  This will result in the</a>
+<a name="742"><span class="lineNum">     742 </span>                :            :     // least total area for the covering rectangles in the current node.</a>
+<a name="743"><span class="lineNum">     743 </span>                :            :     // In case of a tie, pick the one which was smaller before, to get</a>
+<a name="744"><span class="lineNum">     744 </span>                :            :     // the best resolution when searching.</a>
+<a name="745"><span class="lineNum">     745 </span>                :<span class="lineNoCov">          0 :     int PickBranch(const Rect* a_rect, Node* a_node) {</span></a>
+<a name="746"><span class="lineNum">     746 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rect &amp;&amp; a_node);</span></a>
+<a name="747"><span class="lineNum">     747 </span>                :            : </a>
+<a name="748"><span class="lineNum">     748 </span>                :<span class="lineNoCov">          0 :         bool firstTime = true;</span></a>
+<a name="749"><span class="lineNum">     749 </span>                :            :         ElementTypeReal increase;</a>
+<a name="750"><span class="lineNum">     750 </span>                :<span class="lineNoCov">          0 :         ElementTypeReal bestIncr = CastElementTypeReal(-1);</span></a>
+<a name="751"><span class="lineNum">     751 </span>                :            :         ElementTypeReal area;</a>
+<a name="752"><span class="lineNum">     752 </span>                :<span class="lineNoCov">          0 :         ElementTypeReal bestArea = CastElementTypeReal(-1);</span></a>
+<a name="753"><span class="lineNum">     753 </span>                :<span class="lineNoCov">          0 :         int best = 0;</span></a>
+<a name="754"><span class="lineNum">     754 </span>                :<span class="lineNoCov">          0 :         Rect tempRect;</span></a>
+<a name="755"><span class="lineNum">     755 </span>                :            : </a>
+<a name="756"><span class="lineNum">     756 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="757"><span class="lineNum">     757 </span>                :<span class="lineNoCov">          0 :             Rect* curRect = &amp;a_node-&gt;m_branch[index].m_rect;</span></a>
+<a name="758"><span class="lineNum">     758 </span>                :<span class="lineNoCov">          0 :             area = CalcRectVolume(curRect);</span></a>
+<a name="759"><span class="lineNum">     759 </span>                :<span class="lineNoCov">          0 :             tempRect = CombineRect(a_rect, curRect);</span></a>
+<a name="760"><span class="lineNum">     760 </span>                :<span class="lineNoCov">          0 :             increase = CalcRectVolume(&amp;tempRect) - area;</span></a>
+<a name="761"><span class="lineNum">     761 </span>                :<span class="lineNoCov">          0 :             if ((increase &lt; bestIncr) || firstTime) {</span></a>
+<a name="762"><span class="lineNum">     762 </span>                :<span class="lineNoCov">          0 :                 best = index;</span></a>
+<a name="763"><span class="lineNum">     763 </span>                :<span class="lineNoCov">          0 :                 bestArea = area;</span></a>
+<a name="764"><span class="lineNum">     764 </span>                :<span class="lineNoCov">          0 :                 bestIncr = increase;</span></a>
+<a name="765"><span class="lineNum">     765 </span>                :<span class="lineNoCov">          0 :                 firstTime = false;</span></a>
+<a name="766"><span class="lineNum">     766 </span>                :<span class="lineNoCov">          0 :             } else if ((increase == bestIncr) &amp;&amp; (area &lt; bestArea)) {</span></a>
+<a name="767"><span class="lineNum">     767 </span>                :<span class="lineNoCov">          0 :                 best = index;</span></a>
+<a name="768"><span class="lineNum">     768 </span>                :<span class="lineNoCov">          0 :                 bestArea = area;</span></a>
+<a name="769"><span class="lineNum">     769 </span>                :<span class="lineNoCov">          0 :                 bestIncr = increase;</span></a>
+<a name="770"><span class="lineNum">     770 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="771"><span class="lineNum">     771 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="772"><span class="lineNum">     772 </span>                :<span class="lineNoCov">          0 :         return best;</span></a>
+<a name="773"><span class="lineNum">     773 </span>                :            :     }</a>
+<a name="774"><span class="lineNum">     774 </span>                :            : </a>
+<a name="775"><span class="lineNum">     775 </span>                :            :     // Combine two rectangles into larger one containing both</a>
+<a name="776"><span class="lineNum">     776 </span>                :<span class="lineNoCov">          0 :     Rect CombineRect(const Rect* a_rectA, const Rect* a_rectB) {</span></a>
+<a name="777"><span class="lineNum">     777 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rectA &amp;&amp; a_rectB);</span></a>
+<a name="778"><span class="lineNum">     778 </span>                :            : </a>
+<a name="779"><span class="lineNum">     779 </span>                :<span class="lineNoCov">          0 :         Rect newRect;</span></a>
+<a name="780"><span class="lineNum">     780 </span>                :            : </a>
+<a name="781"><span class="lineNum">     781 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; kNumDimensions; ++index) {</span></a>
+<a name="782"><span class="lineNum">     782 </span>                :<span class="lineNoCov">          0 :             newRect.m_min[index] = (std::min)(a_rectA-&gt;m_min[index], a_rectB-&gt;m_min[index]);</span></a>
+<a name="783"><span class="lineNum">     783 </span>                :<span class="lineNoCov">          0 :             newRect.m_max[index] = (std::max)(a_rectA-&gt;m_max[index], a_rectB-&gt;m_max[index]);</span></a>
+<a name="784"><span class="lineNum">     784 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="785"><span class="lineNum">     785 </span>                :            : </a>
+<a name="786"><span class="lineNum">     786 </span>                :<span class="lineNoCov">          0 :         return newRect;</span></a>
+<a name="787"><span class="lineNum">     787 </span>                :            :     }</a>
+<a name="788"><span class="lineNum">     788 </span>                :            : </a>
+<a name="789"><span class="lineNum">     789 </span>                :            :     // Split a node.</a>
+<a name="790"><span class="lineNum">     790 </span>                :            :     // Divides the nodes branches and the extra one between two nodes.</a>
+<a name="791"><span class="lineNum">     791 </span>                :            :     // Old node is one of the new ones, and one really new one is created.</a>
+<a name="792"><span class="lineNum">     792 </span>                :            :     // Tries more than one method for choosing a partition, uses best result.</a>
+<a name="793"><span class="lineNum">     793 </span>                :<span class="lineNoCov">          0 :     void SplitNode(Node* a_node, const Branch* a_branch, Node** a_newNode) {</span></a>
+<a name="794"><span class="lineNum">     794 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="795"><span class="lineNum">     795 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_branch);</span></a>
+<a name="796"><span class="lineNum">     796 </span>                :            : </a>
+<a name="797"><span class="lineNum">     797 </span>                :            :         // Could just use local here, but member or external is faster since it is reused</a>
+<a name="798"><span class="lineNum">     798 </span>                :<span class="lineNoCov">          0 :         PartitionVars localVars;</span></a>
+<a name="799"><span class="lineNum">     799 </span>                :<span class="lineNoCov">          0 :         PartitionVars* parVars = &amp;localVars;</span></a>
+<a name="800"><span class="lineNum">     800 </span>                :            : </a>
+<a name="801"><span class="lineNum">     801 </span>                :            :         // Load all the branches into a buffer, initialize old node</a>
+<a name="802"><span class="lineNum">     802 </span>                :<span class="lineNoCov">          0 :         GetBranches(a_node, a_branch, parVars);</span></a>
+<a name="803"><span class="lineNum">     803 </span>                :            : </a>
+<a name="804"><span class="lineNum">     804 </span>                :            :         // Find partition</a>
+<a name="805"><span class="lineNum">     805 </span>                :<span class="lineNoCov">          0 :         ChoosePartition(parVars, _MinNodeCount);</span></a>
+<a name="806"><span class="lineNum">     806 </span>                :            : </a>
+<a name="807"><span class="lineNum">     807 </span>                :            :         // Create a new node to hold (about) half of the branches</a>
+<a name="808"><span class="lineNum">     808 </span>                :<span class="lineNoCov">          0 :         *a_newNode = AllocNode();</span></a>
+<a name="809"><span class="lineNum">     809 </span>                :<span class="lineNoCov">          0 :         (*a_newNode)-&gt;m_level = a_node-&gt;m_level;</span></a>
+<a name="810"><span class="lineNum">     810 </span>                :            : </a>
+<a name="811"><span class="lineNum">     811 </span>                :            :         // Put branches from buffer into 2 nodes according to the chosen partition</a>
+<a name="812"><span class="lineNum">     812 </span>                :<span class="lineNoCov">          0 :         a_node-&gt;m_count = 0;</span></a>
+<a name="813"><span class="lineNum">     813 </span>                :<span class="lineNoCov">          0 :         LoadNodes(a_node, *a_newNode, parVars);</span></a>
+<a name="814"><span class="lineNum">     814 </span>                :            : </a>
+<a name="815"><span class="lineNum">     815 </span>                :<span class="lineNoCov">          0 :         RTreeAssert((a_node-&gt;m_count + (*a_newNode)-&gt;m_count) == parVars-&gt;m_total);</span></a>
+<a name="816"><span class="lineNum">     816 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="817"><span class="lineNum">     817 </span>                :            : </a>
+<a name="818"><span class="lineNum">     818 </span>                :            :     // The exact volume of the bounding sphere for the given Rect</a>
+<a name="819"><span class="lineNum">     819 </span>                :<span class="lineNoCov">          0 :     ElementTypeReal RectSphericalVolume(Rect* a_rect) {</span></a>
+<a name="820"><span class="lineNum">     820 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rect);</span></a>
+<a name="821"><span class="lineNum">     821 </span>                :            : </a>
+<a name="822"><span class="lineNum">     822 </span>                :<span class="lineNoCov">          0 :         ElementTypeReal sumOfSquares = kElementTypeRealZero;</span></a>
+<a name="823"><span class="lineNum">     823 </span>                :            : </a>
+<a name="824"><span class="lineNum">     824 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; kNumDimensions; ++index) {</span></a>
+<a name="825"><span class="lineNum">     825 </span>                :<span class="lineNoCov">          0 :             const auto halfExtent = ((ElementTypeReal)a_rect-&gt;m_max[index] - (ElementTypeReal)a_rect-&gt;m_min[index]) * 0.5f;</span></a>
+<a name="826"><span class="lineNum">     826 </span>                :<span class="lineNoCov">          0 :             sumOfSquares += halfExtent * halfExtent;</span></a>
+<a name="827"><span class="lineNum">     827 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="828"><span class="lineNum">     828 </span>                :            : </a>
+<a name="829"><span class="lineNum">     829 </span>                :<span class="lineNoCov">          0 :         const auto radius = CastElementTypeReal(sqrt(sumOfSquares));</span></a>
+<a name="830"><span class="lineNum">     830 </span>                :            : </a>
+<a name="831"><span class="lineNum">     831 </span>                :            :         // Pow maybe slow, so test for common dims like 2,3 and just use x*x, x*x*x.</a>
+<a name="832"><span class="lineNum">     832 </span>                :            :         if (kNumDimensions == 3) {</a>
+<a name="833"><span class="lineNum">     833 </span>                :            :             return (radius * radius * radius * m_unitSphereVolume);</a>
+<a name="834"><span class="lineNum">     834 </span>                :            :         } else if (kNumDimensions == 2) {</a>
+<a name="835"><span class="lineNum">     835 </span>                :<span class="lineNoCov">          0 :             return (radius * radius * m_unitSphereVolume);</span></a>
+<a name="836"><span class="lineNum">     836 </span>                :            :         } else {</a>
+<a name="837"><span class="lineNum">     837 </span>                :            :             return CastElementTypeReal(pow(radius, kNumDimensions) * m_unitSphereVolume);</a>
+<a name="838"><span class="lineNum">     838 </span>                :            :         }</a>
+<a name="839"><span class="lineNum">     839 </span>                :            :     }</a>
+<a name="840"><span class="lineNum">     840 </span>                :            : </a>
+<a name="841"><span class="lineNum">     841 </span>                :            :     // Calculate the n-dimensional volume of a rectangle</a>
+<a name="842"><span class="lineNum">     842 </span>                :            :     ElementTypeReal RectVolume(Rect* a_rect) {</a>
+<a name="843"><span class="lineNum">     843 </span>                :            :         RTreeAssert(a_rect);</a>
+<a name="844"><span class="lineNum">     844 </span>                :            : </a>
+<a name="845"><span class="lineNum">     845 </span>                :            :         auto volume = kElementTypeRealOne;</a>
+<a name="846"><span class="lineNum">     846 </span>                :            : </a>
+<a name="847"><span class="lineNum">     847 </span>                :            :         for (int index = 0; index &lt; kNumDimensions; ++index) {</a>
+<a name="848"><span class="lineNum">     848 </span>                :            :             volume *= a_rect-&gt;m_max[index] - a_rect-&gt;m_min[index];</a>
+<a name="849"><span class="lineNum">     849 </span>                :            :         }</a>
+<a name="850"><span class="lineNum">     850 </span>                :            : </a>
+<a name="851"><span class="lineNum">     851 </span>                :            :         RTreeAssert(volume &gt;= kElementTypeRealZero);</a>
+<a name="852"><span class="lineNum">     852 </span>                :            : </a>
+<a name="853"><span class="lineNum">     853 </span>                :            :         return volume;</a>
+<a name="854"><span class="lineNum">     854 </span>                :            :     }</a>
+<a name="855"><span class="lineNum">     855 </span>                :            : </a>
+<a name="856"><span class="lineNum">     856 </span>                :            :     // Use one of the methods to calculate retangle volume</a>
+<a name="857"><span class="lineNum">     857 </span>                :<span class="lineNoCov">          0 :     ElementTypeReal CalcRectVolume(Rect* a_rect) {</span></a>
+<a name="858"><span class="lineNum">     858 </span>                :            : #ifdef RTREE_USE_SPHERICAL_VOLUME</a>
+<a name="859"><span class="lineNum">     859 </span>                :<span class="lineNoCov">          0 :         return RectSphericalVolume(a_rect); // Slower but helps certain merge cases</span></a>
+<a name="860"><span class="lineNum">     860 </span>                :            : #else // RTREE_USE_SPHERICAL_VOLUME</a>
+<a name="861"><span class="lineNum">     861 </span>                :            :         return RectVolume(a_rect); // Faster but can cause poor merges</a>
+<a name="862"><span class="lineNum">     862 </span>                :            : #endif // RTREE_USE_SPHERICAL_VOLUME  </a>
+<a name="863"><span class="lineNum">     863 </span>                :            :     }</a>
+<a name="864"><span class="lineNum">     864 </span>                :            : </a>
+<a name="865"><span class="lineNum">     865 </span>                :            :     // Load branch buffer with branches from full node plus the extra branch.</a>
+<a name="866"><span class="lineNum">     866 </span>                :<span class="lineNoCov">          0 :     void GetBranches(Node* a_node, const Branch* a_branch, PartitionVars* a_parVars) {</span></a>
+<a name="867"><span class="lineNum">     867 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="868"><span class="lineNum">     868 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_branch);</span></a>
+<a name="869"><span class="lineNum">     869 </span>                :            : </a>
+<a name="870"><span class="lineNum">     870 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node-&gt;m_count == _MaxNodeCount);</span></a>
+<a name="871"><span class="lineNum">     871 </span>                :            : </a>
+<a name="872"><span class="lineNum">     872 </span>                :            :         // Load the branch buffer</a>
+<a name="873"><span class="lineNum">     873 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; _MaxNodeCount; ++index) {</span></a>
+<a name="874"><span class="lineNum">     874 </span>                :<span class="lineNoCov">          0 :             a_parVars-&gt;m_branchBuf[index] = a_node-&gt;m_branch[index];</span></a>
+<a name="875"><span class="lineNum">     875 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="876"><span class="lineNum">     876 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_branchBuf[_MaxNodeCount] = *a_branch;</span></a>
+<a name="877"><span class="lineNum">     877 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_branchCount = _MaxNodeCount + 1;</span></a>
+<a name="878"><span class="lineNum">     878 </span>                :            : </a>
+<a name="879"><span class="lineNum">     879 </span>                :            :         // Calculate rect containing all in the set</a>
+<a name="880"><span class="lineNum">     880 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_coverSplit = a_parVars-&gt;m_branchBuf[0].m_rect;</span></a>
+<a name="881"><span class="lineNum">     881 </span>                :<span class="lineNoCov">          0 :         for (int index = 1; index &lt; _MaxNodeCount + 1; ++index) {</span></a>
+<a name="882"><span class="lineNum">     882 </span>                :<span class="lineNoCov">          0 :             a_parVars-&gt;m_coverSplit = CombineRect(&amp;a_parVars-&gt;m_coverSplit, &amp;a_parVars-&gt;m_branchBuf[index].m_rect);</span></a>
+<a name="883"><span class="lineNum">     883 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="884"><span class="lineNum">     884 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_coverSplitArea = CalcRectVolume(&amp;a_parVars-&gt;m_coverSplit);</span></a>
+<a name="885"><span class="lineNum">     885 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="886"><span class="lineNum">     886 </span>                :            : </a>
+<a name="887"><span class="lineNum">     887 </span>                :            :     // Method #0 for choosing a partition:</a>
+<a name="888"><span class="lineNum">     888 </span>                :            :     // As the seeds for the two groups, pick the two rects that would waste the</a>
+<a name="889"><span class="lineNum">     889 </span>                :            :     // most area if covered by a single rectangle, i.e. evidently the worst pair</a>
+<a name="890"><span class="lineNum">     890 </span>                :            :     // to have in the same group.</a>
+<a name="891"><span class="lineNum">     891 </span>                :            :     // Of the remaining, one at a time is chosen to be put in one of the two groups.</a>
+<a name="892"><span class="lineNum">     892 </span>                :            :     // The one chosen is the one with the greatest difference in area expansion</a>
+<a name="893"><span class="lineNum">     893 </span>                :            :     // depending on which group - the rect most strongly attracted to one group</a>
+<a name="894"><span class="lineNum">     894 </span>                :            :     // and repelled from the other.</a>
+<a name="895"><span class="lineNum">     895 </span>                :            :     // If one group gets too full (more would force other group to violate min</a>
+<a name="896"><span class="lineNum">     896 </span>                :            :     // fill requirement) then other group gets the rest.</a>
+<a name="897"><span class="lineNum">     897 </span>                :            :     // These last are the ones that can go in either group most easily.</a>
+<a name="898"><span class="lineNum">     898 </span>                :<span class="lineNoCov">          0 :     void ChoosePartition(PartitionVars* a_parVars, int a_minFill) {</span></a>
+<a name="899"><span class="lineNum">     899 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_parVars);</span></a>
+<a name="900"><span class="lineNum">     900 </span>                :            : </a>
+<a name="901"><span class="lineNum">     901 </span>                :            :         ElementTypeReal biggestDiff;</a>
+<a name="902"><span class="lineNum">     902 </span>                :<span class="lineNoCov">          0 :         int group, chosen = 0, betterGroup = 0;</span></a>
+<a name="903"><span class="lineNum">     903 </span>                :            : </a>
+<a name="904"><span class="lineNum">     904 </span>                :<span class="lineNoCov">          0 :         InitParVars(a_parVars, a_parVars-&gt;m_branchCount, a_minFill);</span></a>
+<a name="905"><span class="lineNum">     905 </span>                :<span class="lineNoCov">          0 :         PickSeeds(a_parVars);</span></a>
+<a name="906"><span class="lineNum">     906 </span>                :            : </a>
+<a name="907"><span class="lineNum">     907 </span>                :<span class="lineNoCov">          0 :         while (((a_parVars-&gt;m_count[0] + a_parVars-&gt;m_count[1]) &lt; a_parVars-&gt;m_total)</span></a>
+<a name="908"><span class="lineNum">     908 </span>                :<span class="lineNoCov">          0 :             &amp;&amp; (a_parVars-&gt;m_count[0] &lt; (a_parVars-&gt;m_total - a_parVars-&gt;m_minFill))</span></a>
+<a name="909"><span class="lineNum">     909 </span>                :<span class="lineNoCov">          0 :             &amp;&amp; (a_parVars-&gt;m_count[1] &lt; (a_parVars-&gt;m_total - a_parVars-&gt;m_minFill))) {</span></a>
+<a name="910"><span class="lineNum">     910 </span>                :<span class="lineNoCov">          0 :             biggestDiff = CastElementTypeReal(-1);</span></a>
+<a name="911"><span class="lineNum">     911 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_parVars-&gt;m_total; ++index) {</span></a>
+<a name="912"><span class="lineNum">     912 </span>                :<span class="lineNoCov">          0 :                 if (PartitionVars::kNotTaken == a_parVars-&gt;m_partition[index]) {</span></a>
+<a name="913"><span class="lineNum">     913 </span>                :<span class="lineNoCov">          0 :                     Rect* curRect = &amp;a_parVars-&gt;m_branchBuf[index].m_rect;</span></a>
+<a name="914"><span class="lineNum">     914 </span>                :<span class="lineNoCov">          0 :                     Rect rect0 = CombineRect(curRect, &amp;a_parVars-&gt;m_cover[0]);</span></a>
+<a name="915"><span class="lineNum">     915 </span>                :<span class="lineNoCov">          0 :                     Rect rect1 = CombineRect(curRect, &amp;a_parVars-&gt;m_cover[1]);</span></a>
+<a name="916"><span class="lineNum">     916 </span>                :<span class="lineNoCov">          0 :                     ElementTypeReal growth0 = CalcRectVolume(&amp;rect0) - a_parVars-&gt;m_area[0];</span></a>
+<a name="917"><span class="lineNum">     917 </span>                :<span class="lineNoCov">          0 :                     ElementTypeReal growth1 = CalcRectVolume(&amp;rect1) - a_parVars-&gt;m_area[1];</span></a>
+<a name="918"><span class="lineNum">     918 </span>                :<span class="lineNoCov">          0 :                     ElementTypeReal diff = growth1 - growth0;</span></a>
+<a name="919"><span class="lineNum">     919 </span>                :<span class="lineNoCov">          0 :                     if (diff &gt;= 0) {</span></a>
+<a name="920"><span class="lineNum">     920 </span>                :<span class="lineNoCov">          0 :                         group = 0;</span></a>
+<a name="921"><span class="lineNum">     921 </span>                :<span class="lineNoCov">          0 :                     } else {</span></a>
+<a name="922"><span class="lineNum">     922 </span>                :<span class="lineNoCov">          0 :                         group = 1;</span></a>
+<a name="923"><span class="lineNum">     923 </span>                :<span class="lineNoCov">          0 :                         diff = -diff;</span></a>
+<a name="924"><span class="lineNum">     924 </span>                :            :                     }</a>
+<a name="925"><span class="lineNum">     925 </span>                :            : </a>
+<a name="926"><span class="lineNum">     926 </span>                :<span class="lineNoCov">          0 :                     if (diff &gt; biggestDiff) {</span></a>
+<a name="927"><span class="lineNum">     927 </span>                :<span class="lineNoCov">          0 :                         biggestDiff = diff;</span></a>
+<a name="928"><span class="lineNum">     928 </span>                :<span class="lineNoCov">          0 :                         chosen = index;</span></a>
+<a name="929"><span class="lineNum">     929 </span>                :<span class="lineNoCov">          0 :                         betterGroup = group;</span></a>
+<a name="930"><span class="lineNum">     930 </span>                :<span class="lineNoCov">          0 :                     } else if ((diff == biggestDiff) &amp;&amp; (a_parVars-&gt;m_count[group] &lt; a_parVars-&gt;m_count[betterGroup])) {</span></a>
+<a name="931"><span class="lineNum">     931 </span>                :<span class="lineNoCov">          0 :                         chosen = index;</span></a>
+<a name="932"><span class="lineNum">     932 </span>                :<span class="lineNoCov">          0 :                         betterGroup = group;</span></a>
+<a name="933"><span class="lineNum">     933 </span>                :<span class="lineNoCov">          0 :                     }</span></a>
+<a name="934"><span class="lineNum">     934 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="935"><span class="lineNum">     935 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="936"><span class="lineNum">     936 </span>                :<span class="lineNoCov">          0 :             Classify(chosen, betterGroup, a_parVars);</span></a>
+<a name="937"><span class="lineNum">     937 </span>                :            :         }</a>
+<a name="938"><span class="lineNum">     938 </span>                :            : </a>
+<a name="939"><span class="lineNum">     939 </span>                :            :         // If one group too full, put remaining rects in the other</a>
+<a name="940"><span class="lineNum">     940 </span>                :<span class="lineNoCov">          0 :         if ((a_parVars-&gt;m_count[0] + a_parVars-&gt;m_count[1]) &lt; a_parVars-&gt;m_total) {</span></a>
+<a name="941"><span class="lineNum">     941 </span>                :<span class="lineNoCov">          0 :             if (a_parVars-&gt;m_count[0] &gt;= a_parVars-&gt;m_total - a_parVars-&gt;m_minFill) {</span></a>
+<a name="942"><span class="lineNum">     942 </span>                :<span class="lineNoCov">          0 :                 group = 1;</span></a>
+<a name="943"><span class="lineNum">     943 </span>                :<span class="lineNoCov">          0 :             } else {</span></a>
+<a name="944"><span class="lineNum">     944 </span>                :<span class="lineNoCov">          0 :                 group = 0;</span></a>
+<a name="945"><span class="lineNum">     945 </span>                :            :             }</a>
+<a name="946"><span class="lineNum">     946 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_parVars-&gt;m_total; ++index) {</span></a>
+<a name="947"><span class="lineNum">     947 </span>                :<span class="lineNoCov">          0 :                 if (PartitionVars::kNotTaken == a_parVars-&gt;m_partition[index]) {</span></a>
+<a name="948"><span class="lineNum">     948 </span>                :<span class="lineNoCov">          0 :                     Classify(index, group, a_parVars);</span></a>
+<a name="949"><span class="lineNum">     949 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="950"><span class="lineNum">     950 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="951"><span class="lineNum">     951 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="952"><span class="lineNum">     952 </span>                :            : </a>
+<a name="953"><span class="lineNum">     953 </span>                :<span class="lineNoCov">          0 :         RTreeAssert((a_parVars-&gt;m_count[0] + a_parVars-&gt;m_count[1]) == a_parVars-&gt;m_total);</span></a>
+<a name="954"><span class="lineNum">     954 </span>                :<span class="lineNoCov">          0 :         RTreeAssert((a_parVars-&gt;m_count[0] &gt;= a_parVars-&gt;m_minFill) &amp;&amp;</span></a>
+<a name="955"><span class="lineNum">     955 </span>                :            :             (a_parVars-&gt;m_count[1] &gt;= a_parVars-&gt;m_minFill));</a>
+<a name="956"><span class="lineNum">     956 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="957"><span class="lineNum">     957 </span>                :            : </a>
+<a name="958"><span class="lineNum">     958 </span>                :            :     // Copy branches from the buffer into two nodes according to the partition.</a>
+<a name="959"><span class="lineNum">     959 </span>                :<span class="lineNoCov">          0 :     void LoadNodes(Node* a_nodeA, Node* a_nodeB, PartitionVars* a_parVars) {</span></a>
+<a name="960"><span class="lineNum">     960 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_nodeA);</span></a>
+<a name="961"><span class="lineNum">     961 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_nodeB);</span></a>
+<a name="962"><span class="lineNum">     962 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_parVars);</span></a>
+<a name="963"><span class="lineNum">     963 </span>                :            : </a>
+<a name="964"><span class="lineNum">     964 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; a_parVars-&gt;m_total; ++index) {</span></a>
+<a name="965"><span class="lineNum">     965 </span>                :<span class="lineNoCov">          0 :             RTreeAssert(a_parVars-&gt;m_partition[index] == 0 || a_parVars-&gt;m_partition[index] == 1);</span></a>
+<a name="966"><span class="lineNum">     966 </span>                :            : </a>
+<a name="967"><span class="lineNum">     967 </span>                :<span class="lineNoCov">          0 :             int targetNodeIndex = a_parVars-&gt;m_partition[index];</span></a>
+<a name="968"><span class="lineNum">     968 </span>                :<span class="lineNoCov">          0 :             Node* targetNodes[] = { a_nodeA, a_nodeB };</span></a>
+<a name="969"><span class="lineNum">     969 </span>                :            : </a>
+<a name="970"><span class="lineNum">     970 </span>                :            :             // It is assured that AddBranch here will not cause a node split. </a>
+<a name="971"><span class="lineNum">     971 </span>                :<span class="lineNoCov">          0 :             bool nodeWasSplit = AddBranch(&amp;a_parVars-&gt;m_branchBuf[index], targetNodes[targetNodeIndex], nullptr);</span></a>
+<a name="972"><span class="lineNum">     972 </span>                :            :             (void)nodeWasSplit;</a>
+<a name="973"><span class="lineNum">     973 </span>                :<span class="lineNoCov">          0 :             RTreeAssert(!nodeWasSplit);</span></a>
+<a name="974"><span class="lineNum">     974 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="975"><span class="lineNum">     975 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="976"><span class="lineNum">     976 </span>                :            : </a>
+<a name="977"><span class="lineNum">     977 </span>                :            :     // Initialize a PartitionVars structure.</a>
+<a name="978"><span class="lineNum">     978 </span>                :<span class="lineNoCov">          0 :     void InitParVars(PartitionVars* a_parVars, int a_maxRects, int a_minFill) {</span></a>
+<a name="979"><span class="lineNum">     979 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_parVars);</span></a>
+<a name="980"><span class="lineNum">     980 </span>                :            : </a>
+<a name="981"><span class="lineNum">     981 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_count[0] = a_parVars-&gt;m_count[1] = 0;</span></a>
+<a name="982"><span class="lineNum">     982 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_area[0] = a_parVars-&gt;m_area[1] = kElementTypeRealZero;</span></a>
+<a name="983"><span class="lineNum">     983 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_total = a_maxRects;</span></a>
+<a name="984"><span class="lineNum">     984 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_minFill = a_minFill;</span></a>
+<a name="985"><span class="lineNum">     985 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; a_maxRects; ++index) {</span></a>
+<a name="986"><span class="lineNum">     986 </span>                :<span class="lineNoCov">          0 :             a_parVars-&gt;m_partition[index] = PartitionVars::kNotTaken;</span></a>
+<a name="987"><span class="lineNum">     987 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="988"><span class="lineNum">     988 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="989"><span class="lineNum">     989 </span>                :            : </a>
+<a name="990"><span class="lineNum">     990 </span>                :<span class="lineNoCov">          0 :     void PickSeeds(PartitionVars* a_parVars) {</span></a>
+<a name="991"><span class="lineNum">     991 </span>                :<span class="lineNoCov">          0 :         int seed0 = 0, seed1 = 0;</span></a>
+<a name="992"><span class="lineNum">     992 </span>                :<span class="lineNoCov">          0 :         _ElementTypeReal worst{ 0.0 }, waste{ 0.0 };</span></a>
+<a name="993"><span class="lineNum">     993 </span>                :<span class="lineNoCov">          0 :         _ElementTypeReal area[_MaxNodeCount + 1] = { 0.0, };</span></a>
+<a name="994"><span class="lineNum">     994 </span>                :            : </a>
+<a name="995"><span class="lineNum">     995 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; a_parVars-&gt;m_total; ++index) {</span></a>
+<a name="996"><span class="lineNum">     996 </span>                :<span class="lineNoCov">          0 :             area[index] = CalcRectVolume(&amp;a_parVars-&gt;m_branchBuf[index].m_rect);</span></a>
+<a name="997"><span class="lineNum">     997 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="998"><span class="lineNum">     998 </span>                :            : </a>
+<a name="999"><span class="lineNum">     999 </span>                :<span class="lineNoCov">          0 :         worst = -a_parVars-&gt;m_coverSplitArea - 1;</span></a>
+<a name="1000"><span class="lineNum">    1000 </span>                :<span class="lineNoCov">          0 :         for (int indexA = 0; indexA &lt; a_parVars-&gt;m_total - 1; ++indexA) {</span></a>
+<a name="1001"><span class="lineNum">    1001 </span>                :<span class="lineNoCov">          0 :             for (int indexB = indexA + 1; indexB &lt; a_parVars-&gt;m_total; ++indexB) {</span></a>
+<a name="1002"><span class="lineNum">    1002 </span>                :<span class="lineNoCov">          0 :                 auto oneRect = CombineRect(&amp;a_parVars-&gt;m_branchBuf[indexA].m_rect, &amp;a_parVars-&gt;m_branchBuf[indexB].m_rect);</span></a>
+<a name="1003"><span class="lineNum">    1003 </span>                :<span class="lineNoCov">          0 :                 waste = CalcRectVolume(&amp;oneRect) - area[indexA] - area[indexB];</span></a>
+<a name="1004"><span class="lineNum">    1004 </span>                :<span class="lineNoCov">          0 :                 if (waste &gt; worst) {</span></a>
+<a name="1005"><span class="lineNum">    1005 </span>                :<span class="lineNoCov">          0 :                     worst = waste;</span></a>
+<a name="1006"><span class="lineNum">    1006 </span>                :<span class="lineNoCov">          0 :                     seed0 = indexA;</span></a>
+<a name="1007"><span class="lineNum">    1007 </span>                :<span class="lineNoCov">          0 :                     seed1 = indexB;</span></a>
+<a name="1008"><span class="lineNum">    1008 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="1009"><span class="lineNum">    1009 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1010"><span class="lineNum">    1010 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            : </a>
+<a name="1012"><span class="lineNum">    1012 </span>                :<span class="lineNoCov">          0 :         Classify(seed0, 0, a_parVars);</span></a>
+<a name="1013"><span class="lineNum">    1013 </span>                :<span class="lineNoCov">          0 :         Classify(seed1, 1, a_parVars);</span></a>
+<a name="1014"><span class="lineNum">    1014 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            : </a>
+<a name="1016"><span class="lineNum">    1016 </span>                :            :     // Put a branch in one of the groups.</a>
+<a name="1017"><span class="lineNum">    1017 </span>                :<span class="lineNoCov">          0 :     void Classify(int a_index, int a_group, PartitionVars* a_parVars) {</span></a>
+<a name="1018"><span class="lineNum">    1018 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_parVars);</span></a>
+<a name="1019"><span class="lineNum">    1019 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(PartitionVars::kNotTaken == a_parVars-&gt;m_partition[a_index]);</span></a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            : </a>
+<a name="1021"><span class="lineNum">    1021 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_partition[a_index] = a_group;</span></a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            : </a>
+<a name="1023"><span class="lineNum">    1023 </span>                :            :         // Calculate combined rect</a>
+<a name="1024"><span class="lineNum">    1024 </span>                :<span class="lineNoCov">          0 :         if (a_parVars-&gt;m_count[a_group] == 0) {</span></a>
+<a name="1025"><span class="lineNum">    1025 </span>                :<span class="lineNoCov">          0 :             a_parVars-&gt;m_cover[a_group] = a_parVars-&gt;m_branchBuf[a_index].m_rect;</span></a>
+<a name="1026"><span class="lineNum">    1026 </span>                :<span class="lineNoCov">          0 :         } else {</span></a>
+<a name="1027"><span class="lineNum">    1027 </span>                :<span class="lineNoCov">          0 :             a_parVars-&gt;m_cover[a_group] = CombineRect(&amp;a_parVars-&gt;m_branchBuf[a_index].m_rect, &amp;a_parVars-&gt;m_cover[a_group]);</span></a>
+<a name="1028"><span class="lineNum">    1028 </span>                :            :         }</a>
+<a name="1029"><span class="lineNum">    1029 </span>                :            : </a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            :         // Calculate volume of combined rect</a>
+<a name="1031"><span class="lineNum">    1031 </span>                :<span class="lineNoCov">          0 :         a_parVars-&gt;m_area[a_group] = CalcRectVolume(&amp;a_parVars-&gt;m_cover[a_group]);</span></a>
+<a name="1032"><span class="lineNum">    1032 </span>                :            : </a>
+<a name="1033"><span class="lineNum">    1033 </span>                :<span class="lineNoCov">          0 :         ++a_parVars-&gt;m_count[a_group];</span></a>
+<a name="1034"><span class="lineNum">    1034 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : </a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            :     // Delete a data rectangle from an index structure.</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :            :     // Pass in a pointer to a Rect, the tid of the record, ptr to ptr to root node.</a>
+<a name="1038"><span class="lineNum">    1038 </span>                :            :     // Returns 1 if record not found, 0 if success.</a>
+<a name="1039"><span class="lineNum">    1039 </span>                :            :     // RemoveRect provides for eliminating the root.</a>
+<a name="1040"><span class="lineNum">    1040 </span>                :<span class="lineNoCov">          0 :     bool RemoveRect(Rect* a_rect, const DataType&amp; a_id, Node** a_root) {</span></a>
+<a name="1041"><span class="lineNum">    1041 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rect &amp;&amp; a_root);</span></a>
+<a name="1042"><span class="lineNum">    1042 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(*a_root);</span></a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            : </a>
+<a name="1044"><span class="lineNum">    1044 </span>                :<span class="lineNoCov">          0 :         ListNode* reInsertList{ nullptr };</span></a>
+<a name="1045"><span class="lineNum">    1045 </span>                :            : </a>
+<a name="1046"><span class="lineNum">    1046 </span>                :<span class="lineNoCov">          0 :         if (!RemoveRectRec(a_rect, a_id, *a_root, &amp;reInsertList)) {</span></a>
+<a name="1047"><span class="lineNum">    1047 </span>                :            :             // Found and deleted a data item</a>
+<a name="1048"><span class="lineNum">    1048 </span>                :            :             // Reinsert any branches from eliminated nodes</a>
+<a name="1049"><span class="lineNum">    1049 </span>                :<span class="lineNoCov">          0 :             while (reInsertList) {</span></a>
+<a name="1050"><span class="lineNum">    1050 </span>                :<span class="lineNoCov">          0 :                 Node* tempNode = reInsertList-&gt;m_node;</span></a>
+<a name="1051"><span class="lineNum">    1051 </span>                :            : </a>
+<a name="1052"><span class="lineNum">    1052 </span>                :<span class="lineNoCov">          0 :                 for (int index = 0; index &lt; tempNode-&gt;m_count; ++index) {</span></a>
+<a name="1053"><span class="lineNum">    1053 </span>                :            :                     // TODO go over this code. should I use (tempNode-&gt;m_level - 1)?</a>
+<a name="1054"><span class="lineNum">    1054 </span>                :<span class="lineNoCov">          0 :                     InsertRect(tempNode-&gt;m_branch[index],</span></a>
+<a name="1055"><span class="lineNum">    1055 </span>                :<span class="lineNoCov">          0 :                         a_root,</span></a>
+<a name="1056"><span class="lineNum">    1056 </span>                :<span class="lineNoCov">          0 :                         tempNode-&gt;m_level);</span></a>
+<a name="1057"><span class="lineNum">    1057 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="1058"><span class="lineNum">    1058 </span>                :            : </a>
+<a name="1059"><span class="lineNum">    1059 </span>                :<span class="lineNoCov">          0 :                 ListNode* remLNode = reInsertList;</span></a>
+<a name="1060"><span class="lineNum">    1060 </span>                :<span class="lineNoCov">          0 :                 reInsertList = reInsertList-&gt;m_next;</span></a>
+<a name="1061"><span class="lineNum">    1061 </span>                :            : </a>
+<a name="1062"><span class="lineNum">    1062 </span>                :<span class="lineNoCov">          0 :                 FreeNode(remLNode-&gt;m_node);</span></a>
+<a name="1063"><span class="lineNum">    1063 </span>                :<span class="lineNoCov">          0 :                 FreeListNode(remLNode);</span></a>
+<a name="1064"><span class="lineNum">    1064 </span>                :            :             }</a>
+<a name="1065"><span class="lineNum">    1065 </span>                :            : </a>
+<a name="1066"><span class="lineNum">    1066 </span>                :            :             // Check for redundant root (not leaf, 1 child) and eliminate TODO replace</a>
+<a name="1067"><span class="lineNum">    1067 </span>                :            :             // if with while? In case there is a whole branch of redundant roots...</a>
+<a name="1068"><span class="lineNum">    1068 </span>                :<span class="lineNoCov">          0 :             if ((*a_root)-&gt;m_count == 1 &amp;&amp; (*a_root)-&gt;IsInternalNode()) {</span></a>
+<a name="1069"><span class="lineNum">    1069 </span>                :<span class="lineNoCov">          0 :                 auto tempNode = (*a_root)-&gt;m_branch[0].m_child;</span></a>
+<a name="1070"><span class="lineNum">    1070 </span>                :            : </a>
+<a name="1071"><span class="lineNum">    1071 </span>                :<span class="lineNoCov">          0 :                 RTreeAssert(tempNode);</span></a>
+<a name="1072"><span class="lineNum">    1072 </span>                :<span class="lineNoCov">          0 :                 FreeNode(*a_root);</span></a>
+<a name="1073"><span class="lineNum">    1073 </span>                :<span class="lineNoCov">          0 :                 *a_root = tempNode;</span></a>
+<a name="1074"><span class="lineNum">    1074 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1075"><span class="lineNum">    1075 </span>                :<span class="lineNoCov">          0 :             return false;</span></a>
+<a name="1076"><span class="lineNum">    1076 </span>                :            :         } else {</a>
+<a name="1077"><span class="lineNum">    1077 </span>                :<span class="lineNoCov">          0 :             return true;</span></a>
+<a name="1078"><span class="lineNum">    1078 </span>                :            :         }</a>
+<a name="1079"><span class="lineNum">    1079 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1080"><span class="lineNum">    1080 </span>                :            : </a>
+<a name="1081"><span class="lineNum">    1081 </span>                :            :     // Delete a rectangle from non-root part of an index structure.</a>
+<a name="1082"><span class="lineNum">    1082 </span>                :            :     // Called by RemoveRect.  Descends tree recursively,</a>
+<a name="1083"><span class="lineNum">    1083 </span>                :            :     // merges branches on the way back up.</a>
+<a name="1084"><span class="lineNum">    1084 </span>                :            :     // Returns 1 if record not found, 0 if success.</a>
+<a name="1085"><span class="lineNum">    1085 </span>                :<span class="lineNoCov">          0 :     bool RemoveRectRec(Rect* a_rect, const DataType&amp; a_id, Node* a_node, ListNode** a_listNode) {</span></a>
+<a name="1086"><span class="lineNum">    1086 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rect &amp;&amp; a_node &amp;&amp; a_listNode);</span></a>
+<a name="1087"><span class="lineNum">    1087 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node-&gt;m_level &gt;= 0);</span></a>
+<a name="1088"><span class="lineNum">    1088 </span>                :            : </a>
+<a name="1089"><span class="lineNum">    1089 </span>                :<span class="lineNoCov">          0 :         if (a_node-&gt;IsInternalNode())  // not a leaf node</span></a>
+<a name="1090"><span class="lineNum">    1090 </span>                :            :         {</a>
+<a name="1091"><span class="lineNum">    1091 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="1092"><span class="lineNum">    1092 </span>                :<span class="lineNoCov">          0 :                 if (Overlap(a_rect, &amp;(a_node-&gt;m_branch[index].m_rect))) {</span></a>
+<a name="1093"><span class="lineNum">    1093 </span>                :<span class="lineNoCov">          0 :                     if (!RemoveRectRec(a_rect, a_id, a_node-&gt;m_branch[index].m_child, a_listNode)) {</span></a>
+<a name="1094"><span class="lineNum">    1094 </span>                :<span class="lineNoCov">          0 :                         if (a_node-&gt;m_branch[index].m_child-&gt;m_count &gt;= _MinNodeCount) {</span></a>
+<a name="1095"><span class="lineNum">    1095 </span>                :            :                             // child removed, just resize parent rect</a>
+<a name="1096"><span class="lineNum">    1096 </span>                :<span class="lineNoCov">          0 :                             a_node-&gt;m_branch[index].m_rect = NodeCover(a_node-&gt;m_branch[index].m_child);</span></a>
+<a name="1097"><span class="lineNum">    1097 </span>                :<span class="lineNoCov">          0 :                         } else {</span></a>
+<a name="1098"><span class="lineNum">    1098 </span>                :            :                             // child removed, not enough entries in node, eliminate node</a>
+<a name="1099"><span class="lineNum">    1099 </span>                :<span class="lineNoCov">          0 :                             ReInsert(a_node-&gt;m_branch[index].m_child, a_listNode);</span></a>
+<a name="1100"><span class="lineNum">    1100 </span>                :<span class="lineNoCov">          0 :                             DisconnectBranch(a_node, index); // Must return after this call as count has changed</span></a>
+<a name="1101"><span class="lineNum">    1101 </span>                :            :                         }</a>
+<a name="1102"><span class="lineNum">    1102 </span>                :<span class="lineNoCov">          0 :                         return false;</span></a>
+<a name="1103"><span class="lineNum">    1103 </span>                :            :                     }</a>
+<a name="1104"><span class="lineNum">    1104 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="1105"><span class="lineNum">    1105 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1106"><span class="lineNum">    1106 </span>                :<span class="lineNoCov">          0 :             return true;</span></a>
+<a name="1107"><span class="lineNum">    1107 </span>                :            :         } else // A leaf node</a>
+<a name="1108"><span class="lineNum">    1108 </span>                :            :         {</a>
+<a name="1109"><span class="lineNum">    1109 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="1110"><span class="lineNum">    1110 </span>                :<span class="lineNoCov">          0 :                 if (a_node-&gt;m_branch[index].m_data == a_id) {</span></a>
+<a name="1111"><span class="lineNum">    1111 </span>                :<span class="lineNoCov">          0 :                     DisconnectBranch(a_node, index); // Must return after this call as count has changed</span></a>
+<a name="1112"><span class="lineNum">    1112 </span>                :<span class="lineNoCov">          0 :                     return false;</span></a>
+<a name="1113"><span class="lineNum">    1113 </span>                :            :                 }</a>
+<a name="1114"><span class="lineNum">    1114 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1115"><span class="lineNum">    1115 </span>                :<span class="lineNoCov">          0 :             return true;</span></a>
+<a name="1116"><span class="lineNum">    1116 </span>                :            :         }</a>
+<a name="1117"><span class="lineNum">    1117 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1118"><span class="lineNum">    1118 </span>                :            : </a>
+<a name="1119"><span class="lineNum">    1119 </span>                :            :     // Allocate space for a node in the list used in DeletRect to</a>
+<a name="1120"><span class="lineNum">    1120 </span>                :            :     // store Nodes that are too empty.</a>
+<a name="1121"><span class="lineNum">    1121 </span>                :<span class="lineNoCov">          0 :     ListNode* AllocListNode() {</span></a>
+<a name="1122"><span class="lineNum">    1122 </span>                :            : #ifdef RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1123"><span class="lineNum">    1123 </span>                :<span class="lineNoCov">          0 :         return new ListNode;</span></a>
+<a name="1124"><span class="lineNum">    1124 </span>                :            : #else // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1125"><span class="lineNum">    1125 </span>                :            :         // EXAMPLE</a>
+<a name="1126"><span class="lineNum">    1126 </span>                :            : #endif // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1127"><span class="lineNum">    1127 </span>                :            :     }</a>
+<a name="1128"><span class="lineNum">    1128 </span>                :            : </a>
+<a name="1129"><span class="lineNum">    1129 </span>                :<span class="lineNoCov">          0 :     void FreeListNode(ListNode* a_listNode) {</span></a>
+<a name="1130"><span class="lineNum">    1130 </span>                :            : #ifdef RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1131"><span class="lineNum">    1131 </span>                :<span class="lineNoCov">          0 :         delete a_listNode;</span></a>
+<a name="1132"><span class="lineNum">    1132 </span>                :            : #else // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1133"><span class="lineNum">    1133 </span>                :            :         // EXAMPLE</a>
+<a name="1134"><span class="lineNum">    1134 </span>                :            : #endif // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1135"><span class="lineNum">    1135 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1136"><span class="lineNum">    1136 </span>                :            : </a>
+<a name="1137"><span class="lineNum">    1137 </span>                :            :     // Decide whether two rectangles overlap.</a>
+<a name="1138"><span class="lineNum">    1138 </span>                :<span class="lineNoCov">          0 :     bool Overlap(Rect* a_rectA, Rect* a_rectB) const {</span></a>
+<a name="1139"><span class="lineNum">    1139 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rectA &amp;&amp; a_rectB);</span></a>
+<a name="1140"><span class="lineNum">    1140 </span>                :            : </a>
+<a name="1141"><span class="lineNum">    1141 </span>                :<span class="lineNoCov">          0 :         for (int index = 0; index &lt; kNumDimensions; ++index) {</span></a>
+<a name="1142"><span class="lineNum">    1142 </span>                :<span class="lineNoCov">          0 :             if (a_rectA-&gt;m_min[index] &gt; a_rectB-&gt;m_max[index] ||</span></a>
+<a name="1143"><span class="lineNum">    1143 </span>                :<span class="lineNoCov">          0 :                 a_rectB-&gt;m_min[index] &gt; a_rectA-&gt;m_max[index]) {</span></a>
+<a name="1144"><span class="lineNum">    1144 </span>                :<span class="lineNoCov">          0 :                 return false;</span></a>
+<a name="1145"><span class="lineNum">    1145 </span>                :            :             }</a>
+<a name="1146"><span class="lineNum">    1146 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="1147"><span class="lineNum">    1147 </span>                :<span class="lineNoCov">          0 :         return true;</span></a>
+<a name="1148"><span class="lineNum">    1148 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1149"><span class="lineNum">    1149 </span>                :            : </a>
+<a name="1150"><span class="lineNum">    1150 </span>                :            :     // Add a node to the reinsertion list.  All its branches will later</a>
+<a name="1151"><span class="lineNum">    1151 </span>                :            :     // be reinserted into the index structure.</a>
+<a name="1152"><span class="lineNum">    1152 </span>                :<span class="lineNoCov">          0 :     void ReInsert(Node* a_node, ListNode** a_listNode) {</span></a>
+<a name="1153"><span class="lineNum">    1153 </span>                :            :         ListNode* newListNode;</a>
+<a name="1154"><span class="lineNum">    1154 </span>                :            : </a>
+<a name="1155"><span class="lineNum">    1155 </span>                :<span class="lineNoCov">          0 :         newListNode = AllocListNode();</span></a>
+<a name="1156"><span class="lineNum">    1156 </span>                :<span class="lineNoCov">          0 :         newListNode-&gt;m_node = a_node;</span></a>
+<a name="1157"><span class="lineNum">    1157 </span>                :<span class="lineNoCov">          0 :         newListNode-&gt;m_next = *a_listNode;</span></a>
+<a name="1158"><span class="lineNum">    1158 </span>                :<span class="lineNoCov">          0 :         *a_listNode = newListNode;</span></a>
+<a name="1159"><span class="lineNum">    1159 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1160"><span class="lineNum">    1160 </span>                :            : </a>
+<a name="1161"><span class="lineNum">    1161 </span>                :            :     // Search in an index tree or subtree for all data retangles that overlap the argument rectangle.</a>
+<a name="1162"><span class="lineNum">    1162 </span>                :<span class="lineNoCov">          0 :     bool Search(Node* a_node, Rect* a_rect, int&amp; a_foundCount, std::function&lt;bool(const DataType&amp;)&gt; callback) const {</span></a>
+<a name="1163"><span class="lineNum">    1163 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="1164"><span class="lineNum">    1164 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node-&gt;m_level &gt;= 0);</span></a>
+<a name="1165"><span class="lineNum">    1165 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_rect);</span></a>
+<a name="1166"><span class="lineNum">    1166 </span>                :            : </a>
+<a name="1167"><span class="lineNum">    1167 </span>                :<span class="lineNoCov">          0 :         if (a_node-&gt;IsInternalNode()) {</span></a>
+<a name="1168"><span class="lineNum">    1168 </span>                :            :             // This is an internal node in the tree</a>
+<a name="1169"><span class="lineNum">    1169 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="1170"><span class="lineNum">    1170 </span>                :<span class="lineNoCov">          0 :                 if (Overlap(a_rect, &amp;a_node-&gt;m_branch[index].m_rect)) {</span></a>
+<a name="1171"><span class="lineNum">    1171 </span>                :<span class="lineNoCov">          0 :                     if (!Search(a_node-&gt;m_branch[index].m_child, a_rect, a_foundCount, callback)) {</span></a>
+<a name="1172"><span class="lineNum">    1172 </span>                :            :                         // The callback indicated to stop searching</a>
+<a name="1173"><span class="lineNum">    1173 </span>                :<span class="lineNoCov">          0 :                         return false;</span></a>
+<a name="1174"><span class="lineNum">    1174 </span>                :            :                     }</a>
+<a name="1175"><span class="lineNum">    1175 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="1176"><span class="lineNum">    1176 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1177"><span class="lineNum">    1177 </span>                :<span class="lineNoCov">          0 :         } else {</span></a>
+<a name="1178"><span class="lineNum">    1178 </span>                :            :             // This is a leaf node</a>
+<a name="1179"><span class="lineNum">    1179 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="1180"><span class="lineNum">    1180 </span>                :<span class="lineNoCov">          0 :                 if (Overlap(a_rect, &amp;a_node-&gt;m_branch[index].m_rect)) {</span></a>
+<a name="1181"><span class="lineNum">    1181 </span>                :<span class="lineNoCov">          0 :                     const auto&amp; id = a_node-&gt;m_branch[index].m_data;</span></a>
+<a name="1182"><span class="lineNum">    1182 </span>                :<span class="lineNoCov">          0 :                     ++a_foundCount;</span></a>
+<a name="1183"><span class="lineNum">    1183 </span>                :            : </a>
+<a name="1184"><span class="lineNum">    1184 </span>                :<span class="lineNoCov">          0 :                     if (callback &amp;&amp; !callback(id)) {</span></a>
+<a name="1185"><span class="lineNum">    1185 </span>                :<span class="lineNoCov">          0 :                         return false; // Don't continue searching</span></a>
+<a name="1186"><span class="lineNum">    1186 </span>                :            :                     }</a>
+<a name="1187"><span class="lineNum">    1187 </span>                :<span class="lineNoCov">          0 :                 }</span></a>
+<a name="1188"><span class="lineNum">    1188 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1189"><span class="lineNum">    1189 </span>                :            :         }</a>
+<a name="1190"><span class="lineNum">    1190 </span>                :            : </a>
+<a name="1191"><span class="lineNum">    1191 </span>                :<span class="lineNoCov">          0 :         return true; // Continue searching</span></a>
+<a name="1192"><span class="lineNum">    1192 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1193"><span class="lineNum">    1193 </span>                :            : </a>
+<a name="1194"><span class="lineNum">    1194 </span>                :<span class="lineNoCov">          0 :     void RemoveAllRec(Node* a_node) {</span></a>
+<a name="1195"><span class="lineNum">    1195 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node);</span></a>
+<a name="1196"><span class="lineNum">    1196 </span>                :<span class="lineNoCov">          0 :         RTreeAssert(a_node-&gt;m_level &gt;= 0);</span></a>
+<a name="1197"><span class="lineNum">    1197 </span>                :            : </a>
+<a name="1198"><span class="lineNum">    1198 </span>                :<span class="lineNoCov">          0 :         if (a_node-&gt;IsInternalNode()) // This is an internal node in the tree</span></a>
+<a name="1199"><span class="lineNum">    1199 </span>                :            :         {</a>
+<a name="1200"><span class="lineNum">    1200 </span>                :<span class="lineNoCov">          0 :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</span></a>
+<a name="1201"><span class="lineNum">    1201 </span>                :<span class="lineNoCov">          0 :                 RemoveAllRec(a_node-&gt;m_branch[index].m_child);</span></a>
+<a name="1202"><span class="lineNum">    1202 </span>                :<span class="lineNoCov">          0 :             }</span></a>
+<a name="1203"><span class="lineNum">    1203 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="1204"><span class="lineNum">    1204 </span>                :<span class="lineNoCov">          0 :         FreeNode(a_node);</span></a>
+<a name="1205"><span class="lineNum">    1205 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1206"><span class="lineNum">    1206 </span>                :            : </a>
+<a name="1207"><span class="lineNum">    1207 </span>                :<span class="lineNoCov">          0 :     void Reset() {</span></a>
+<a name="1208"><span class="lineNum">    1208 </span>                :            : #ifdef RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1209"><span class="lineNum">    1209 </span>                :            :         // Delete all existing nodes</a>
+<a name="1210"><span class="lineNum">    1210 </span>                :<span class="lineNoCov">          0 :         RemoveAllRec(m_root);</span></a>
+<a name="1211"><span class="lineNum">    1211 </span>                :            : #else // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1212"><span class="lineNum">    1212 </span>                :            :         // Just reset memory pools.  We are not using complex types</a>
+<a name="1213"><span class="lineNum">    1213 </span>                :            :         // EXAMPLE</a>
+<a name="1214"><span class="lineNum">    1214 </span>                :            : #endif // RTREE_DONT_USE_MEMPOOLS</a>
+<a name="1215"><span class="lineNum">    1215 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="1216"><span class="lineNum">    1216 </span>                :            : </a>
+<a name="1217"><span class="lineNum">    1217 </span>                :            :     void CountRec(Node* a_node, int&amp; a_count) const {</a>
+<a name="1218"><span class="lineNum">    1218 </span>                :            :         if (a_node-&gt;IsInternalNode())  // not a leaf node</a>
+<a name="1219"><span class="lineNum">    1219 </span>                :            :         {</a>
+<a name="1220"><span class="lineNum">    1220 </span>                :            :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</a>
+<a name="1221"><span class="lineNum">    1221 </span>                :            :                 CountRec(a_node-&gt;m_branch[index].m_child, a_count);</a>
+<a name="1222"><span class="lineNum">    1222 </span>                :            :             }</a>
+<a name="1223"><span class="lineNum">    1223 </span>                :            :         } else // A leaf node</a>
+<a name="1224"><span class="lineNum">    1224 </span>                :            :         {</a>
+<a name="1225"><span class="lineNum">    1225 </span>                :            :             a_count += a_node-&gt;m_count;</a>
+<a name="1226"><span class="lineNum">    1226 </span>                :            :         }</a>
+<a name="1227"><span class="lineNum">    1227 </span>                :            :     }</a>
+<a name="1228"><span class="lineNum">    1228 </span>                :            : </a>
+<a name="1229"><span class="lineNum">    1229 </span>                :            :     bool SaveRec(Node* a_node, RTFileStream&amp; a_stream) {</a>
+<a name="1230"><span class="lineNum">    1230 </span>                :            :         a_stream.Write(a_node-&gt;m_level);</a>
+<a name="1231"><span class="lineNum">    1231 </span>                :            :         a_stream.Write(a_node-&gt;m_count);</a>
+<a name="1232"><span class="lineNum">    1232 </span>                :            : </a>
+<a name="1233"><span class="lineNum">    1233 </span>                :            :         if (a_node-&gt;IsInternalNode())  // not a leaf node</a>
+<a name="1234"><span class="lineNum">    1234 </span>                :            :         {</a>
+<a name="1235"><span class="lineNum">    1235 </span>                :            :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</a>
+<a name="1236"><span class="lineNum">    1236 </span>                :            :                 const auto&amp; curBranch = a_node-&gt;m_branch[index];</a>
+<a name="1237"><span class="lineNum">    1237 </span>                :            : </a>
+<a name="1238"><span class="lineNum">    1238 </span>                :            :                 a_stream.WriteArray(curBranch-&gt;m_rect.m_min, kNumDimensions);</a>
+<a name="1239"><span class="lineNum">    1239 </span>                :            :                 a_stream.WriteArray(curBranch-&gt;m_rect.m_max, kNumDimensions);</a>
+<a name="1240"><span class="lineNum">    1240 </span>                :            : </a>
+<a name="1241"><span class="lineNum">    1241 </span>                :            :                 SaveRec(curBranch-&gt;m_child, a_stream);</a>
+<a name="1242"><span class="lineNum">    1242 </span>                :            :             }</a>
+<a name="1243"><span class="lineNum">    1243 </span>                :            :         } else // A leaf node</a>
+<a name="1244"><span class="lineNum">    1244 </span>                :            :         {</a>
+<a name="1245"><span class="lineNum">    1245 </span>                :            :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</a>
+<a name="1246"><span class="lineNum">    1246 </span>                :            :                 const auto&amp; curBranch = &amp;a_node-&gt;m_branch[index];</a>
+<a name="1247"><span class="lineNum">    1247 </span>                :            : </a>
+<a name="1248"><span class="lineNum">    1248 </span>                :            :                 a_stream.WriteArray(curBranch-&gt;m_rect.m_min, kNumDimensions);</a>
+<a name="1249"><span class="lineNum">    1249 </span>                :            :                 a_stream.WriteArray(curBranch-&gt;m_rect.m_max, kNumDimensions);</a>
+<a name="1250"><span class="lineNum">    1250 </span>                :            : </a>
+<a name="1251"><span class="lineNum">    1251 </span>                :            :                 a_stream.Write(curBranch-&gt;m_data);</a>
+<a name="1252"><span class="lineNum">    1252 </span>                :            :             }</a>
+<a name="1253"><span class="lineNum">    1253 </span>                :            :         }</a>
+<a name="1254"><span class="lineNum">    1254 </span>                :            : </a>
+<a name="1255"><span class="lineNum">    1255 </span>                :            :         return true; // Should do more error checking on I/O operations</a>
+<a name="1256"><span class="lineNum">    1256 </span>                :            :     }</a>
+<a name="1257"><span class="lineNum">    1257 </span>                :            : </a>
+<a name="1258"><span class="lineNum">    1258 </span>                :            :     bool LoadRec(Node* a_node, RTFileStream&amp; a_stream) {</a>
+<a name="1259"><span class="lineNum">    1259 </span>                :            :         a_stream.Read(a_node-&gt;m_level);</a>
+<a name="1260"><span class="lineNum">    1260 </span>                :            :         a_stream.Read(a_node-&gt;m_count);</a>
+<a name="1261"><span class="lineNum">    1261 </span>                :            : </a>
+<a name="1262"><span class="lineNum">    1262 </span>                :            :         if (a_node-&gt;IsInternalNode())  // not a leaf node</a>
+<a name="1263"><span class="lineNum">    1263 </span>                :            :         {</a>
+<a name="1264"><span class="lineNum">    1264 </span>                :            :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</a>
+<a name="1265"><span class="lineNum">    1265 </span>                :            :                 Branch* curBranch = &amp;a_node-&gt;m_branch[index];</a>
+<a name="1266"><span class="lineNum">    1266 </span>                :            : </a>
+<a name="1267"><span class="lineNum">    1267 </span>                :            :                 a_stream.ReadArray(curBranch-&gt;m_rect.m_min, kNumDimensions);</a>
+<a name="1268"><span class="lineNum">    1268 </span>                :            :                 a_stream.ReadArray(curBranch-&gt;m_rect.m_max, kNumDimensions);</a>
+<a name="1269"><span class="lineNum">    1269 </span>                :            : </a>
+<a name="1270"><span class="lineNum">    1270 </span>                :            :                 curBranch-&gt;m_child = AllocNode();</a>
+<a name="1271"><span class="lineNum">    1271 </span>                :            :                 LoadRec(curBranch-&gt;m_child, a_stream);</a>
+<a name="1272"><span class="lineNum">    1272 </span>                :            :             }</a>
+<a name="1273"><span class="lineNum">    1273 </span>                :            :         } else // A leaf node</a>
+<a name="1274"><span class="lineNum">    1274 </span>                :            :         {</a>
+<a name="1275"><span class="lineNum">    1275 </span>                :            :             for (int index = 0; index &lt; a_node-&gt;m_count; ++index) {</a>
+<a name="1276"><span class="lineNum">    1276 </span>                :            :                 Branch* curBranch = &amp;a_node-&gt;m_branch[index];</a>
+<a name="1277"><span class="lineNum">    1277 </span>                :            : </a>
+<a name="1278"><span class="lineNum">    1278 </span>                :            :                 a_stream.ReadArray(curBranch-&gt;m_rect.m_min, kNumDimensions);</a>
+<a name="1279"><span class="lineNum">    1279 </span>                :            :                 a_stream.ReadArray(curBranch-&gt;m_rect.m_max, kNumDimensions);</a>
+<a name="1280"><span class="lineNum">    1280 </span>                :            : </a>
+<a name="1281"><span class="lineNum">    1281 </span>                :            :                 a_stream.Read(curBranch-&gt;m_data);</a>
+<a name="1282"><span class="lineNum">    1282 </span>                :            :             }</a>
+<a name="1283"><span class="lineNum">    1283 </span>                :            :         }</a>
+<a name="1284"><span class="lineNum">    1284 </span>                :            : </a>
+<a name="1285"><span class="lineNum">    1285 </span>                :            :         return true; // Should do more error checking on I/O operations</a>
+<a name="1286"><span class="lineNum">    1286 </span>                :            :     }</a>
+<a name="1287"><span class="lineNum">    1287 </span>                :            : </a>
+<a name="1288"><span class="lineNum">    1288 </span>                :            :     void CopyRec(Node* current, Node* other) {</a>
+<a name="1289"><span class="lineNum">    1289 </span>                :            :         current-&gt;m_level = other-&gt;m_level;</a>
+<a name="1290"><span class="lineNum">    1290 </span>                :            :         current-&gt;m_count = other-&gt;m_count;</a>
+<a name="1291"><span class="lineNum">    1291 </span>                :            : </a>
+<a name="1292"><span class="lineNum">    1292 </span>                :            :         if (current-&gt;IsInternalNode())  // not a leaf node</a>
+<a name="1293"><span class="lineNum">    1293 </span>                :            :         {</a>
+<a name="1294"><span class="lineNum">    1294 </span>                :            :             for (int index = 0; index &lt; current-&gt;m_count; ++index) {</a>
+<a name="1295"><span class="lineNum">    1295 </span>                :            :                 auto&amp; currentBranch = current-&gt;m_branch[index];</a>
+<a name="1296"><span class="lineNum">    1296 </span>                :            :                 const auto&amp; otherBranch = other-&gt;m_branch[index];</a>
+<a name="1297"><span class="lineNum">    1297 </span>                :            : </a>
+<a name="1298"><span class="lineNum">    1298 </span>                :            :                 std::copy(otherBranch.m_rect.m_min,</a>
+<a name="1299"><span class="lineNum">    1299 </span>                :            :                     otherBranch.m_rect.m_min + kNumDimensions,</a>
+<a name="1300"><span class="lineNum">    1300 </span>                :            :                     currentBranch.m_rect.m_min);</a>
+<a name="1301"><span class="lineNum">    1301 </span>                :            : </a>
+<a name="1302"><span class="lineNum">    1302 </span>                :            :                 std::copy(otherBranch.m_rect.m_max,</a>
+<a name="1303"><span class="lineNum">    1303 </span>                :            :                     otherBranch.m_rect.m_max + kNumDimensions,</a>
+<a name="1304"><span class="lineNum">    1304 </span>                :            :                     currentBranch.m_rect.m_max);</a>
+<a name="1305"><span class="lineNum">    1305 </span>                :            : </a>
+<a name="1306"><span class="lineNum">    1306 </span>                :            :                 currentBranch.m_child = AllocNode();</a>
+<a name="1307"><span class="lineNum">    1307 </span>                :            :                 CopyRec(currentBranch.m_child, otherBranch.m_child);</a>
+<a name="1308"><span class="lineNum">    1308 </span>                :            :             }</a>
+<a name="1309"><span class="lineNum">    1309 </span>                :            :         } else // A leaf node</a>
+<a name="1310"><span class="lineNum">    1310 </span>                :            :         {</a>
+<a name="1311"><span class="lineNum">    1311 </span>                :            :             for (int index = 0; index &lt; current-&gt;m_count; ++index) {</a>
+<a name="1312"><span class="lineNum">    1312 </span>                :            :                 auto&amp; currentBranch = current-&gt;m_branch[index];</a>
+<a name="1313"><span class="lineNum">    1313 </span>                :            :                 const auto&amp; otherBranch = other-&gt;m_branch[index];</a>
+<a name="1314"><span class="lineNum">    1314 </span>                :            : </a>
+<a name="1315"><span class="lineNum">    1315 </span>                :            :                 std::copy(otherBranch.m_rect.m_min,</a>
+<a name="1316"><span class="lineNum">    1316 </span>                :            :                     otherBranch.m_rect.m_min + kNumDimensions,</a>
+<a name="1317"><span class="lineNum">    1317 </span>                :            :                     currentBranch.m_rect.m_min);</a>
+<a name="1318"><span class="lineNum">    1318 </span>                :            : </a>
+<a name="1319"><span class="lineNum">    1319 </span>                :            :                 std::copy(otherBranch.m_rect.m_max,</a>
+<a name="1320"><span class="lineNum">    1320 </span>                :            :                     otherBranch.m_rect.m_max + kNumDimensions,</a>
+<a name="1321"><span class="lineNum">    1321 </span>                :            :                     currentBranch.m_rect.m_max);</a>
+<a name="1322"><span class="lineNum">    1322 </span>                :            : </a>
+<a name="1323"><span class="lineNum">    1323 </span>                :            :                 currentBranch.m_data = otherBranch.m_data;</a>
+<a name="1324"><span class="lineNum">    1324 </span>                :            :             }</a>
+<a name="1325"><span class="lineNum">    1325 </span>                :            :         }</a>
+<a name="1326"><span class="lineNum">    1326 </span>                :            :     }</a>
+<a name="1327"><span class="lineNum">    1327 </span>                :            : </a>
+<a name="1328"><span class="lineNum">    1328 </span>                :<span class="lineNoCov">          0 :     Node* m_root = nullptr;                                         ///&lt; Root of tree</span></a>
+<a name="1329"><span class="lineNum">    1329 </span>                :<span class="lineNoCov">          0 :     ElementTypeReal m_unitSphereVolume = kElementTypeRealZero;      ///&lt; Unit sphere constant for required number of dimensions</span></a>
+<a name="1330"><span class="lineNum">    1330 </span>                :            : };</a>
+<a name="1331"><span class="lineNum">    1331 </span>                :            : </a>
+<a name="1332"><span class="lineNum">    1332 </span>                :            : #endif //RTREE_H</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
