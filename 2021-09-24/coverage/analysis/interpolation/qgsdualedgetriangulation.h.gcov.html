@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - analysis/interpolation/qgsdualedgetriangulation.h</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">analysis/interpolation</a> - qgsdualedgetriangulation.h<span style="font-size: 80%;"> (source / <a href="qgsdualedgetriangulation.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-09-24 09:20:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /**************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :                           QgsDualEdgeTriangulation.h  -  description</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :                              -------------------</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :     copyright            : (C) 2004 by Marco Hugentobler</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :     email                : mhugent@geo.unizh.ch</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :  ***************************************************************************/</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : </a>
+<a name="8"><span class="lineNum">       8 </span>                :            : /***************************************************************************</a>
+<a name="9"><span class="lineNum">       9 </span>                :            :  *                                                                         *</a>
+<a name="10"><span class="lineNum">      10 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  *                                                                         *</a>
+<a name="15"><span class="lineNum">      15 </span>                :            :  ***************************************************************************/</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : </a>
+<a name="17"><span class="lineNum">      17 </span>                :            : #ifndef DUALEDGETRIANGULATION_H</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #define DUALEDGETRIANGULATION_H</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #include &lt;QVector&gt;</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &lt;QList&gt;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &lt;QSet&gt;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &lt;QColor&gt;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &lt;QFile&gt;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &lt;QTextStream&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &lt;QMessageBox&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &lt;QBuffer&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &lt;QStringList&gt;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &lt;QCursor&gt;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : </a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &lt;cfloat&gt;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : </a>
+<a name="33"><span class="lineNum">      33 </span>                :            : #include &quot;qgis_sip.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : #include &quot;qgis_analysis.h&quot;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : #include &quot;qgspoint.h&quot;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : </a>
+<a name="37"><span class="lineNum">      37 </span>                :            : #include &quot;qgstriangulation.h&quot;</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : #include &quot;HalfEdge.h&quot;</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<a name="40"><span class="lineNum">      40 </span>                :            : #define SIP_NO_FILE</a>
+<a name="41"><span class="lineNum">      41 </span>                :            : </a>
+<a name="42"><span class="lineNum">      42 </span>                :            : /**</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :  * \ingroup analysis</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :  * \brief DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :  * \note Not available in Python bindings.</a>
+<a name="46"><span class="lineNum">      46 </span>                :            :  *</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :  * \since QGIS 3.16</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : */</a>
+<a name="49"><span class="lineNum">      49 </span>                :            : class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : {</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :   public:</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :     QgsDualEdgeTriangulation();</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :     //! Constructor with a number of points to reserve</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :     QgsDualEdgeTriangulation( int nop );</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :     ~QgsDualEdgeTriangulation() override;</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :     void addLine( const QVector&lt; QgsPoint &gt; &amp;points, QgsInterpolator::SourceType lineType ) override;</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :     int addPoint( const QgsPoint &amp;p ) override;</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :     //! Performs a consistency check, remove this later</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :     void performConsistencyTest() override;</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :     //! Calculates the normal at a point on the surface</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :     bool calcNormal( double x, double y, QgsPoint &amp;result SIP_OUT ) override;</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :     bool calcPoint( double x, double y, QgsPoint &amp;result SIP_OUT ) override;</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :     //! Draws the points, edges and the forced lines</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :     //! Returns a pointer to the point with number i</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :     QgsPoint *point( int i ) const override;</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :     int oppositePoint( int p1, int p2 ) override;</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :     bool triangleVertices( double x, double y, QgsPoint &amp;p1 SIP_OUT, int &amp;n1 SIP_OUT, QgsPoint &amp;p2 SIP_OUT, int &amp;n2 SIP_OUT, QgsPoint &amp;p3 SIP_OUT, int &amp;n3 SIP_OUT ) override;</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :     bool triangleVertices( double x, double y, QgsPoint &amp;p1 SIP_OUT, QgsPoint &amp;p2 SIP_OUT, QgsPoint &amp;p3 SIP_OUT ) override;</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :     QList&lt;int&gt; surroundingTriangles( int pointno ) override;</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :     //! Returns the largest x-coordinate value of the bounding box</a>
+<a name="72"><span class="lineNum">      72 </span>                :<span class="lineNoCov">          0 :     double xMax() const override { return mXMax; }</span></a>
+<a name="73"><span class="lineNum">      73 </span>                :            :     //! Returns the smallest x-coordinate value of the bounding box</a>
+<a name="74"><span class="lineNum">      74 </span>                :<span class="lineNoCov">          0 :     double xMin() const override { return mXMin; }</span></a>
+<a name="75"><span class="lineNum">      75 </span>                :            :     //! Returns the largest y-coordinate value of the bounding box</a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :     double yMax() const override { return mYMax; }</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :            :     //! Returns the smallest x-coordinate value of the bounding box</a>
+<a name="78"><span class="lineNum">      78 </span>                :<span class="lineNoCov">          0 :     double yMin() const override { return mYMin; }</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :            :     //! Returns the number of points</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :     int pointsCount() const override;</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :     //! Sets the behavior of the triangulation in case of crossing forced lines</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :     void setForcedCrossBehavior( QgsTriangulation::ForcedCrossBehavior b ) override;</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :     //! Sets an interpolator object</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :     void setTriangleInterpolator( TriangleInterpolator *interpolator ) override;</a>
+<a name="85"><span class="lineNum">      85 </span>                :            :     //! Eliminates the horizontal triangles by swapping or by insertion of new points</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :     void eliminateHorizontalTriangles() override;</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :     //! Adds points to make the triangles better shaped (algorithm of ruppert)</a>
+<a name="88"><span class="lineNum">      88 </span>                :            :     void ruppertRefinement() override;</a>
+<a name="89"><span class="lineNum">      89 </span>                :            :     //! Returns TRUE, if the point with coordinates x and y is inside the convex hull and FALSE otherwise</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :     bool pointInside( double x, double y ) override;</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible)</a>
+<a name="92"><span class="lineNum">      92 </span>                :            :     bool swapEdge( double x, double y ) override;</a>
+<a name="93"><span class="lineNum">      93 </span>                :            :     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :     QList&lt;int&gt; pointsAroundEdge( double x, double y ) override;</a>
+<a name="95"><span class="lineNum">      95 </span>                :            : </a>
+<a name="96"><span class="lineNum">      96 </span>                :            :     bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            :     virtual QgsMesh triangulationToMesh( QgsFeedback *feedback = nullptr ) const override;</a>
+<a name="99"><span class="lineNum">      99 </span>                :            : </a>
+<a name="100"><span class="lineNum">     100 </span>                :            :   private:</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :     //! X-coordinate of the upper right corner of the bounding box</a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineNoCov">          0 :     double mXMax = 0;</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :            :     //! X-coordinate of the lower left corner of the bounding box</a>
+<a name="104"><span class="lineNum">     104 </span>                :<span class="lineNoCov">          0 :     double mXMin = 0;</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :            :     //! Y-coordinate of the upper right corner of the bounding box</a>
+<a name="106"><span class="lineNum">     106 </span>                :<span class="lineNoCov">          0 :     double mYMax = 0;</span></a>
+<a name="107"><span class="lineNum">     107 </span>                :            :     //! Y-coordinate of the lower left corner of the bounding box</a>
+<a name="108"><span class="lineNum">     108 </span>                :<span class="lineNoCov">          0 :     double mYMin = 0;</span></a>
+<a name="109"><span class="lineNum">     109 </span>                :            :     //! Default value for the number of storable points at the beginning</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :     static const unsigned int DEFAULT_STORAGE_FOR_POINTS = 100000;</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :     //! Stores pointers to all points in the triangulations (including the points contained in the lines)</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :     QVector&lt;QgsPoint *&gt; mPointVector;</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :     //! Default value for the number of storable HalfEdges at the beginning</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :     static const unsigned int DEFAULT_STORAGE_FOR_HALF_EDGES = 300006;</a>
+<a name="115"><span class="lineNum">     115 </span>                :            :     //! Stores pointers to the HalfEdges</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     QVector&lt;HalfEdge *&gt; mHalfEdge;</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :     //! Association to an interpolator object</a>
+<a name="118"><span class="lineNum">     118 </span>                :<span class="lineNoCov">          0 :     TriangleInterpolator *mTriangleInterpolator = nullptr;</span></a>
+<a name="119"><span class="lineNum">     119 </span>                :            :     //! Member to store the behavior in case of crossing forced segments</a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :     QgsTriangulation::ForcedCrossBehavior mForcedCrossBehavior = QgsTriangulation::DeleteFirst;</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :            :     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :     static const int MAX_BASE_ITERATIONS = 300000;</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     int baseEdgeOfPoint( int point );</a>
+<a name="129"><span class="lineNum">     129 </span>                :            : </a>
+<a name="130"><span class="lineNum">     130 </span>                :            :     /**</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :      * Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull.</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :      * If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'.</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :      * -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint').</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :      * -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'.</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :      * If -100 is returned, this means that something else went wrong</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :      */</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :     int baseEdgeOfTriangle( const QgsPoint &amp;point );</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :     bool checkSwapRecursively( unsigned int edge, unsigned int recursiveDeep );</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :     //! Return true if edge need to be swapped after Delaunay criteria control</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :     bool isEdgeNeedSwap( unsigned int edge ) const;</a>
+<a name="142"><span class="lineNum">     142 </span>                :            :     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :     void doSwapRecursively( unsigned int edge, unsigned int recursiveDeep );</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :     //! Swaps 'edge' and does no recursiv testing</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :     void doOnlySwap( unsigned int edge );</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :     //! Number of an edge which does not point to the virtual point. It continuously updated for a fast search</a>
+<a name="147"><span class="lineNum">     147 </span>                :<span class="lineNoCov">          0 :     unsigned int mEdgeInside = 0;</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :            :     //! Number of an edge on the outside of the convex hull. It is updated in method 'baseEdgeOfTriangle' to enable insertion of points outside the convex hull</a>
+<a name="149"><span class="lineNum">     149 </span>                :<span class="lineNoCov">          0 :     int mEdgeOutside = -1;</span></a>
+<a name="150"><span class="lineNum">     150 </span>                :            :     //! If an inserted point is exactly on an existing edge, 'baseEdgeOfTriangle' returns -20 and sets the variable 'mEdgeWithPoint'</a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 :     unsigned int mEdgeWithPoint = 0;</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            :     //! If an instability occurs in 'baseEdgeOfTriangle', mUnstableEdge is set to the value of the current edge</a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :     unsigned int mUnstableEdge = 0;</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :            :     //! If a point has been inserted twice, its number is stored in this member</a>
+<a name="155"><span class="lineNum">     155 </span>                :<span class="lineNoCov">          0 :     int mTwiceInsPoint = 0;</span></a>
+<a name="156"><span class="lineNum">     156 </span>                :            :     //! Returns TRUE, if it is possible to swap an edge, otherwise FALSE(concave quad or edge on (or outside) the convex hull)</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :     bool swapPossible( unsigned int edge ) const;</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :     //! Divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly-&gt;begin(), otherwise the recursion does not work</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :     void triangulatePolygon( QList&lt;int&gt; *poly, QList&lt;int&gt; *free, int mainedge );</a>
+<a name="160"><span class="lineNum">     160 </span>                :            :     //! Tests, if the bounding box of the halfedge with index i intersects the specified bounding box. The main purpose for this method is the drawing of the triangulation</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :     bool halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const;</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :     //! Calculates the minimum angle, which would be present, if the specified halfedge would be swapped</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :     double swapMinAngle( int edge ) const;</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :     //! Inserts a new point on the halfedge with number 'edge'. The position can have a value from 0 to 1 (e.g. 0.5 would be in the middle). The return value is the number of the new inserted point. tin is the triangulation, which should be used to calculate the elevation of the inserted point</a>
+<a name="165"><span class="lineNum">     165 </span>                :            :     int splitHalfEdge( int edge, float position );</a>
+<a name="166"><span class="lineNum">     166 </span>                :            :     //! Returns TRUE, if a half edge is on the convex hull and FALSE otherwise</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :     bool edgeOnConvexHull( int edge );</a>
+<a name="168"><span class="lineNum">     168 </span>                :            :     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge-&gt;dual-&gt;next-&gt;point. If so, the function calls itself recursively for edge-&gt;next and edge-&gt;next-&gt;next. Stops, if it finds a forced edge or a convex hull edge</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet&lt;int&gt; &amp;set );</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :     //! Dimension of the triangulation, -1 : no point, 0 : 1 point, 1 : 2 point or only colinear edges, 2 : 3 or more points and at least 2 non colinear edges</a>
+<a name="171"><span class="lineNum">     171 </span>                :<span class="lineNoCov">          0 :     int mDimension = -1;</span></a>
+<a name="172"><span class="lineNum">     172 </span>                :            : </a>
+<a name="173"><span class="lineNum">     173 </span>                :            :     int firstEdgeOutSide();</a>
+<a name="174"><span class="lineNum">     174 </span>                :            : </a>
+<a name="175"><span class="lineNum">     175 </span>                :            :     void removeLastPoint();</a>
+<a name="176"><span class="lineNum">     176 </span>                :            : </a>
+<a name="177"><span class="lineNum">     177 </span>                :            : </a>
+<a name="178"><span class="lineNum">     178 </span>                :            :     friend class TestQgsInterpolator;</a>
+<a name="179"><span class="lineNum">     179 </span>                :            : };</a>
+<a name="180"><span class="lineNum">     180 </span>                :            : </a>
+<a name="181"><span class="lineNum">     181 </span>                :            : #ifndef SIP_RUN</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : </a>
+<a name="183"><span class="lineNum">     183 </span>                :<span class="lineNoCov">          0 : inline QgsDualEdgeTriangulation::QgsDualEdgeTriangulation()</span></a>
+<a name="184"><span class="lineNum">     184 </span>                :<span class="lineNoCov">          0 : {</span></a>
+<a name="185"><span class="lineNum">     185 </span>                :<span class="lineNoCov">          0 :   mPointVector.reserve( DEFAULT_STORAGE_FOR_POINTS );</span></a>
+<a name="186"><span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :   mHalfEdge.reserve( DEFAULT_STORAGE_FOR_HALF_EDGES );</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="188"><span class="lineNum">     188 </span>                :            : </a>
+<a name="189"><span class="lineNum">     189 </span>                :<span class="lineNoCov">          0 : inline QgsDualEdgeTriangulation::QgsDualEdgeTriangulation( int nop )</span></a>
+<a name="190"><span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 : {</span></a>
+<a name="191"><span class="lineNum">     191 </span>                :<span class="lineNoCov">          0 :   mPointVector.reserve( nop );</span></a>
+<a name="192"><span class="lineNum">     192 </span>                :<span class="lineNoCov">          0 :   mHalfEdge.reserve( nop );</span></a>
+<a name="193"><span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :            : </a>
+<a name="195"><span class="lineNum">     195 </span>                :<span class="lineNoCov">          0 : inline int QgsDualEdgeTriangulation::pointsCount() const</span></a>
+<a name="196"><span class="lineNum">     196 </span>                :            : {</a>
+<a name="197"><span class="lineNum">     197 </span>                :<span class="lineNoCov">          0 :   return mPointVector.count();</span></a>
+<a name="198"><span class="lineNum">     198 </span>                :            : }</a>
+<a name="199"><span class="lineNum">     199 </span>                :            : </a>
+<a name="200"><span class="lineNum">     200 </span>                :<span class="lineNoCov">          0 : inline QgsPoint *QgsDualEdgeTriangulation::point( int i ) const</span></a>
+<a name="201"><span class="lineNum">     201 </span>                :            : {</a>
+<a name="202"><span class="lineNum">     202 </span>                :<span class="lineNoCov">          0 :   if ( i &lt; 0 || i &gt;= mPointVector.count() )</span></a>
+<a name="203"><span class="lineNum">     203 </span>                :<span class="lineNoCov">          0 :     return nullptr;</span></a>
+<a name="204"><span class="lineNum">     204 </span>                :            : </a>
+<a name="205"><span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 :   return mPointVector.at( i );</span></a>
+<a name="206"><span class="lineNum">     206 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="207"><span class="lineNum">     207 </span>                :            : </a>
+<a name="208"><span class="lineNum">     208 </span>                :            : inline bool QgsDualEdgeTriangulation::halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const</a>
+<a name="209"><span class="lineNum">     209 </span>                :            : {</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :   return (</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :            ( point( mHalfEdge[edge]-&gt;getPoint() )-&gt;x() &gt;= xlowleft &amp;&amp;</a>
+<a name="212"><span class="lineNum">     212 </span>                :            :              point( mHalfEdge[edge]-&gt;getPoint() )-&gt;x() &lt;= xupright &amp;&amp;</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :              point( mHalfEdge[edge]-&gt;getPoint() )-&gt;y() &gt;= ylowleft &amp;&amp;</a>
+<a name="214"><span class="lineNum">     214 </span>                :            :              point( mHalfEdge[edge]-&gt;getPoint() )-&gt;y() &lt;= yupright ) ||</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :            ( point( mHalfEdge[mHalfEdge[edge]-&gt;getDual()]-&gt;getPoint() )-&gt;x() &gt;= xlowleft &amp;&amp;</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :              point( mHalfEdge[mHalfEdge[edge]-&gt;getDual()]-&gt;getPoint() )-&gt;x() &lt;= xupright &amp;&amp;</a>
+<a name="217"><span class="lineNum">     217 </span>                :            :              point( mHalfEdge[mHalfEdge[edge]-&gt;getDual()]-&gt;getPoint() )-&gt;y() &gt;= ylowleft &amp;&amp;</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :              point( mHalfEdge[mHalfEdge[edge]-&gt;getDual()]-&gt;getPoint() )-&gt;y() &lt;= yupright )</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :          );</a>
+<a name="220"><span class="lineNum">     220 </span>                :            : }</a>
+<a name="221"><span class="lineNum">     221 </span>                :            : </a>
+<a name="222"><span class="lineNum">     222 </span>                :            : #endif</a>
+<a name="223"><span class="lineNum">     223 </span>                :            : #endif</a>
+<a name="224"><span class="lineNum">     224 </span>                :            : </a>
+<a name="225"><span class="lineNum">     225 </span>                :            : </a>
+<a name="226"><span class="lineNum">     226 </span>                :            : </a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

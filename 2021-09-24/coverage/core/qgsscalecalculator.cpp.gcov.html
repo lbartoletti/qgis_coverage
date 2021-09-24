@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - core/qgsscalecalculator.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">core</a> - qgsscalecalculator.cpp<span style="font-size: 80%;"> (source / <a href="qgsscalecalculator.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">51</td>
+            <td class="headerCovTableEntryLo">15.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-09-24 09:20:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /***************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :                               qgsscalecalculator.h</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :                  Calculates scale based on map extent and units</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :                               -------------------</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :   begin                : May 18, 2004</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :   copyright            : (C) 2004 by Gary E.Sherman</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :   email                : sherman at mrcc.com</a>
+<a name="8"><span class="lineNum">       8 </span>                :            :  ***************************************************************************/</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : </a>
+<a name="10"><span class="lineNum">      10 </span>                :            : /***************************************************************************</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *                                                                         *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="15"><span class="lineNum">      15 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="16"><span class="lineNum">      16 </span>                :            :  *                                                                         *</a>
+<a name="17"><span class="lineNum">      17 </span>                :            :  ***************************************************************************/</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : </a>
+<a name="19"><span class="lineNum">      19 </span>                :            : #include &lt;cmath&gt;</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #include &quot;qgslogger.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;qgsrectangle.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;qgsscalecalculator.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : </a>
+<a name="24"><span class="lineNum">      24 </span>                :<span class="lineCov">          6 : QgsScaleCalculator::QgsScaleCalculator( double dpi, QgsUnitTypes::DistanceUnit mapUnits )</span></a>
+<a name="25"><span class="lineNum">      25 </span>                :<span class="lineCov">          6 :   : mDpi( dpi )</span></a>
+<a name="26"><span class="lineNum">      26 </span>                :<span class="lineCov">          6 :   , mMapUnits( mapUnits )</span></a>
+<a name="27"><span class="lineNum">      27 </span>                :<span class="lineCov">          6 : {}</span></a>
+<a name="28"><span class="lineNum">      28 </span>                :            : </a>
+<a name="29"><span class="lineNum">      29 </span>                :<span class="lineNoCov">          0 : void QgsScaleCalculator::setDpi( double dpi )</span></a>
+<a name="30"><span class="lineNum">      30 </span>                :            : {</a>
+<a name="31"><span class="lineNum">      31 </span>                :<span class="lineNoCov">          0 :   mDpi = dpi;</span></a>
+<a name="32"><span class="lineNum">      32 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="33"><span class="lineNum">      33 </span>                :<span class="lineNoCov">          0 : double QgsScaleCalculator::dpi()</span></a>
+<a name="34"><span class="lineNum">      34 </span>                :            : {</a>
+<a name="35"><span class="lineNum">      35 </span>                :<span class="lineNoCov">          0 :   return mDpi;</span></a>
+<a name="36"><span class="lineNum">      36 </span>                :            : }</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>                :<span class="lineCov">          6 : void QgsScaleCalculator::setMapUnits( QgsUnitTypes::DistanceUnit mapUnits )</span></a>
+<a name="39"><span class="lineNum">      39 </span>                :            : {</a>
+<a name="40"><span class="lineNum">      40 </span>                :<span class="lineCov">          6 :   QgsDebugMsgLevel( QStringLiteral( &quot;Map units set to %1&quot; ).arg( QString::number( mapUnits ) ), 3 );</span></a>
+<a name="41"><span class="lineNum">      41 </span>                :<span class="lineCov">          6 :   mMapUnits = mapUnits;</span></a>
+<a name="42"><span class="lineNum">      42 </span>                :<span class="lineCov">          6 : }</span></a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :<span class="lineNoCov">          0 : QgsUnitTypes::DistanceUnit QgsScaleCalculator::mapUnits() const</span></a>
+<a name="45"><span class="lineNum">      45 </span>                :            : {</a>
+<a name="46"><span class="lineNum">      46 </span>                :<span class="lineNoCov">          0 :   QgsDebugMsgLevel( QStringLiteral( &quot;Map units returned as %1&quot; ).arg( QString::number( mMapUnits ) ), 4 );</span></a>
+<a name="47"><span class="lineNum">      47 </span>                :<span class="lineNoCov">          0 :   return mMapUnits;</span></a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :            : </a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineNoCov">          0 : double QgsScaleCalculator::calculate( const QgsRectangle &amp;mapExtent, double canvasWidth )  const</span></a>
+<a name="51"><span class="lineNum">      51 </span>                :            : {</a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineNoCov">          0 :   double conversionFactor = 0;</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :<span class="lineNoCov">          0 :   double delta = 0;</span></a>
+<a name="54"><span class="lineNum">      54 </span>                :            :   // calculation is based on the map units and extent, the dpi of the</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :   // users display, and the canvas width</a>
+<a name="56"><span class="lineNum">      56 </span>                :<span class="lineNoCov">          0 :   switch ( mMapUnits )</span></a>
+<a name="57"><span class="lineNum">      57 </span>                :            :   {</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :     case QgsUnitTypes::DistanceMeters:</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :       // convert meters to inches</a>
+<a name="60"><span class="lineNum">      60 </span>                :<span class="lineNoCov">          0 :       conversionFactor = 39.3700787;</span></a>
+<a name="61"><span class="lineNum">      61 </span>                :<span class="lineNoCov">          0 :       delta = mapExtent.xMaximum() - mapExtent.xMinimum();</span></a>
+<a name="62"><span class="lineNum">      62 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :            :     case QgsUnitTypes::DistanceFeet:</a>
+<a name="64"><span class="lineNum">      64 </span>                :<span class="lineNoCov">          0 :       conversionFactor = 12.0;</span></a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 :       delta = mapExtent.xMaximum() - mapExtent.xMinimum();</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :            :     case QgsUnitTypes::DistanceNauticalMiles:</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :       // convert nautical miles to inches</a>
+<a name="69"><span class="lineNum">      69 </span>                :<span class="lineNoCov">          0 :       conversionFactor = 72913.4;</span></a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineNoCov">          0 :       delta = mapExtent.xMaximum() - mapExtent.xMinimum();</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :            : </a>
+<a name="73"><span class="lineNum">      73 </span>                :            :     default:</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :     case QgsUnitTypes::DistanceDegrees:</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :       // degrees require conversion to meters first</a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :       conversionFactor = 39.3700787;</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 :       delta = calculateGeographicDistance( mapExtent );</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :            :   }</a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineNoCov">          0 :   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :            :   {</a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :     QgsDebugMsg( QStringLiteral( &quot;Can't calculate scale from the input values&quot; ) );</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineNoCov">          0 :     return 0;</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :            :   }</a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :   const double scale = ( delta * conversionFactor ) / ( static_cast&lt; double &gt;( canvasWidth ) / mDpi );</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :   QgsDebugMsgLevel( QStringLiteral( &quot;scale = %1 conversionFactor = %2&quot; ).arg( scale ).arg( conversionFactor ), 4 );</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :   return scale;</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            : </a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineNoCov">          0 : double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &amp;mapExtent ) const</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :            : {</a>
+<a name="93"><span class="lineNum">      93 </span>                :            :   // need to calculate the x distance in meters</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :   // We'll use the middle latitude for the calculation</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :   // Note this is an approximation (although very close) but calculating scale</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   // for geographic data over large extents is quasi-meaningless</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            :   // The distance between two points on a sphere can be estimated</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :   // using the Haversine formula. This gives the shortest distance</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :   // between two points on the sphere. However, what we're after is</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :   // the distance from the left of the given extent and the right of</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :   // it. This is not necessarily the shortest distance between two</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :   // points on a sphere.</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :   //</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :   // The code below uses the Haversine formula, but with some changes</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :   // to cope with the above problem, and also to deal with the extent</a>
+<a name="107"><span class="lineNum">     107 </span>                :            :   // possibly extending beyond +/-180 degrees:</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :   //</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :   // - Use the Halversine formula to calculate the distance from -90 to</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :   //   +90 degrees at the mean latitude.</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :   // - Scale this distance by the number of degrees between</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :   //   mapExtent.xMinimum() and mapExtent.xMaximum();</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :   // - For a slight improvemnt, allow for the ellipsoid shape of earth.</a>
+<a name="114"><span class="lineNum">     114 </span>                :            : </a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            :   // For a longitude change of 180 degrees</a>
+<a name="117"><span class="lineNum">     117 </span>                :<span class="lineNoCov">          0 :   const double lat = ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5;</span></a>
+<a name="118"><span class="lineNum">     118 </span>                :<span class="lineNoCov">          0 :   static const double RADS = ( 4.0 * std::atan( 1.0 ) ) / 180.0;</span></a>
+<a name="119"><span class="lineNum">     119 </span>                :<span class="lineNoCov">          0 :   const double a = std::pow( std::cos( lat * RADS ), 2 );</span></a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :   const double c = 2.0 * std::atan2( std::sqrt( a ), std::sqrt( 1.0 - a ) );</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :            :   static const double RA = 6378000; // [m]</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :   // to 6357000 m.</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :   static const double E = 0.0810820288;</a>
+<a name="125"><span class="lineNum">     125 </span>                :<span class="lineNoCov">          0 :   const double radius = RA * ( 1.0 - E * E ) /</span></a>
+<a name="126"><span class="lineNum">     126 </span>                :<span class="lineNoCov">          0 :                         std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );</span></a>
+<a name="127"><span class="lineNum">     127 </span>                :<span class="lineNoCov">          0 :   const double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;</span></a>
+<a name="128"><span class="lineNum">     128 </span>                :            : </a>
+<a name="129"><span class="lineNum">     129 </span>                :<span class="lineNoCov">          0 :   QgsDebugMsgLevel( &quot;Distance across map extent (m): &quot; + QString::number( meters ), 4 );</span></a>
+<a name="130"><span class="lineNum">     130 </span>                :            : </a>
+<a name="131"><span class="lineNum">     131 </span>                :<span class="lineNoCov">          0 :   return meters;</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :<span class="lineNoCov">          0 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
