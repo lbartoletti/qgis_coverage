@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - /home/lbartoletti/qgis_coverage_src/external/mdal/mdal_utils.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../index.html">top level</a> - <a href="index.html">home/lbartoletti/qgis_coverage_src/external/mdal</a> - mdal_utils.hpp<span style="font-size: 80%;"> (source / <a href="mdal_utils.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-04 07:08:52</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :  MDAL - Mesh Data Abstraction Library (MIT License)</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : */</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : #ifndef MDAL_UTILS_HPP</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : #define MDAL_UTILS_HPP</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : </a>
+<a name="9"><span class="lineNum">       9 </span>                :            : #include &lt;string&gt;</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : #include &lt;vector&gt;</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : #include &lt;stddef.h&gt;</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : #include &lt;limits&gt;</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : #include &lt;sstream&gt;</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : #include &lt;fstream&gt;</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : #include &lt;cmath&gt;</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : #include &lt;functional&gt;</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : </a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #if defined (WIN32)</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : #include &lt;windows.h&gt;</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #undef min</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #undef max</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #else</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &lt;dlfcn.h&gt;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &lt;dirent.h&gt;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #endif</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : </a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &lt;algorithm&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : </a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &quot;mdal_data_model.hpp&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &quot;mdal_memory_data_model.hpp&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &quot;mdal_datetime.hpp&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : </a>
+<a name="33"><span class="lineNum">      33 </span>                :            : // avoid unused variable warnings</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : #define MDAL_UNUSED(x) (void)x;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : #define MDAL_NAN std::numeric_limits&lt;double&gt;::quiet_NaN()</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : </a>
+<a name="37"><span class="lineNum">      37 </span>                :            : #ifndef M_PI</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : #define M_PI 3.14159265358979323846264338327</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : #endif</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : </a>
+<a name="41"><span class="lineNum">      41 </span>                :            : namespace MDAL</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : {</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :            :   std::string getEnvVar( const std::string &amp;varname, const std::string &amp;defaultVal = std::string() );</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : </a>
+<a name="46"><span class="lineNum">      46 </span>                :            :   // endianness</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :   bool isNativeLittleEndian();</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : </a>
+<a name="49"><span class="lineNum">      49 </span>                :            :   // numbers</a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineNoCov">          0 :   inline bool equals( double val1, double val2, double eps = std::numeric_limits&lt;double&gt;::epsilon() )</span></a>
+<a name="51"><span class="lineNum">      51 </span>                :            :   {</a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineNoCov">          0 :     return fabs( val1 - val2 ) &lt; eps;</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :            :   }</a>
+<a name="54"><span class="lineNum">      54 </span>                :            : </a>
+<a name="55"><span class="lineNum">      55 </span>                :            :   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :   double safeValue( double val, double nodata, double eps = std::numeric_limits&lt;double&gt;::epsilon() );</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : </a>
+<a name="58"><span class="lineNum">      58 </span>                :            :   /** Return whether file exists */</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :   bool fileExists( const std::string &amp;filename );</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :   std::string baseName( const std::string &amp;filename, bool keepExtension = false );</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :   std::string fileExtension( const std::string &amp;path );</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :   std::string dirName( const std::string &amp;filename );</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :   std::string pathJoin( const std::string &amp;path1, const std::string &amp;path2 );</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :   std::string readFileToString( const std::string &amp;filename );</a>
+<a name="65"><span class="lineNum">      65 </span>                :            : </a>
+<a name="66"><span class="lineNum">      66 </span>                :            :   // strings</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :   enum ContainsBehaviour</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   {</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :     CaseSensitive,</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :     CaseInsensitive</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :   };</a>
+<a name="72"><span class="lineNum">      72 </span>                :            : </a>
+<a name="73"><span class="lineNum">      73 </span>                :            :   bool startsWith( const std::string &amp;str, const std::string &amp;substr, ContainsBehaviour behaviour = CaseSensitive );</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :   bool endsWith( const std::string &amp;str, const std::string &amp;substr, ContainsBehaviour behaviour = CaseSensitive );</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :   bool contains( const std::string &amp;str, const std::string &amp;substr, ContainsBehaviour behaviour = CaseSensitive );</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :   bool contains( const std::vector&lt;std::string&gt; &amp;list, const std::string &amp;str );</a>
+<a name="77"><span class="lineNum">      77 </span>                :            :   std::string replace( const std::string &amp;str, const std::string &amp;substr, const std::string &amp;replacestr, ContainsBehaviour behaviour = CaseSensitive );</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :   std::string removeFrom( const std::string &amp;str, const std::string &amp;substr );</a>
+<a name="79"><span class="lineNum">      79 </span>                :            : </a>
+<a name="80"><span class="lineNum">      80 </span>                :            :   //! left justify and truncate, resulting string will always have width chars</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :   std::string leftJustified( const std::string &amp;str, size_t width, char fill = ' ' );</a>
+<a name="82"><span class="lineNum">      82 </span>                :            : </a>
+<a name="83"><span class="lineNum">      83 </span>                :            :   std::string toLower( const std::string &amp;std );</a>
+<a name="84"><span class="lineNum">      84 </span>                :            : </a>
+<a name="85"><span class="lineNum">      85 </span>                :            :   //! Get a first line from stream clipped to first 100 characters</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :   bool getHeaderLine( std::ifstream &amp;stream, std::string &amp;line );</a>
+<a name="87"><span class="lineNum">      87 </span>                :            : </a>
+<a name="88"><span class="lineNum">      88 </span>                :            :   /** Return 0 if not possible to convert */</a>
+<a name="89"><span class="lineNum">      89 </span>                :            :   size_t toSizeT( const std::string &amp;str );</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :   size_t toSizeT( const char &amp;str );</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :   size_t toSizeT( const double value );</a>
+<a name="92"><span class="lineNum">      92 </span>                :            :   int toInt( const std::string &amp;str );</a>
+<a name="93"><span class="lineNum">      93 </span>                :            :   int toInt( const size_t value );</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :   double toDouble( const std::string &amp;str );</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :   double toDouble( const size_t value );</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   bool toBool( const std::string &amp;str );</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            :   //! Returns the string with a adapted format to coordinate</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :   //! precision is the number of digits after the digital point if fabs(value)&gt;180 (seems to not be a geographic coordinate)</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :   //! precision+6 is the number of digits after the digital point if fabs(value)&lt;=180 (could be a geographic coordinate)</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :   std::string coordinateToString( double coordinate, int precision = 2 );</a>
+<a name="102"><span class="lineNum">     102 </span>                :            : </a>
+<a name="103"><span class="lineNum">     103 </span>                :            :   //! Returns a string with scientific format</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :   //! precision is the number of signifiant digits</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :   std::string doubleToString( double value, int precision = 6 );</a>
+<a name="106"><span class="lineNum">     106 </span>                :            : </a>
+<a name="107"><span class="lineNum">     107 </span>                :            :   /**</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :    * Splits by deliminer and skips empty parts.</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :    * Faster than version with std::string</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :    */</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :   std::vector&lt;std::string&gt; split( const std::string &amp;str, const char delimiter );</a>
+<a name="112"><span class="lineNum">     112 </span>                :            : </a>
+<a name="113"><span class="lineNum">     113 </span>                :            :   //! Splits by deliminer and skips empty parts</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :   std::vector&lt;std::string&gt; split( const std::string &amp;str, const std::string &amp;delimiter );</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            :   std::string join( const std::vector&lt;std::string&gt; parts, const std::string &amp;delimiter );</a>
+<a name="117"><span class="lineNum">     117 </span>                :            : </a>
+<a name="118"><span class="lineNum">     118 </span>                :            :   //! Right trim</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :   std::string rtrim(</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :     const std::string &amp;s,</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :     const std::string &amp;delimiters = &quot; \f\n\r\t\v&quot; );</a>
+<a name="122"><span class="lineNum">     122 </span>                :            : </a>
+<a name="123"><span class="lineNum">     123 </span>                :            :   //! Left trim</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :   std::string ltrim(</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     const std::string &amp;s,</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :     const std::string &amp;delimiters = &quot; \f\n\r\t\v&quot; );</a>
+<a name="127"><span class="lineNum">     127 </span>                :            : </a>
+<a name="128"><span class="lineNum">     128 </span>                :            :   //! Right and left trim</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :   std::string trim(</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :     const std::string &amp;s,</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :     const std::string &amp;delimiters = &quot; \f\n\r\t\v&quot; );</a>
+<a name="132"><span class="lineNum">     132 </span>                :            : </a>
+<a name="133"><span class="lineNum">     133 </span>                :            :   // extent</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :   BBox computeExtent( const Vertices &amp;vertices );</a>
+<a name="135"><span class="lineNum">     135 </span>                :            : </a>
+<a name="136"><span class="lineNum">     136 </span>                :            :   // time</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :   //! Returns a delimiter to get time in hours</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :   double parseTimeUnits( const std::string &amp;units );</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :   //! Returns current time stamp in YYYY-mm-ddTHH:MM:SSzoneOffset</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :   std::string getCurrentTimeStamp();</a>
+<a name="141"><span class="lineNum">     141 </span>                :            : </a>
+<a name="142"><span class="lineNum">     142 </span>                :            :   // statistics</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :   void combineStatistics( Statistics &amp;main, const Statistics &amp;other );</a>
+<a name="144"><span class="lineNum">     144 </span>                :            : </a>
+<a name="145"><span class="lineNum">     145 </span>                :            :   //! Calculates statistics for dataset group</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :   Statistics calculateStatistics( std::shared_ptr&lt;DatasetGroup&gt; grp );</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :   Statistics calculateStatistics( DatasetGroup *grp );</a>
+<a name="148"><span class="lineNum">     148 </span>                :            : </a>
+<a name="149"><span class="lineNum">     149 </span>                :            :   //! Calculates statistics for dataset</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :   Statistics calculateStatistics( std::shared_ptr&lt;Dataset&gt; dataset );</a>
+<a name="151"><span class="lineNum">     151 </span>                :            : </a>
+<a name="152"><span class="lineNum">     152 </span>                :            :   // mesh &amp; datasets</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :   //! Adds bed elevatiom dataset group to mesh</a>
+<a name="154"><span class="lineNum">     154 </span>                :            :   void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &amp;vertices );</a>
+<a name="155"><span class="lineNum">     155 </span>                :            :   //! Adds a scalar face dataset group with 1 timestep to mesh</a>
+<a name="156"><span class="lineNum">     156 </span>                :            :   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector&lt;double&gt; &amp;values, const std::string &amp;name );</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :   //! Adds a scalar vertex dataset group with 1 timestep to mesh</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :   void addVertexScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector&lt;double&gt; &amp;values, const std::string &amp;name );</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :   //! Adds a scalar edge dataset group with 1 timestep to mesh</a>
+<a name="160"><span class="lineNum">     160 </span>                :            :   void addEdgeScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector&lt;double&gt; &amp;values, const std::string &amp;name );</a>
+<a name="161"><span class="lineNum">     161 </span>                :            : </a>
+<a name="162"><span class="lineNum">     162 </span>                :            :   //! Reads all of type of value. Option to change the endianness is provided</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :   template&lt;typename T&gt;</a>
+<a name="164"><span class="lineNum">     164 </span>                :<span class="lineNoCov">          0 :   bool readValue( T &amp;value, std::ifstream &amp;in, bool changeEndianness = false )</span></a>
+<a name="165"><span class="lineNum">     165 </span>                :            :   {</a>
+<a name="166"><span class="lineNum">     166 </span>                :<span class="lineNoCov">          0 :     char *const p = reinterpret_cast&lt;char *&gt;( &amp;value );</span></a>
+<a name="167"><span class="lineNum">     167 </span>                :            : </a>
+<a name="168"><span class="lineNum">     168 </span>                :<span class="lineNoCov">          0 :     if ( !in.read( p, sizeof( T ) ) )</span></a>
+<a name="169"><span class="lineNum">     169 </span>                :<span class="lineNoCov">          0 :       return false;</span></a>
+<a name="170"><span class="lineNum">     170 </span>                :            : </a>
+<a name="171"><span class="lineNum">     171 </span>                :<span class="lineNoCov">          0 :     if ( changeEndianness )</span></a>
+<a name="172"><span class="lineNum">     172 </span>                :<span class="lineNoCov">          0 :       std::reverse( p, p + sizeof( T ) );</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :<span class="lineNoCov">          0 :     return true;</span></a>
+<a name="175"><span class="lineNum">     175 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="176"><span class="lineNum">     176 </span>                :            : </a>
+<a name="177"><span class="lineNum">     177 </span>                :            :   //! Writes all of type of value. Option to change the endianness is provided</a>
+<a name="178"><span class="lineNum">     178 </span>                :            :   template&lt;typename T&gt;</a>
+<a name="179"><span class="lineNum">     179 </span>                :<span class="lineNoCov">          0 :   void writeValue( T &amp;value, std::ofstream &amp;out, bool changeEndianness = false )</span></a>
+<a name="180"><span class="lineNum">     180 </span>                :            :   {</a>
+<a name="181"><span class="lineNum">     181 </span>                :<span class="lineNoCov">          0 :     T v = value;</span></a>
+<a name="182"><span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :     char *const p = reinterpret_cast&lt;char *&gt;( &amp;v );</span></a>
+<a name="183"><span class="lineNum">     183 </span>                :            : </a>
+<a name="184"><span class="lineNum">     184 </span>                :<span class="lineNoCov">          0 :     if ( changeEndianness )</span></a>
+<a name="185"><span class="lineNum">     185 </span>                :<span class="lineNoCov">          0 :       std::reverse( p, p + sizeof( T ) );</span></a>
+<a name="186"><span class="lineNum">     186 </span>                :            : </a>
+<a name="187"><span class="lineNum">     187 </span>                :<span class="lineNoCov">          0 :     out.write( p, sizeof( T ) );</span></a>
+<a name="188"><span class="lineNum">     188 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="189"><span class="lineNum">     189 </span>                :            : </a>
+<a name="190"><span class="lineNum">     190 </span>                :            :   //! Prepend 0 to string to have n char</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :   std::string prependZero( const std::string &amp;str, size_t length );</a>
+<a name="192"><span class="lineNum">     192 </span>                :            : </a>
+<a name="193"><span class="lineNum">     193 </span>                :            :   RelativeTimestamp::Unit parseDurationTimeUnit( const std::string &amp;timeUnit );</a>
+<a name="194"><span class="lineNum">     194 </span>                :            : </a>
+<a name="195"><span class="lineNum">     195 </span>                :            :   //! parse the time unit in the CF convention string format &quot;XXXX since 2019-01-01 00:00:00&quot;</a>
+<a name="196"><span class="lineNum">     196 </span>                :            :   //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html</a>
+<a name="197"><span class="lineNum">     197 </span>                :            :   RelativeTimestamp::Unit parseCFTimeUnit( std::string timeInformation );</a>
+<a name="198"><span class="lineNum">     198 </span>                :            : </a>
+<a name="199"><span class="lineNum">     199 </span>                :            :   //! parse the reference time in the CF convention string format &quot;XXXX since 2019-01-01 00:00:00&quot;</a>
+<a name="200"><span class="lineNum">     200 </span>                :            :   //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :   MDAL::DateTime parseCFReferenceTime( const std::string &amp;timeInformation, const std::string &amp;calendarString );</a>
+<a name="202"><span class="lineNum">     202 </span>                :            : </a>
+<a name="203"><span class="lineNum">     203 </span>                :            :   /**</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :     * parses information received from load mesh uri</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :     * load mesh uri contains: &lt;drivername&gt;:&quot;meshfile&quot;:&lt;meshname&gt;</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :     * drivername and meshname are optional parameters</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :     */</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :   void parseDriverAndMeshFromUri( const std::string &amp;uri, std::string &amp;driver, std::string &amp;meshFile, std::string &amp;meshName );</a>
+<a name="209"><span class="lineNum">     209 </span>                :            : </a>
+<a name="210"><span class="lineNum">     210 </span>                :            :   /**</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :     * parses only driver information from URI</a>
+<a name="212"><span class="lineNum">     212 </span>                :            :     */</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :   void parseDriverFromUri( const std::string &amp;uri, std::string &amp;driver );</a>
+<a name="214"><span class="lineNum">     214 </span>                :            : </a>
+<a name="215"><span class="lineNum">     215 </span>                :            :   /**</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :     * parses only meshfile name from URI</a>
+<a name="217"><span class="lineNum">     217 </span>                :            :     */</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :   void parseMeshFileFromUri( const std::string &amp;uri, std::string &amp;meshFile );</a>
+<a name="219"><span class="lineNum">     219 </span>                :            : </a>
+<a name="220"><span class="lineNum">     220 </span>                :            :   /**</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :     * build uri from provided information about meshfile, driver and meshname</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :     * only required field is meshFile</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :     * returns string in formats:</a>
+<a name="224"><span class="lineNum">     224 </span>                :            :     *  - if both driver and meshname are provided:    &lt;driver&gt;:&quot;meshfile&quot;:&lt;meshname&gt;</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :     *  - if only driver is provided:                  &lt;driver&gt;:&quot;meshfile&quot;</a>
+<a name="226"><span class="lineNum">     226 </span>                :            :     *  - if only meshname is provided:                &quot;meshfile&quot;:meshname</a>
+<a name="227"><span class="lineNum">     227 </span>                :            :     *  - if neither driver nor meshname is provided:  meshfile</a>
+<a name="228"><span class="lineNum">     228 </span>                :            :     *  - if not even meshfile is provided:            &quot;&quot;</a>
+<a name="229"><span class="lineNum">     229 </span>                :            :     */</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :   std::string buildMeshUri( const std::string &amp;meshFile, const std::string &amp;meshName, const std::string &amp;driver );</a>
+<a name="231"><span class="lineNum">     231 </span>                :            : </a>
+<a name="232"><span class="lineNum">     232 </span>                :            :   /**</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :     * helper function to build and merge uris in the same time without the need of cycle</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :     */</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :   std::string buildAndMergeMeshUris( const std::string &amp;meshfile, const std::vector&lt;std::string&gt; &amp;meshNames, const std::string &amp;driver = &quot;&quot; );</a>
+<a name="236"><span class="lineNum">     236 </span>                :            : </a>
+<a name="237"><span class="lineNum">     237 </span>                :<span class="lineNoCov">          0 :   struct Error</span></a>
+<a name="238"><span class="lineNum">     238 </span>                :            :   {</a>
+<a name="239"><span class="lineNum">     239 </span>                :            :     Error( MDAL_Status status, std::string message, std::string driverName = &quot;&quot; );</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :     void setDriver( std::string d );</a>
+<a name="241"><span class="lineNum">     241 </span>                :            :     MDAL_Status status;</a>
+<a name="242"><span class="lineNum">     242 </span>                :            :     std::string mssg;</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :     std::string driver;</a>
+<a name="244"><span class="lineNum">     244 </span>                :            :   };</a>
+<a name="245"><span class="lineNum">     245 </span>                :            : </a>
+<a name="246"><span class="lineNum">     246 </span>                :            :   //! Class to handle dynamic library. The loaded library is implicity shared when copying this object</a>
+<a name="247"><span class="lineNum">     247 </span>                :            :   class Library</a>
+<a name="248"><span class="lineNum">     248 </span>                :            :   {</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :     public:</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :       //! Creater a instance from a library file</a>
+<a name="251"><span class="lineNum">     251 </span>                :            :       Library( std::string libraryFile );</a>
+<a name="252"><span class="lineNum">     252 </span>                :            :       ~Library();</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :       Library( const Library &amp;other );</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :       Library &amp;operator=( const Library &amp;other );</a>
+<a name="255"><span class="lineNum">     255 </span>                :            : </a>
+<a name="256"><span class="lineNum">     256 </span>                :            :       //! Returns whether the library is valid after loading the file if needed</a>
+<a name="257"><span class="lineNum">     257 </span>                :            :       bool isValid();</a>
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<a name="259"><span class="lineNum">     259 </span>                :            :       //! Returns a list of library file in the folder \a dirPath</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :       static std::vector&lt;std::string&gt; libraryFilesInDir( const std::string &amp;dirPath );</a>
+<a name="261"><span class="lineNum">     261 </span>                :            : </a>
+<a name="262"><span class="lineNum">     262 </span>                :            :       /**</a>
+<a name="263"><span class="lineNum">     263 </span>                :            :        * Returns a function from a symbol name. Caller needs to define what are the types of the arguments and of the returned value :</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :        * &lt;Type of the returned Value, Type of arg1, Type of arg2, ...&gt;</a>
+<a name="265"><span class="lineNum">     265 </span>                :            :        */</a>
+<a name="266"><span class="lineNum">     266 </span>                :            :       template&lt;typename T, typename ... Ts&gt;</a>
+<a name="267"><span class="lineNum">     267 </span>                :<span class="lineNoCov">          0 :       std::function&lt;T( Ts ... args )&gt; getSymbol( const std::string &amp;symbolName )</span></a>
+<a name="268"><span class="lineNum">     268 </span>                :            :       {</a>
+<a name="269"><span class="lineNum">     269 </span>                :<span class="lineNoCov">          0 :         if ( !isValid() )</span></a>
+<a name="270"><span class="lineNum">     270 </span>                :<span class="lineNoCov">          0 :           return std::function&lt;T( Ts ... args )&gt;();</span></a>
+<a name="271"><span class="lineNum">     271 </span>                :            : #ifdef WIN32</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :         FARPROC proc = GetProcAddress( d-&gt;mLibrary, symbolName.c_str() );</a>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<a name="274"><span class="lineNum">     274 </span>                :            :         if ( !proc )</a>
+<a name="275"><span class="lineNum">     275 </span>                :            :           return std::function&lt;T( Ts ... args )&gt;();</a>
+<a name="276"><span class="lineNum">     276 </span>                :            : </a>
+<a name="277"><span class="lineNum">     277 </span>                :            :         std::function&lt;T( Ts ... args )&gt; symbol = reinterpret_cast&lt;T( * )( Ts ... args )&gt;( proc );</a>
+<a name="278"><span class="lineNum">     278 </span>                :            : #else</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :         std::function&lt;T( Ts ... args )&gt; symbol =</a>
+<a name="280"><span class="lineNum">     280 </span>                :<span class="lineNoCov">          0 :           reinterpret_cast&lt;T( * )( Ts ... args )&gt;( dlsym( d-&gt;mLibrary, symbolName.c_str() ) );</span></a>
+<a name="281"><span class="lineNum">     281 </span>                :            : </a>
+<a name="282"><span class="lineNum">     282 </span>                :            : #if (defined(__APPLE__) &amp;&amp; defined(__MACH__))</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :         /* On mach-o systems, C symbols have a leading underscore and depending</a>
+<a name="284"><span class="lineNum">     284 </span>                :            :          * on how dlcompat is configured it may or may not add the leading</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :          * underscore.  If dlsym() fails, add an underscore and try again.</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :          */</a>
+<a name="287"><span class="lineNum">     287 </span>                :            :         if ( symbol == nullptr )</a>
+<a name="288"><span class="lineNum">     288 </span>                :            :         {</a>
+<a name="289"><span class="lineNum">     289 </span>                :            :           char withUnder[256] = {};</a>
+<a name="290"><span class="lineNum">     290 </span>                :            :           snprintf( withUnder, sizeof( withUnder ), &quot;_%s&quot;, symbolName.c_str() );</a>
+<a name="291"><span class="lineNum">     291 </span>                :            :           std::function&lt;T( Ts ... args )&gt; symbol = reinterpret_cast&lt;T( * )( Ts ... args )&gt;( dlsym( d-&gt;mLibrary, withUnder ) );</a>
+<a name="292"><span class="lineNum">     292 </span>                :            :         }</a>
+<a name="293"><span class="lineNum">     293 </span>                :            : #endif</a>
+<a name="294"><span class="lineNum">     294 </span>                :            : #endif</a>
+<a name="295"><span class="lineNum">     295 </span>                :<span class="lineNoCov">          0 :         return symbol;</span></a>
+<a name="296"><span class="lineNum">     296 </span>                :<span class="lineNoCov">          0 :       }</span></a>
+<a name="297"><span class="lineNum">     297 </span>                :            : </a>
+<a name="298"><span class="lineNum">     298 </span>                :            : </a>
+<a name="299"><span class="lineNum">     299 </span>                :            :     private:</a>
+<a name="300"><span class="lineNum">     300 </span>                :<span class="lineNoCov">          0 :       struct Data</span></a>
+<a name="301"><span class="lineNum">     301 </span>                :            :       {</a>
+<a name="302"><span class="lineNum">     302 </span>                :            : #ifdef  WIN32</a>
+<a name="303"><span class="lineNum">     303 </span>                :            :         HINSTANCE  mLibrary = nullptr;</a>
+<a name="304"><span class="lineNum">     304 </span>                :            : #else</a>
+<a name="305"><span class="lineNum">     305 </span>                :<span class="lineNoCov">          0 :         void *mLibrary = nullptr;</span></a>
+<a name="306"><span class="lineNum">     306 </span>                :            : #endif</a>
+<a name="307"><span class="lineNum">     307 </span>                :<span class="lineNoCov">          0 :         mutable int mRef = 1;</span></a>
+<a name="308"><span class="lineNum">     308 </span>                :            :         std::string mLibraryFile;</a>
+<a name="309"><span class="lineNum">     309 </span>                :            :       };</a>
+<a name="310"><span class="lineNum">     310 </span>                :            : </a>
+<a name="311"><span class="lineNum">     311 </span>                :            :       Data *d;</a>
+<a name="312"><span class="lineNum">     312 </span>                :            : </a>
+<a name="313"><span class="lineNum">     313 </span>                :            :       bool loadLibrary();</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :   };</a>
+<a name="315"><span class="lineNum">     315 </span>                :            : } // namespace MDAL</a>
+<a name="316"><span class="lineNum">     316 </span>                :            : #endif //MDAL_UTILS_HPP</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

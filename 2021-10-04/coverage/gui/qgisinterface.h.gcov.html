@@ -1,0 +1,1470 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - gui/qgisinterface.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gui</a> - qgisinterface.h<span style="font-size: 80%;"> (source / <a href="qgisinterface.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-04 07:08:52</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /***************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :                           qgisinterface.h</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :   Interface class for exposing functions in QgisApp for use by plugins</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :                              -------------------</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :   begin                : 2004-02-11</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :   copyright            : (C) 2004 by Gary E.Sherman</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :   email                : sherman at mrcc.com</a>
+<a name="8"><span class="lineNum">       8 </span>                :            :  ***************************************************************************/</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : </a>
+<a name="10"><span class="lineNum">      10 </span>                :            : /***************************************************************************</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *                                                                         *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="15"><span class="lineNum">      15 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="16"><span class="lineNum">      16 </span>                :            :  *                                                                         *</a>
+<a name="17"><span class="lineNum">      17 </span>                :            :  ***************************************************************************/</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #ifndef QGISINTERFACE_H</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : #define QGISINTERFACE_H</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &lt;QObject&gt;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &lt;map&gt;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : </a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;qgis.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;qgis_sip.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;qgis_gui.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;qgscoordinatereferencesystem.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;qgslayertreeregistrybridge.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :            : class QAction;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : class QDialog;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : class QFont;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : class QMenu;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : class QToolBar;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : class QDockWidget;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : class QMainWindow;</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : class QWidget;</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : class QActionGroup;</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<a name="40"><span class="lineNum">      40 </span>                :            : class QgsAdvancedDigitizingDockWidget;</a>
+<a name="41"><span class="lineNum">      41 </span>                :            : class QgsAttributeDialog;</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : class QgsCustomDropHandler;</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : class QgsCustomProjectOpenHandler;</a>
+<a name="44"><span class="lineNum">      44 </span>                :            : class QgsLayoutCustomDropHandler;</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : class QgsFeature;</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : class QgsLayerTreeMapCanvasBridge;</a>
+<a name="47"><span class="lineNum">      47 </span>                :            : class QgsLayerTreeView;</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : class QgsLayerTreeGroup;</a>
+<a name="49"><span class="lineNum">      49 </span>                :            : class QgsLayout;</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : class QgsMasterLayoutInterface;</a>
+<a name="51"><span class="lineNum">      51 </span>                :            : class QgsLayoutDesignerInterface;</a>
+<a name="52"><span class="lineNum">      52 </span>                :            : class QgsMapCanvas;</a>
+<a name="53"><span class="lineNum">      53 </span>                :            : class QgsMapLayer;</a>
+<a name="54"><span class="lineNum">      54 </span>                :            : enum class QgsMapLayerType;</a>
+<a name="55"><span class="lineNum">      55 </span>                :            : class QgsMapLayerConfigWidgetFactory;</a>
+<a name="56"><span class="lineNum">      56 </span>                :            : class QgsMapDecoration;</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : class QgsMessageBar;</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : class QgsPluginManagerInterface;</a>
+<a name="59"><span class="lineNum">      59 </span>                :            : class QgsRasterLayer;</a>
+<a name="60"><span class="lineNum">      60 </span>                :            : class QgsVectorLayer;</a>
+<a name="61"><span class="lineNum">      61 </span>                :            : class QgsVectorLayerTools;</a>
+<a name="62"><span class="lineNum">      62 </span>                :            : class QgsVectorTileLayer;</a>
+<a name="63"><span class="lineNum">      63 </span>                :            : class QgsPointCloudLayer;</a>
+<a name="64"><span class="lineNum">      64 </span>                :            : class QgsOptionsWidgetFactory;</a>
+<a name="65"><span class="lineNum">      65 </span>                :            : class QgsLocatorFilter;</a>
+<a name="66"><span class="lineNum">      66 </span>                :            : class QgsStatusBar;</a>
+<a name="67"><span class="lineNum">      67 </span>                :            : class QgsMeshLayer;</a>
+<a name="68"><span class="lineNum">      68 </span>                :            : class QgsBrowserGuiModel;</a>
+<a name="69"><span class="lineNum">      69 </span>                :            : class QgsDevToolWidgetFactory;</a>
+<a name="70"><span class="lineNum">      70 </span>                :            : class QgsGpsConnection;</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : class QgsApplicationExitBlockerInterface;</a>
+<a name="72"><span class="lineNum">      72 </span>                :            : class QgsAbstractMapToolHandler;</a>
+<a name="73"><span class="lineNum">      73 </span>                :            : </a>
+<a name="74"><span class="lineNum">      74 </span>                :            : /**</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :  * \ingroup gui</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :  * \brief QgisInterface</a>
+<a name="77"><span class="lineNum">      77 </span>                :            :  * Abstract base class defining interfaces exposed by QgisApp and</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :  * made available to plugins.</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :  *</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :  * Only functionality exposed by QgisInterface can be used in plugins.</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :  * This interface has to be implemented with application specific details.</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :  *</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :  * QGIS implements it in QgisAppInterface class, 3rd party applications</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :  * could provide their own implementation to be able to use plugins.</a>
+<a name="85"><span class="lineNum">      85 </span>                :            :  */</a>
+<a name="86"><span class="lineNum">      86 </span>                :            : </a>
+<a name="87"><span class="lineNum">      87 </span>                :            : Q_NOWARN_DEPRECATED_PUSH</a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 : class GUI_EXPORT QgisInterface : public QObject</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :            : {</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :     Q_OBJECT</a>
+<a name="91"><span class="lineNum">      91 </span>                :            : </a>
+<a name="92"><span class="lineNum">      92 </span>                :            :   public:</a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :            :     //! Constructor</a>
+<a name="95"><span class="lineNum">      95 </span>                :<span class="lineNoCov">          0 :     QgisInterface() = default;</span></a>
+<a name="96"><span class="lineNum">      96 </span>                :            : </a>
+<a name="97"><span class="lineNum">      97 </span>                :            :     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;</a>
+<a name="98"><span class="lineNum">      98 </span>                :            : </a>
+<a name="99"><span class="lineNum">      99 </span>                :            :     virtual QgsLayerTreeView *layerTreeView() = 0;</a>
+<a name="100"><span class="lineNum">     100 </span>                :            : </a>
+<a name="101"><span class="lineNum">     101 </span>                :            :     /**</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :      * Add action to context menu for layers in the layer tree.</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :      * If allLayers is TRUE, then the action will be available for all layers of given type,</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :      * after this call.</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :      *</a>
+<a name="107"><span class="lineNum">     107 </span>                :            :      * If menu argument is not empty, the action will be also added to a menu within the main window,</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :      * creating menu with the given name if it does not exist yet.</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :      *</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :      * \see removeCustomActionForLayerType()</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :      * \see addCustomActionForLayer()</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :      */</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :     virtual void addCustomActionForLayerType( QAction *action, QString menu,</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :         QgsMapLayerType type, bool allLayers ) = 0;</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     /**</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :      * Add action to context menu for a specific layer in the layer tree.</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :      * It is necessary to first call addCustomActionForLayerType() with allLayers=false</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :      * in order for this method to have any effect.</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :      * \see addCustomActionForLayerType()</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :      */</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;</a>
+<a name="123"><span class="lineNum">     123 </span>                :            : </a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     /**</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :      * Remove action for layers in the layer tree previously added with addCustomActionForLayerType()</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :      * \see addCustomActionForLayerType()</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :      */</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;</a>
+<a name="129"><span class="lineNum">     129 </span>                :            : </a>
+<a name="130"><span class="lineNum">     130 </span>                :            :     /**</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :      * Returns a list of all map canvases open in the app.</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :      * \since QGIS 3.0</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :      */</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :     virtual QList&lt; QgsMapCanvas * &gt; mapCanvases() = 0;</a>
+<a name="135"><span class="lineNum">     135 </span>                :            : </a>
+<a name="136"><span class="lineNum">     136 </span>                :            :     /**</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :      * Create a new map canvas with the specified unique \a name.</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :      * \see closeMapCanvas()</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :      * \since QGIS 3.0</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :      */</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :     virtual QgsMapCanvas *createNewMapCanvas( const QString &amp;name ) = 0;</a>
+<a name="142"><span class="lineNum">     142 </span>                :            : </a>
+<a name="143"><span class="lineNum">     143 </span>                :            :     /**</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :      * Closes the additional map canvas with matching \a name.</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :      * \see createNewMapCanvas()</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :      * \since QGIS 3.0</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :      */</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :     virtual void closeMapCanvas( const QString &amp;name ) = 0;</a>
+<a name="149"><span class="lineNum">     149 </span>                :            : </a>
+<a name="150"><span class="lineNum">     150 </span>                :            :     /**</a>
+<a name="151"><span class="lineNum">     151 </span>                :            :      * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size</a>
+<a name="152"><span class="lineNum">     152 </span>                :            :      * for toolbars contained within docks is returned.</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :      */</a>
+<a name="154"><span class="lineNum">     154 </span>                :            :     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;</a>
+<a name="155"><span class="lineNum">     155 </span>                :            : </a>
+<a name="156"><span class="lineNum">     156 </span>                :            :     /**</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :      * Returns vector layers in edit mode</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :      * \param modified whether to return only layers that have been modified</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :      * \returns list of layers in legend order, or empty list</a>
+<a name="160"><span class="lineNum">     160 </span>                :            :     */</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :     virtual QList&lt;QgsMapLayer *&gt; editableLayers( bool modified = false ) const = 0;</a>
+<a name="162"><span class="lineNum">     162 </span>                :            : </a>
+<a name="163"><span class="lineNum">     163 </span>                :            :     //! Returns a pointer to the active layer (layer selected in the legend)</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :     virtual QgsMapLayer *activeLayer() = 0;</a>
+<a name="165"><span class="lineNum">     165 </span>                :            : </a>
+<a name="166"><span class="lineNum">     166 </span>                :            :     //! Returns a pointer to the map canvas</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :     virtual QgsMapCanvas *mapCanvas() = 0;</a>
+<a name="168"><span class="lineNum">     168 </span>                :            : </a>
+<a name="169"><span class="lineNum">     169 </span>                :            :     /**</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :      * Returns a list of the active decorations.</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :      * \since QGIS 3.22</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :      */</a>
+<a name="173"><span class="lineNum">     173 </span>                :            :     virtual QList&lt;QgsMapDecoration *&gt; activeDecorations() = 0;</a>
+<a name="174"><span class="lineNum">     174 </span>                :            : </a>
+<a name="175"><span class="lineNum">     175 </span>                :            :     /**</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :      * Returns a pointer to the layer tree canvas bridge</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :      *</a>
+<a name="178"><span class="lineNum">     178 </span>                :            :      * \since QGIS 2.12</a>
+<a name="179"><span class="lineNum">     179 </span>                :            :      */</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;</a>
+<a name="181"><span class="lineNum">     181 </span>                :            : </a>
+<a name="182"><span class="lineNum">     182 </span>                :            :     //! Returns a pointer to the main window (instance of QgisApp in case of QGIS)</a>
+<a name="183"><span class="lineNum">     183 </span>                :            :     virtual QWidget *mainWindow() = 0;</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>                :            :     //! Returns the message bar of the main app</a>
+<a name="186"><span class="lineNum">     186 </span>                :            :     virtual QgsMessageBar *messageBar() = 0;</a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :            :     /**</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :      * Returns all currently open layout designers.</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :      * \since QGIS 3.0</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :      */</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :     virtual QList&lt;QgsLayoutDesignerInterface *&gt; openLayoutDesigners() = 0;</a>
+<a name="193"><span class="lineNum">     193 </span>                :            : </a>
+<a name="194"><span class="lineNum">     194 </span>                :            : </a>
+<a name="195"><span class="lineNum">     195 </span>                :            :     //! Returns changeable options built from settings and/or defaults</a>
+<a name="196"><span class="lineNum">     196 </span>                :            :     virtual QMap&lt;QString, QVariant&gt; defaultStyleSheetOptions() = 0;</a>
+<a name="197"><span class="lineNum">     197 </span>                :            : </a>
+<a name="198"><span class="lineNum">     198 </span>                :            :     //! Returns a reference font for initial qApp (may not be same as QgisApp)</a>
+<a name="199"><span class="lineNum">     199 </span>                :            :     virtual QFont defaultStyleSheetFont() = 0;</a>
+<a name="200"><span class="lineNum">     200 </span>                :            : </a>
+<a name="201"><span class="lineNum">     201 </span>                :            :     /**</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :      * Advanced digitizing dock widget</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :      * \since QGIS 2.12</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :      */</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;</a>
+<a name="206"><span class="lineNum">     206 </span>                :            : </a>
+<a name="207"><span class="lineNum">     207 </span>                :            :     /*</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :      * Accessors for inserting items into menus and toolbars.</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :      * An item can be inserted before any existing action.</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :      */</a>
+<a name="211"><span class="lineNum">     211 </span>                :            : </a>
+<a name="212"><span class="lineNum">     212 </span>                :            :     /**</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :      * Returns a reference to the main window &quot;Project&quot; menu.</a>
+<a name="214"><span class="lineNum">     214 </span>                :            :      */</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :     virtual QMenu *projectMenu() = 0;</a>
+<a name="216"><span class="lineNum">     216 </span>                :            : </a>
+<a name="217"><span class="lineNum">     217 </span>                :            :     /**</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :      * Returns a reference to the main window &quot;Edit&quot; menu.</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :      */</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :     virtual QMenu *editMenu() = 0;</a>
+<a name="221"><span class="lineNum">     221 </span>                :            : </a>
+<a name="222"><span class="lineNum">     222 </span>                :            :     /**</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :      * Returns a reference to the main window &quot;View&quot; menu.</a>
+<a name="224"><span class="lineNum">     224 </span>                :            :      */</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :     virtual QMenu *viewMenu() = 0;</a>
+<a name="226"><span class="lineNum">     226 </span>                :            : </a>
+<a name="227"><span class="lineNum">     227 </span>                :            :     /**</a>
+<a name="228"><span class="lineNum">     228 </span>                :            :      * Returns a reference to the main window &quot;Layer&quot; menu.</a>
+<a name="229"><span class="lineNum">     229 </span>                :            :      */</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :     virtual QMenu *layerMenu() = 0;</a>
+<a name="231"><span class="lineNum">     231 </span>                :            : </a>
+<a name="232"><span class="lineNum">     232 </span>                :            :     /**</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :      * Returns a reference to the main window &quot;Create New Layer&quot; menu.</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :      */</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :     virtual QMenu *newLayerMenu() = 0;</a>
+<a name="236"><span class="lineNum">     236 </span>                :            : </a>
+<a name="237"><span class="lineNum">     237 </span>                :            :     /**</a>
+<a name="238"><span class="lineNum">     238 </span>                :            :      * Returns a reference to the main window &quot;Add Layer&quot; menu.</a>
+<a name="239"><span class="lineNum">     239 </span>                :            :      * \since QGIS 2.5</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :      */</a>
+<a name="241"><span class="lineNum">     241 </span>                :            :     virtual QMenu *addLayerMenu() = 0;</a>
+<a name="242"><span class="lineNum">     242 </span>                :            : </a>
+<a name="243"><span class="lineNum">     243 </span>                :            :     /**</a>
+<a name="244"><span class="lineNum">     244 </span>                :            :      * Returns a reference to the main window &quot;Settings&quot; menu.</a>
+<a name="245"><span class="lineNum">     245 </span>                :            :      */</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :     virtual QMenu *settingsMenu() = 0;</a>
+<a name="247"><span class="lineNum">     247 </span>                :            : </a>
+<a name="248"><span class="lineNum">     248 </span>                :            :     /**</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :      * Returns a reference to the main window &quot;Plugin&quot; menu.</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :      */</a>
+<a name="251"><span class="lineNum">     251 </span>                :            :     virtual QMenu *pluginMenu() = 0;</a>
+<a name="252"><span class="lineNum">     252 </span>                :            : </a>
+<a name="253"><span class="lineNum">     253 </span>                :            :     /**</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :      * Returns a reference to the main window &quot;Plugin Help&quot; sub-menu.</a>
+<a name="255"><span class="lineNum">     255 </span>                :            :      *</a>
+<a name="256"><span class="lineNum">     256 </span>                :            :      * Plugins are encouraged to insert help and about actions in this submenu instead of creating</a>
+<a name="257"><span class="lineNum">     257 </span>                :            :      * a submenu under the pluginMenu() which solely contains Plugin Help or About actions.</a>
+<a name="258"><span class="lineNum">     258 </span>                :            :      *</a>
+<a name="259"><span class="lineNum">     259 </span>                :            :      * \since QGIS 3.10</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :      */</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :     virtual QMenu *pluginHelpMenu() = 0;</a>
+<a name="262"><span class="lineNum">     262 </span>                :            : </a>
+<a name="263"><span class="lineNum">     263 </span>                :            :     /**</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :      * Returns a reference to the main window &quot;Raster&quot; menu.</a>
+<a name="265"><span class="lineNum">     265 </span>                :            :      */</a>
+<a name="266"><span class="lineNum">     266 </span>                :            :     virtual QMenu *rasterMenu() = 0;</a>
+<a name="267"><span class="lineNum">     267 </span>                :            : </a>
+<a name="268"><span class="lineNum">     268 </span>                :            :     /**</a>
+<a name="269"><span class="lineNum">     269 </span>                :            :      * Returns a reference to the main window &quot;Database&quot; menu.</a>
+<a name="270"><span class="lineNum">     270 </span>                :            :      */</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :     virtual QMenu *databaseMenu() = 0;</a>
+<a name="272"><span class="lineNum">     272 </span>                :            : </a>
+<a name="273"><span class="lineNum">     273 </span>                :            :     /**</a>
+<a name="274"><span class="lineNum">     274 </span>                :            :      * Returns a reference to the main window &quot;Vector&quot; menu.</a>
+<a name="275"><span class="lineNum">     275 </span>                :            :      */</a>
+<a name="276"><span class="lineNum">     276 </span>                :            :     virtual QMenu *vectorMenu() = 0;</a>
+<a name="277"><span class="lineNum">     277 </span>                :            : </a>
+<a name="278"><span class="lineNum">     278 </span>                :            :     /**</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :      * Returns a reference to the main window &quot;Web&quot; menu.</a>
+<a name="280"><span class="lineNum">     280 </span>                :            :      */</a>
+<a name="281"><span class="lineNum">     281 </span>                :            :     virtual QMenu *webMenu() = 0;</a>
+<a name="282"><span class="lineNum">     282 </span>                :            : </a>
+<a name="283"><span class="lineNum">     283 </span>                :            :     /**</a>
+<a name="284"><span class="lineNum">     284 </span>                :            :      * Returns a reference to the right most standard menu, which is</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :      * usually the last menu item before the &quot;Help&quot; menu.</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :      *</a>
+<a name="287"><span class="lineNum">     287 </span>                :            :      * This can be used to insert additional top-level menus into</a>
+<a name="288"><span class="lineNum">     288 </span>                :            :      * their correct position BEFORE the help menu.</a>
+<a name="289"><span class="lineNum">     289 </span>                :            :      */</a>
+<a name="290"><span class="lineNum">     290 </span>                :            :     virtual QMenu *firstRightStandardMenu() = 0;</a>
+<a name="291"><span class="lineNum">     291 </span>                :            : </a>
+<a name="292"><span class="lineNum">     292 </span>                :            :     /**</a>
+<a name="293"><span class="lineNum">     293 </span>                :            :      * Returns a reference to the main window &quot;Window&quot; menu.</a>
+<a name="294"><span class="lineNum">     294 </span>                :            :      */</a>
+<a name="295"><span class="lineNum">     295 </span>                :            :     virtual QMenu *windowMenu() = 0;</a>
+<a name="296"><span class="lineNum">     296 </span>                :            : </a>
+<a name="297"><span class="lineNum">     297 </span>                :            :     /**</a>
+<a name="298"><span class="lineNum">     298 </span>                :            :      * Returns a reference to the main window &quot;Help&quot; menu.</a>
+<a name="299"><span class="lineNum">     299 </span>                :            :      */</a>
+<a name="300"><span class="lineNum">     300 </span>                :            :     virtual QMenu *helpMenu() = 0;</a>
+<a name="301"><span class="lineNum">     301 </span>                :            : </a>
+<a name="302"><span class="lineNum">     302 </span>                :            :     // ToolBars</a>
+<a name="303"><span class="lineNum">     303 </span>                :            : </a>
+<a name="304"><span class="lineNum">     304 </span>                :            :     /**</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :      * Returns a reference to the main window &quot;File&quot; toolbar.</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :      */</a>
+<a name="307"><span class="lineNum">     307 </span>                :            :     virtual QToolBar *fileToolBar() = 0;</a>
+<a name="308"><span class="lineNum">     308 </span>                :            : </a>
+<a name="309"><span class="lineNum">     309 </span>                :            :     /**</a>
+<a name="310"><span class="lineNum">     310 </span>                :            :      * Returns a reference to the main window &quot;Layer&quot; toolbar.</a>
+<a name="311"><span class="lineNum">     311 </span>                :            :      */</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :     virtual QToolBar *layerToolBar() = 0;</a>
+<a name="313"><span class="lineNum">     313 </span>                :            : </a>
+<a name="314"><span class="lineNum">     314 </span>                :            :     /**</a>
+<a name="315"><span class="lineNum">     315 </span>                :            :      * Returns a reference to the main window &quot;Data Source Manager&quot; toolbar.</a>
+<a name="316"><span class="lineNum">     316 </span>                :            :      * \since QGIS 3.4</a>
+<a name="317"><span class="lineNum">     317 </span>                :            :      */</a>
+<a name="318"><span class="lineNum">     318 </span>                :            :     virtual QToolBar *dataSourceManagerToolBar() = 0;</a>
+<a name="319"><span class="lineNum">     319 </span>                :            : </a>
+<a name="320"><span class="lineNum">     320 </span>                :            :     /**</a>
+<a name="321"><span class="lineNum">     321 </span>                :            :      * Returns a reference to the main window &quot;Map Navigation&quot; toolbar.</a>
+<a name="322"><span class="lineNum">     322 </span>                :            :      */</a>
+<a name="323"><span class="lineNum">     323 </span>                :            :     virtual QToolBar *mapNavToolToolBar() = 0;</a>
+<a name="324"><span class="lineNum">     324 </span>                :            : </a>
+<a name="325"><span class="lineNum">     325 </span>                :            :     /**</a>
+<a name="326"><span class="lineNum">     326 </span>                :            :      * Returns a reference to the main window &quot;Digitize&quot; toolbar.</a>
+<a name="327"><span class="lineNum">     327 </span>                :            :      */</a>
+<a name="328"><span class="lineNum">     328 </span>                :            :     virtual QToolBar *digitizeToolBar() = 0;</a>
+<a name="329"><span class="lineNum">     329 </span>                :            : </a>
+<a name="330"><span class="lineNum">     330 </span>                :            :     /**</a>
+<a name="331"><span class="lineNum">     331 </span>                :            :      * Returns a reference to the main window &quot;Advanced Digitizing&quot; toolbar.</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :      */</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :     virtual QToolBar *advancedDigitizeToolBar() = 0;</a>
+<a name="334"><span class="lineNum">     334 </span>                :            : </a>
+<a name="335"><span class="lineNum">     335 </span>                :            :     /**</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :      * Returns a reference to the main window &quot;Shape Digitizing&quot; toolbar.</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :      * \since QGIS 3.0</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :      */</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :     virtual QToolBar *shapeDigitizeToolBar() = 0;</a>
+<a name="340"><span class="lineNum">     340 </span>                :            : </a>
+<a name="341"><span class="lineNum">     341 </span>                :            :     /**</a>
+<a name="342"><span class="lineNum">     342 </span>                :            :      * Returns a reference to the main window &quot;Attributes&quot; toolbar.</a>
+<a name="343"><span class="lineNum">     343 </span>                :            :      */</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :     virtual QToolBar *attributesToolBar() = 0;</a>
+<a name="345"><span class="lineNum">     345 </span>                :            : </a>
+<a name="346"><span class="lineNum">     346 </span>                :            :     /**</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :      * Returns a reference to the main window &quot;Selection&quot; toolbar.</a>
+<a name="348"><span class="lineNum">     348 </span>                :            :      * \since QGIS 3.14</a>
+<a name="349"><span class="lineNum">     349 </span>                :            :      */</a>
+<a name="350"><span class="lineNum">     350 </span>                :            :     virtual QToolBar *selectionToolBar() = 0;</a>
+<a name="351"><span class="lineNum">     351 </span>                :            : </a>
+<a name="352"><span class="lineNum">     352 </span>                :            :     /**</a>
+<a name="353"><span class="lineNum">     353 </span>                :            :      * Returns a reference to the main window &quot;Plugin&quot; toolbar.</a>
+<a name="354"><span class="lineNum">     354 </span>                :            :      */</a>
+<a name="355"><span class="lineNum">     355 </span>                :            :     virtual QToolBar *pluginToolBar() = 0;</a>
+<a name="356"><span class="lineNum">     356 </span>                :            : </a>
+<a name="357"><span class="lineNum">     357 </span>                :            :     /**</a>
+<a name="358"><span class="lineNum">     358 </span>                :            :      * Returns a reference to the main window &quot;Help&quot; toolbar.</a>
+<a name="359"><span class="lineNum">     359 </span>                :            :      */</a>
+<a name="360"><span class="lineNum">     360 </span>                :            :     virtual QToolBar *helpToolBar() = 0;</a>
+<a name="361"><span class="lineNum">     361 </span>                :            : </a>
+<a name="362"><span class="lineNum">     362 </span>                :            :     /**</a>
+<a name="363"><span class="lineNum">     363 </span>                :            :      * Returns a reference to the main window &quot;Raster&quot; toolbar.</a>
+<a name="364"><span class="lineNum">     364 </span>                :            :      */</a>
+<a name="365"><span class="lineNum">     365 </span>                :            :     virtual QToolBar *rasterToolBar() = 0;</a>
+<a name="366"><span class="lineNum">     366 </span>                :            : </a>
+<a name="367"><span class="lineNum">     367 </span>                :            :     /**</a>
+<a name="368"><span class="lineNum">     368 </span>                :            :      * Returns a reference to the main window &quot;Vector&quot; toolbar.</a>
+<a name="369"><span class="lineNum">     369 </span>                :            :      */</a>
+<a name="370"><span class="lineNum">     370 </span>                :            :     virtual QToolBar *vectorToolBar() = 0;</a>
+<a name="371"><span class="lineNum">     371 </span>                :            : </a>
+<a name="372"><span class="lineNum">     372 </span>                :            :     /**</a>
+<a name="373"><span class="lineNum">     373 </span>                :            :      * Returns a reference to the main window &quot;Database&quot; toolbar.</a>
+<a name="374"><span class="lineNum">     374 </span>                :            :      */</a>
+<a name="375"><span class="lineNum">     375 </span>                :            :     virtual QToolBar *databaseToolBar() = 0;</a>
+<a name="376"><span class="lineNum">     376 </span>                :            : </a>
+<a name="377"><span class="lineNum">     377 </span>                :            :     /**</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :      * Returns a reference to the main window &quot;Web&quot; toolbar.</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :      */</a>
+<a name="380"><span class="lineNum">     380 </span>                :            :     virtual QToolBar *webToolBar() = 0;</a>
+<a name="381"><span class="lineNum">     381 </span>                :            : </a>
+<a name="382"><span class="lineNum">     382 </span>                :            :     // Project menu actions</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :     //! Returns the native New Project action.</a>
+<a name="384"><span class="lineNum">     384 </span>                :            :     virtual QAction *actionNewProject() = 0;</a>
+<a name="385"><span class="lineNum">     385 </span>                :            :     //! Returns the Open Project action.</a>
+<a name="386"><span class="lineNum">     386 </span>                :            :     virtual QAction *actionOpenProject() = 0;</a>
+<a name="387"><span class="lineNum">     387 </span>                :            :     //! Returns the native Save Project action.</a>
+<a name="388"><span class="lineNum">     388 </span>                :            :     virtual QAction *actionSaveProject() = 0;</a>
+<a name="389"><span class="lineNum">     389 </span>                :            :     //! Returns the native Save Project As action.</a>
+<a name="390"><span class="lineNum">     390 </span>                :            :     virtual QAction *actionSaveProjectAs() = 0;</a>
+<a name="391"><span class="lineNum">     391 </span>                :            :     //! Returns the native Save Map as Image action.</a>
+<a name="392"><span class="lineNum">     392 </span>                :            :     virtual QAction *actionSaveMapAsImage() = 0;</a>
+<a name="393"><span class="lineNum">     393 </span>                :            :     //! Returns the native Project Properties action.</a>
+<a name="394"><span class="lineNum">     394 </span>                :            :     virtual QAction *actionProjectProperties() = 0;</a>
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<a name="396"><span class="lineNum">     396 </span>                :            :     //! Create new print layout action</a>
+<a name="397"><span class="lineNum">     397 </span>                :            :     virtual QAction *actionCreatePrintLayout() = 0;</a>
+<a name="398"><span class="lineNum">     398 </span>                :            : </a>
+<a name="399"><span class="lineNum">     399 </span>                :            :     //! Show layout manager action</a>
+<a name="400"><span class="lineNum">     400 </span>                :            :     virtual QAction *actionShowLayoutManager() = 0;</a>
+<a name="401"><span class="lineNum">     401 </span>                :            :     //! Returns the Exit QGIS action.</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :     virtual QAction *actionExit() = 0;</a>
+<a name="403"><span class="lineNum">     403 </span>                :            : </a>
+<a name="404"><span class="lineNum">     404 </span>                :            :     // Edit menu actions</a>
+<a name="405"><span class="lineNum">     405 </span>                :            : </a>
+<a name="406"><span class="lineNum">     406 </span>                :            :     //! Returns the native Cut Features action.</a>
+<a name="407"><span class="lineNum">     407 </span>                :            :     virtual QAction *actionCutFeatures() = 0;</a>
+<a name="408"><span class="lineNum">     408 </span>                :            :     //! Returns the native Copy Features action.</a>
+<a name="409"><span class="lineNum">     409 </span>                :            :     virtual QAction *actionCopyFeatures() = 0;</a>
+<a name="410"><span class="lineNum">     410 </span>                :            :     //! Returns the native Paste Features action.</a>
+<a name="411"><span class="lineNum">     411 </span>                :            :     virtual QAction *actionPasteFeatures() = 0;</a>
+<a name="412"><span class="lineNum">     412 </span>                :            :     //! Returns the native Add Feature action.</a>
+<a name="413"><span class="lineNum">     413 </span>                :            :     virtual QAction *actionAddFeature() = 0;</a>
+<a name="414"><span class="lineNum">     414 </span>                :            :     //! Returns the native Delete Selected Features action.</a>
+<a name="415"><span class="lineNum">     415 </span>                :            :     virtual QAction *actionDeleteSelected() = 0;</a>
+<a name="416"><span class="lineNum">     416 </span>                :            :     //! Returns the native Move Features action.</a>
+<a name="417"><span class="lineNum">     417 </span>                :            :     virtual QAction *actionMoveFeature() = 0;</a>
+<a name="418"><span class="lineNum">     418 </span>                :            :     //! Returns the native Split Features action.</a>
+<a name="419"><span class="lineNum">     419 </span>                :            :     virtual QAction *actionSplitFeatures() = 0;</a>
+<a name="420"><span class="lineNum">     420 </span>                :            :     //! Returns the native Split Parts action.</a>
+<a name="421"><span class="lineNum">     421 </span>                :            :     virtual QAction *actionSplitParts() = 0;</a>
+<a name="422"><span class="lineNum">     422 </span>                :            :     //! Returns the native Add Ring action.</a>
+<a name="423"><span class="lineNum">     423 </span>                :            :     virtual QAction *actionAddRing() = 0;</a>
+<a name="424"><span class="lineNum">     424 </span>                :            :     //! Returns the native Add Part action.</a>
+<a name="425"><span class="lineNum">     425 </span>                :            :     virtual QAction *actionAddPart() = 0;</a>
+<a name="426"><span class="lineNum">     426 </span>                :            :     //! Returns the native Simplify/Smooth Features action.</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :     virtual QAction *actionSimplifyFeature() = 0;</a>
+<a name="428"><span class="lineNum">     428 </span>                :            :     //! Returns the native Delete Ring action.</a>
+<a name="429"><span class="lineNum">     429 </span>                :            :     virtual QAction *actionDeleteRing() = 0;</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :     //! Returns the native Delete Part action.</a>
+<a name="431"><span class="lineNum">     431 </span>                :            :     virtual QAction *actionDeletePart() = 0;</a>
+<a name="432"><span class="lineNum">     432 </span>                :            : </a>
+<a name="433"><span class="lineNum">     433 </span>                :            :     /**</a>
+<a name="434"><span class="lineNum">     434 </span>                :            :      * Returns the native &quot;Vertex Tool for All Layers&quot; action.</a>
+<a name="435"><span class="lineNum">     435 </span>                :            :      * \see actionVertexToolActiveLayer()</a>
+<a name="436"><span class="lineNum">     436 </span>                :            :     */</a>
+<a name="437"><span class="lineNum">     437 </span>                :            :     virtual QAction *actionVertexTool() = 0;</a>
+<a name="438"><span class="lineNum">     438 </span>                :            : </a>
+<a name="439"><span class="lineNum">     439 </span>                :            :     /**</a>
+<a name="440"><span class="lineNum">     440 </span>                :            :      * Returns the native &quot;Vertex Tool for Active Layer&quot; action.</a>
+<a name="441"><span class="lineNum">     441 </span>                :            :      * \see actionVertexTool()</a>
+<a name="442"><span class="lineNum">     442 </span>                :            :      * \since QGIS 3.6</a>
+<a name="443"><span class="lineNum">     443 </span>                :            :     */</a>
+<a name="444"><span class="lineNum">     444 </span>                :            :     virtual QAction *actionVertexToolActiveLayer() = 0;</a>
+<a name="445"><span class="lineNum">     445 </span>                :            : </a>
+<a name="446"><span class="lineNum">     446 </span>                :            :     /**</a>
+<a name="447"><span class="lineNum">     447 </span>                :            :      * Returns the action group for map tools.</a>
+<a name="448"><span class="lineNum">     448 </span>                :            :      *</a>
+<a name="449"><span class="lineNum">     449 </span>                :            :      * Any actions added by plugins for toggling a map tool should also be added to this action</a>
+<a name="450"><span class="lineNum">     450 </span>                :            :      * group so that they behave identically to the native, in-built map tool actions.</a>
+<a name="451"><span class="lineNum">     451 </span>                :            :      *</a>
+<a name="452"><span class="lineNum">     452 </span>                :            :      * \since QGIS 3.16</a>
+<a name="453"><span class="lineNum">     453 </span>                :            :      */</a>
+<a name="454"><span class="lineNum">     454 </span>                :            :     virtual QActionGroup *mapToolActionGroup() = 0;</a>
+<a name="455"><span class="lineNum">     455 </span>                :            : </a>
+<a name="456"><span class="lineNum">     456 </span>                :            :     // View menu actions</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :     //! Returns the native pan action. Call trigger() on it to set the default pan map tool.</a>
+<a name="458"><span class="lineNum">     458 </span>                :            :     virtual QAction *actionPan() = 0;</a>
+<a name="459"><span class="lineNum">     459 </span>                :            :     //! Returns the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.</a>
+<a name="460"><span class="lineNum">     460 </span>                :            :     virtual QAction *actionPanToSelected() = 0;</a>
+<a name="461"><span class="lineNum">     461 </span>                :            :     //! Returns the native zoom in action. Call trigger() on it to set the default zoom in map tool.</a>
+<a name="462"><span class="lineNum">     462 </span>                :            :     virtual QAction *actionZoomIn() = 0;</a>
+<a name="463"><span class="lineNum">     463 </span>                :            :     //! Returns the native zoom out action. Call trigger() on it to set the default zoom out map tool.</a>
+<a name="464"><span class="lineNum">     464 </span>                :            :     virtual QAction *actionZoomOut() = 0;</a>
+<a name="465"><span class="lineNum">     465 </span>                :            :     //! Returns the native select action. Call trigger() on it to set the default select map tool.</a>
+<a name="466"><span class="lineNum">     466 </span>                :            :     virtual QAction *actionSelect() = 0;</a>
+<a name="467"><span class="lineNum">     467 </span>                :            :     //! Returns the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :     virtual QAction *actionSelectRectangle() = 0;</a>
+<a name="469"><span class="lineNum">     469 </span>                :            :     //! Returns the native select polygon action. Call trigger() on it to set the default select polygon map tool.</a>
+<a name="470"><span class="lineNum">     470 </span>                :            :     virtual QAction *actionSelectPolygon() = 0;</a>
+<a name="471"><span class="lineNum">     471 </span>                :            :     //! Returns the native select freehand action. Call trigger() on it to set the default select freehand map tool.</a>
+<a name="472"><span class="lineNum">     472 </span>                :            :     virtual QAction *actionSelectFreehand() = 0;</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :     //! Returns the native select radius action. Call trigger() on it to set the default select radius map tool.</a>
+<a name="474"><span class="lineNum">     474 </span>                :            :     virtual QAction *actionSelectRadius() = 0;</a>
+<a name="475"><span class="lineNum">     475 </span>                :            :     //! Returns the native identify action. Call trigger() on it to set the default identify map tool.</a>
+<a name="476"><span class="lineNum">     476 </span>                :            :     virtual QAction *actionIdentify() = 0;</a>
+<a name="477"><span class="lineNum">     477 </span>                :            :     //! Returns the native run action feature action. Call trigger() on it to set the default run feature action map tool.</a>
+<a name="478"><span class="lineNum">     478 </span>                :            :     virtual QAction *actionFeatureAction() = 0;</a>
+<a name="479"><span class="lineNum">     479 </span>                :            :     //! Returns the native measure action. Call trigger() on it to set the default measure map tool.</a>
+<a name="480"><span class="lineNum">     480 </span>                :            :     virtual QAction *actionMeasure() = 0;</a>
+<a name="481"><span class="lineNum">     481 </span>                :            :     //! Returns the native measure area action. Call trigger() on it to set the default measure area map tool.</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :     virtual QAction *actionMeasureArea() = 0;</a>
+<a name="483"><span class="lineNum">     483 </span>                :            :     //! Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.</a>
+<a name="484"><span class="lineNum">     484 </span>                :            :     virtual QAction *actionZoomFullExtent() = 0;</a>
+<a name="485"><span class="lineNum">     485 </span>                :            : </a>
+<a name="486"><span class="lineNum">     486 </span>                :            :     /**</a>
+<a name="487"><span class="lineNum">     487 </span>                :            :      *  Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.</a>
+<a name="488"><span class="lineNum">     488 </span>                :            :      *</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :      *  \deprecated Use actionZoomToLayers() instead.</a>
+<a name="490"><span class="lineNum">     490 </span>                :            :      */</a>
+<a name="491"><span class="lineNum">     491 </span>                :            :     Q_DECL_DEPRECATED virtual QAction *actionZoomToLayer() = 0 SIP_DEPRECATED;</a>
+<a name="492"><span class="lineNum">     492 </span>                :            : </a>
+<a name="493"><span class="lineNum">     493 </span>                :            :     /**</a>
+<a name="494"><span class="lineNum">     494 </span>                :            :      * Returns the native zoom to layers action. Call trigger() on it to zoom to the selected layers.</a>
+<a name="495"><span class="lineNum">     495 </span>                :            :      * \since QGIS 3.18</a>
+<a name="496"><span class="lineNum">     496 </span>                :            :      */</a>
+<a name="497"><span class="lineNum">     497 </span>                :            :     virtual QAction *actionZoomToLayers() = 0;</a>
+<a name="498"><span class="lineNum">     498 </span>                :            : </a>
+<a name="499"><span class="lineNum">     499 </span>                :            :     //! Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.</a>
+<a name="500"><span class="lineNum">     500 </span>                :            :     virtual QAction *actionZoomToSelected() = 0;</a>
+<a name="501"><span class="lineNum">     501 </span>                :            :     //! Returns the native zoom last action. Call trigger() on it to zoom to last.</a>
+<a name="502"><span class="lineNum">     502 </span>                :            :     virtual QAction *actionZoomLast() = 0;</a>
+<a name="503"><span class="lineNum">     503 </span>                :            :     //! Returns the native zoom next action. Call trigger() on it to zoom to next.</a>
+<a name="504"><span class="lineNum">     504 </span>                :            :     virtual QAction *actionZoomNext() = 0;</a>
+<a name="505"><span class="lineNum">     505 </span>                :            :     //! Returns the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.</a>
+<a name="506"><span class="lineNum">     506 </span>                :            :     virtual QAction *actionZoomActualSize() = 0;</a>
+<a name="507"><span class="lineNum">     507 </span>                :            :     //! Returns the native map tips action. Call trigger() on it to toggle map tips.</a>
+<a name="508"><span class="lineNum">     508 </span>                :            :     virtual QAction *actionMapTips() = 0;</a>
+<a name="509"><span class="lineNum">     509 </span>                :            :     //! Returns the native new bookmark action. Call trigger() on it to open the new bookmark dialog.</a>
+<a name="510"><span class="lineNum">     510 </span>                :            :     virtual QAction *actionNewBookmark() = 0;</a>
+<a name="511"><span class="lineNum">     511 </span>                :            :     //! Returns the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.</a>
+<a name="512"><span class="lineNum">     512 </span>                :            :     virtual QAction *actionShowBookmarks() = 0;</a>
+<a name="513"><span class="lineNum">     513 </span>                :            :     //! Returns the native draw action.</a>
+<a name="514"><span class="lineNum">     514 </span>                :            :     virtual QAction *actionDraw() = 0;</a>
+<a name="515"><span class="lineNum">     515 </span>                :            : </a>
+<a name="516"><span class="lineNum">     516 </span>                :            :     // Layer menu actions</a>
+<a name="517"><span class="lineNum">     517 </span>                :            :     virtual QAction *actionNewVectorLayer() = 0;</a>
+<a name="518"><span class="lineNum">     518 </span>                :            :     virtual QAction *actionAddOgrLayer() = 0;</a>
+<a name="519"><span class="lineNum">     519 </span>                :            :     virtual QAction *actionAddRasterLayer() = 0;</a>
+<a name="520"><span class="lineNum">     520 </span>                :            :     virtual QAction *actionAddPgLayer() = 0;</a>
+<a name="521"><span class="lineNum">     521 </span>                :            :     virtual QAction *actionAddWmsLayer() = 0;</a>
+<a name="522"><span class="lineNum">     522 </span>                :            : </a>
+<a name="523"><span class="lineNum">     523 </span>                :            :     /**</a>
+<a name="524"><span class="lineNum">     524 </span>                :            :      * Returns the native Add XYZ Layer action.</a>
+<a name="525"><span class="lineNum">     525 </span>                :            :      * \since QGIS 3.14</a>
+<a name="526"><span class="lineNum">     526 </span>                :            :      */</a>
+<a name="527"><span class="lineNum">     527 </span>                :            :     virtual QAction *actionAddXyzLayer() = 0;</a>
+<a name="528"><span class="lineNum">     528 </span>                :            : </a>
+<a name="529"><span class="lineNum">     529 </span>                :            :     /**</a>
+<a name="530"><span class="lineNum">     530 </span>                :            :      * Returns the native Add Vector Tile Layer action.</a>
+<a name="531"><span class="lineNum">     531 </span>                :            :      * \since QGIS 3.14</a>
+<a name="532"><span class="lineNum">     532 </span>                :            :      */</a>
+<a name="533"><span class="lineNum">     533 </span>                :            :     virtual QAction *actionAddVectorTileLayer() = 0;</a>
+<a name="534"><span class="lineNum">     534 </span>                :            : </a>
+<a name="535"><span class="lineNum">     535 </span>                :            :     /**</a>
+<a name="536"><span class="lineNum">     536 </span>                :            :      * Returns the native Add Point Cloud Layer action.</a>
+<a name="537"><span class="lineNum">     537 </span>                :            :      * \since QGIS 3.18</a>
+<a name="538"><span class="lineNum">     538 </span>                :            :      */</a>
+<a name="539"><span class="lineNum">     539 </span>                :            :     virtual QAction *actionAddPointCloudLayer() = 0;</a>
+<a name="540"><span class="lineNum">     540 </span>                :            : </a>
+<a name="541"><span class="lineNum">     541 </span>                :            :     //! Returns the native Add ArcGIS REST Server action.</a>
+<a name="542"><span class="lineNum">     542 </span>                :            :     virtual QAction *actionAddAfsLayer() = 0;</a>
+<a name="543"><span class="lineNum">     543 </span>                :            : </a>
+<a name="544"><span class="lineNum">     544 </span>                :            :     //! Returns the native Add ArcGIS REST Server action.</a>
+<a name="545"><span class="lineNum">     545 </span>                :            :     virtual QAction *actionAddAmsLayer() = 0;</a>
+<a name="546"><span class="lineNum">     546 </span>                :            : </a>
+<a name="547"><span class="lineNum">     547 </span>                :            :     virtual QAction *actionCopyLayerStyle() = 0;</a>
+<a name="548"><span class="lineNum">     548 </span>                :            :     virtual QAction *actionPasteLayerStyle() = 0;</a>
+<a name="549"><span class="lineNum">     549 </span>                :            :     virtual QAction *actionOpenTable() = 0;</a>
+<a name="550"><span class="lineNum">     550 </span>                :            :     virtual QAction *actionOpenFieldCalculator() = 0;</a>
+<a name="551"><span class="lineNum">     551 </span>                :            : </a>
+<a name="552"><span class="lineNum">     552 </span>                :            :     /**</a>
+<a name="553"><span class="lineNum">     553 </span>                :            :      * Statistical summary action.</a>
+<a name="554"><span class="lineNum">     554 </span>                :            :      * \since QGIS 3.0</a>
+<a name="555"><span class="lineNum">     555 </span>                :            :      */</a>
+<a name="556"><span class="lineNum">     556 </span>                :            :     virtual QAction *actionOpenStatisticalSummary() = 0;</a>
+<a name="557"><span class="lineNum">     557 </span>                :            : </a>
+<a name="558"><span class="lineNum">     558 </span>                :            :     virtual QAction *actionToggleEditing() = 0;</a>
+<a name="559"><span class="lineNum">     559 </span>                :            :     virtual QAction *actionSaveActiveLayerEdits() = 0;</a>
+<a name="560"><span class="lineNum">     560 </span>                :            :     virtual QAction *actionAllEdits() = 0;</a>
+<a name="561"><span class="lineNum">     561 </span>                :            :     virtual QAction *actionSaveEdits() = 0;</a>
+<a name="562"><span class="lineNum">     562 </span>                :            :     virtual QAction *actionSaveAllEdits() = 0;</a>
+<a name="563"><span class="lineNum">     563 </span>                :            :     virtual QAction *actionRollbackEdits() = 0;</a>
+<a name="564"><span class="lineNum">     564 </span>                :            :     virtual QAction *actionRollbackAllEdits() = 0;</a>
+<a name="565"><span class="lineNum">     565 </span>                :            :     virtual QAction *actionCancelEdits() = 0;</a>
+<a name="566"><span class="lineNum">     566 </span>                :            :     virtual QAction *actionCancelAllEdits() = 0;</a>
+<a name="567"><span class="lineNum">     567 </span>                :            :     virtual QAction *actionLayerSaveAs() = 0;</a>
+<a name="568"><span class="lineNum">     568 </span>                :            :     virtual QAction *actionDuplicateLayer() = 0;</a>
+<a name="569"><span class="lineNum">     569 </span>                :            :     virtual QAction *actionLayerProperties() = 0;</a>
+<a name="570"><span class="lineNum">     570 </span>                :            :     virtual QAction *actionAddToOverview() = 0;</a>
+<a name="571"><span class="lineNum">     571 </span>                :            :     virtual QAction *actionAddAllToOverview() = 0;</a>
+<a name="572"><span class="lineNum">     572 </span>                :            :     virtual QAction *actionRemoveAllFromOverview() = 0;</a>
+<a name="573"><span class="lineNum">     573 </span>                :            :     virtual QAction *actionHideAllLayers() = 0;</a>
+<a name="574"><span class="lineNum">     574 </span>                :            :     virtual QAction *actionShowAllLayers() = 0;</a>
+<a name="575"><span class="lineNum">     575 </span>                :            :     virtual QAction *actionHideSelectedLayers() = 0;</a>
+<a name="576"><span class="lineNum">     576 </span>                :            : </a>
+<a name="577"><span class="lineNum">     577 </span>                :            :     /**</a>
+<a name="578"><span class="lineNum">     578 </span>                :            :      * Returns the Toggle Selected Layers action.</a>
+<a name="579"><span class="lineNum">     579 </span>                :            :      * \since QGIS 3.14</a>
+<a name="580"><span class="lineNum">     580 </span>                :            :      */</a>
+<a name="581"><span class="lineNum">     581 </span>                :            :     virtual QAction *actionToggleSelectedLayers() = 0;</a>
+<a name="582"><span class="lineNum">     582 </span>                :            : </a>
+<a name="583"><span class="lineNum">     583 </span>                :            :     /**</a>
+<a name="584"><span class="lineNum">     584 </span>                :            :      * Returns the Toggle Selected Layers Independently action.</a>
+<a name="585"><span class="lineNum">     585 </span>                :            :      * \since QGIS 3.14</a>
+<a name="586"><span class="lineNum">     586 </span>                :            :      */</a>
+<a name="587"><span class="lineNum">     587 </span>                :            :     virtual QAction *actionToggleSelectedLayersIndependently() = 0;</a>
+<a name="588"><span class="lineNum">     588 </span>                :            : </a>
+<a name="589"><span class="lineNum">     589 </span>                :            :     /**</a>
+<a name="590"><span class="lineNum">     590 </span>                :            :      * Returns the Hide Deselected Layers action.</a>
+<a name="591"><span class="lineNum">     591 </span>                :            :      * \since QGIS 3.0</a>
+<a name="592"><span class="lineNum">     592 </span>                :            :      */</a>
+<a name="593"><span class="lineNum">     593 </span>                :            :     virtual QAction *actionHideDeselectedLayers() = 0;</a>
+<a name="594"><span class="lineNum">     594 </span>                :            :     virtual QAction *actionShowSelectedLayers() = 0;</a>
+<a name="595"><span class="lineNum">     595 </span>                :            : </a>
+<a name="596"><span class="lineNum">     596 </span>                :            :     // Plugin menu actions</a>
+<a name="597"><span class="lineNum">     597 </span>                :            :     virtual QAction *actionManagePlugins() = 0;</a>
+<a name="598"><span class="lineNum">     598 </span>                :            :     virtual QAction *actionPluginListSeparator() = 0;</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :     virtual QAction *actionShowPythonDialog() = 0;</a>
+<a name="600"><span class="lineNum">     600 </span>                :            : </a>
+<a name="601"><span class="lineNum">     601 </span>                :            :     // Settings menu actions</a>
+<a name="602"><span class="lineNum">     602 </span>                :            :     virtual QAction *actionToggleFullScreen() = 0;</a>
+<a name="603"><span class="lineNum">     603 </span>                :            :     virtual QAction *actionOptions() = 0;</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :     virtual QAction *actionCustomProjection() = 0;</a>
+<a name="605"><span class="lineNum">     605 </span>                :            : </a>
+<a name="606"><span class="lineNum">     606 </span>                :            :     // Help menu actions</a>
+<a name="607"><span class="lineNum">     607 </span>                :            :     virtual QAction *actionHelpContents() = 0;</a>
+<a name="608"><span class="lineNum">     608 </span>                :            :     virtual QAction *actionQgisHomePage() = 0;</a>
+<a name="609"><span class="lineNum">     609 </span>                :            :     virtual QAction *actionCheckQgisVersion() = 0;</a>
+<a name="610"><span class="lineNum">     610 </span>                :            :     virtual QAction *actionAbout() = 0;</a>
+<a name="611"><span class="lineNum">     611 </span>                :            : </a>
+<a name="612"><span class="lineNum">     612 </span>                :            :     // Shape digitize actions</a>
+<a name="613"><span class="lineNum">     613 </span>                :            :     //! Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.</a>
+<a name="614"><span class="lineNum">     614 </span>                :            :     virtual QAction *actionCircle2Points()  = 0;</a>
+<a name="615"><span class="lineNum">     615 </span>                :            :     //! Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.</a>
+<a name="616"><span class="lineNum">     616 </span>                :            :     virtual QAction *actionCircle3Points()  = 0;</a>
+<a name="617"><span class="lineNum">     617 </span>                :            :     //! Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.</a>
+<a name="618"><span class="lineNum">     618 </span>                :            :     virtual QAction *actionCircle3Tangents()  = 0;</a>
+<a name="619"><span class="lineNum">     619 </span>                :            :     //! Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.</a>
+<a name="620"><span class="lineNum">     620 </span>                :            :     virtual QAction *actionCircle2TangentsPoint()  = 0;</a>
+<a name="621"><span class="lineNum">     621 </span>                :            :     //! Returns the native add circle from center action. Call trigger() on it to set the map tool.</a>
+<a name="622"><span class="lineNum">     622 </span>                :            :     virtual QAction *actionCircleCenterPoint()  = 0;</a>
+<a name="623"><span class="lineNum">     623 </span>                :            :     //! Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.</a>
+<a name="624"><span class="lineNum">     624 </span>                :            :     virtual QAction *actionEllipseCenter2Points()  = 0;</a>
+<a name="625"><span class="lineNum">     625 </span>                :            :     //! Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.</a>
+<a name="626"><span class="lineNum">     626 </span>                :            :     virtual QAction *actionEllipseCenterPoint()  = 0;</a>
+<a name="627"><span class="lineNum">     627 </span>                :            :     //! Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.</a>
+<a name="628"><span class="lineNum">     628 </span>                :            :     virtual QAction *actionEllipseExtent()  = 0;</a>
+<a name="629"><span class="lineNum">     629 </span>                :            :     //! Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.</a>
+<a name="630"><span class="lineNum">     630 </span>                :            :     virtual QAction *actionEllipseFoci()  = 0;</a>
+<a name="631"><span class="lineNum">     631 </span>                :            :     //! Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.</a>
+<a name="632"><span class="lineNum">     632 </span>                :            :     virtual QAction *actionRectangleCenterPoint()  = 0;</a>
+<a name="633"><span class="lineNum">     633 </span>                :            :     //! Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.</a>
+<a name="634"><span class="lineNum">     634 </span>                :            :     virtual QAction *actionRectangleExtent()  = 0;</a>
+<a name="635"><span class="lineNum">     635 </span>                :            :     //! Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.</a>
+<a name="636"><span class="lineNum">     636 </span>                :            :     virtual QAction *actionRectangle3PointsDistance()  = 0;</a>
+<a name="637"><span class="lineNum">     637 </span>                :            :     //! Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.</a>
+<a name="638"><span class="lineNum">     638 </span>                :            :     virtual QAction *actionRectangle3PointsProjected()  = 0;</a>
+<a name="639"><span class="lineNum">     639 </span>                :            :     //! Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.</a>
+<a name="640"><span class="lineNum">     640 </span>                :            :     virtual QAction *actionRegularPolygon2Points()  = 0;</a>
+<a name="641"><span class="lineNum">     641 </span>                :            :     //! Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.</a>
+<a name="642"><span class="lineNum">     642 </span>                :            :     virtual QAction *actionRegularPolygonCenterPoint()  = 0;</a>
+<a name="643"><span class="lineNum">     643 </span>                :            :     //! Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.</a>
+<a name="644"><span class="lineNum">     644 </span>                :            :     virtual QAction *actionRegularPolygonCenterCorner()  = 0;</a>
+<a name="645"><span class="lineNum">     645 </span>                :            : </a>
+<a name="646"><span class="lineNum">     646 </span>                :            :     /**</a>
+<a name="647"><span class="lineNum">     647 </span>                :            :      * Access the vector layer tools instance.</a>
+<a name="648"><span class="lineNum">     648 </span>                :            :      * With the help of this you can access methods like addFeature, startEditing</a>
+<a name="649"><span class="lineNum">     649 </span>                :            :      * or stopEditing while giving the user the appropriate dialogs.</a>
+<a name="650"><span class="lineNum">     650 </span>                :            :      *</a>
+<a name="651"><span class="lineNum">     651 </span>                :            :      * \returns An instance of the vector layer tools</a>
+<a name="652"><span class="lineNum">     652 </span>                :            :      */</a>
+<a name="653"><span class="lineNum">     653 </span>                :            :     virtual QgsVectorLayerTools *vectorLayerTools() = 0;</a>
+<a name="654"><span class="lineNum">     654 </span>                :            : </a>
+<a name="655"><span class="lineNum">     655 </span>                :            :     //! Returns the timeout for timed messages: default of 5 seconds</a>
+<a name="656"><span class="lineNum">     656 </span>                :            :     virtual int messageTimeout() = 0;</a>
+<a name="657"><span class="lineNum">     657 </span>                :            : </a>
+<a name="658"><span class="lineNum">     658 </span>                :            :     /**</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :      * Returns a pointer to the app's status bar interface. This should be</a>
+<a name="660"><span class="lineNum">     660 </span>                :            :      * used for interacting and adding widgets and messages to the app's</a>
+<a name="661"><span class="lineNum">     661 </span>                :            :      * status bar (do not use the native Qt statusBar() method).</a>
+<a name="662"><span class="lineNum">     662 </span>                :            :      * \since QGIS 3.0</a>
+<a name="663"><span class="lineNum">     663 </span>                :            :      */</a>
+<a name="664"><span class="lineNum">     664 </span>                :            :     virtual QgsStatusBar *statusBarIface() = 0;</a>
+<a name="665"><span class="lineNum">     665 </span>                :            : </a>
+<a name="666"><span class="lineNum">     666 </span>                :            :     /**</a>
+<a name="667"><span class="lineNum">     667 </span>                :            :      * Take screenshots for user documentation</a>
+<a name="668"><span class="lineNum">     668 </span>                :            :      *</a>
+<a name="669"><span class="lineNum">     669 </span>                :            :      * \param saveDirectory path where the screenshots will be saved</a>
+<a name="670"><span class="lineNum">     670 </span>                :            :      * \param categories an int as a flag value of QgsAppScreenShots::Categories</a>
+<a name="671"><span class="lineNum">     671 </span>                :            :      * \since QGIS 3.4</a>
+<a name="672"><span class="lineNum">     672 </span>                :            :      */</a>
+<a name="673"><span class="lineNum">     673 </span>                :            :     virtual void takeAppScreenShots( const QString &amp;saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}</a>
+<a name="674"><span class="lineNum">     674 </span>                :            : </a>
+<a name="675"><span class="lineNum">     675 </span>                :            :     /**</a>
+<a name="676"><span class="lineNum">     676 </span>                :            :      * Returns the insertion point.</a>
+<a name="677"><span class="lineNum">     677 </span>                :            :      * This represents the current layer tree group and index where newly added map layers should be inserted into.</a>
+<a name="678"><span class="lineNum">     678 </span>                :            :      * \since QGIS 3.10</a>
+<a name="679"><span class="lineNum">     679 </span>                :            :      */</a>
+<a name="680"><span class="lineNum">     680 </span>                :            :     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;</a>
+<a name="681"><span class="lineNum">     681 </span>                :            : </a>
+<a name="682"><span class="lineNum">     682 </span>                :            :   public slots: // TODO: do these functions really need to be slots?</a>
+<a name="683"><span class="lineNum">     683 </span>                :            : </a>
+<a name="684"><span class="lineNum">     684 </span>                :            :     /* Exposed functions */</a>
+<a name="685"><span class="lineNum">     685 </span>                :            : </a>
+<a name="686"><span class="lineNum">     686 </span>                :            :     /**</a>
+<a name="687"><span class="lineNum">     687 </span>                :            :      * Zooms to the full extent of all map layers.</a>
+<a name="688"><span class="lineNum">     688 </span>                :            :      */</a>
+<a name="689"><span class="lineNum">     689 </span>                :            :     virtual void zoomFull() = 0;</a>
+<a name="690"><span class="lineNum">     690 </span>                :            : </a>
+<a name="691"><span class="lineNum">     691 </span>                :            :     /**</a>
+<a name="692"><span class="lineNum">     692 </span>                :            :      * Zooms to the previous view extent.</a>
+<a name="693"><span class="lineNum">     693 </span>                :            :      */</a>
+<a name="694"><span class="lineNum">     694 </span>                :            :     virtual void zoomToPrevious() = 0;</a>
+<a name="695"><span class="lineNum">     695 </span>                :            : </a>
+<a name="696"><span class="lineNum">     696 </span>                :            :     /**</a>
+<a name="697"><span class="lineNum">     697 </span>                :            :      * Zooms to the next view extent.</a>
+<a name="698"><span class="lineNum">     698 </span>                :            :      */</a>
+<a name="699"><span class="lineNum">     699 </span>                :            :     virtual void zoomToNext() = 0;</a>
+<a name="700"><span class="lineNum">     700 </span>                :            : </a>
+<a name="701"><span class="lineNum">     701 </span>                :            :     /**</a>
+<a name="702"><span class="lineNum">     702 </span>                :            :      * Zooms to extent of the active layer.</a>
+<a name="703"><span class="lineNum">     703 </span>                :            :      */</a>
+<a name="704"><span class="lineNum">     704 </span>                :            :     virtual void zoomToActiveLayer() = 0;</a>
+<a name="705"><span class="lineNum">     705 </span>                :            : </a>
+<a name="706"><span class="lineNum">     706 </span>                :            :     /**</a>
+<a name="707"><span class="lineNum">     707 </span>                :            :      * Adds a vector layer to the current project.</a>
+<a name="708"><span class="lineNum">     708 </span>                :            :      */</a>
+<a name="709"><span class="lineNum">     709 </span>                :            :     virtual QgsVectorLayer *addVectorLayer( const QString &amp;vectorLayerPath, const QString &amp;baseName, const QString &amp;providerKey ) = 0;</a>
+<a name="710"><span class="lineNum">     710 </span>                :            : </a>
+<a name="711"><span class="lineNum">     711 </span>                :            :     /**</a>
+<a name="712"><span class="lineNum">     712 </span>                :            :      * Adds a raster layer to the current project, given a raster layer file name.</a>
+<a name="713"><span class="lineNum">     713 </span>                :            :      */</a>
+<a name="714"><span class="lineNum">     714 </span>                :            :     virtual QgsRasterLayer *addRasterLayer( const QString &amp;rasterLayerPath, const QString &amp;baseName = QString() ) = 0;</a>
+<a name="715"><span class="lineNum">     715 </span>                :            : </a>
+<a name="716"><span class="lineNum">     716 </span>                :            :     /**</a>
+<a name="717"><span class="lineNum">     717 </span>                :            :      * Adds a raster layer to the current project, from the specified raster data provider.</a>
+<a name="718"><span class="lineNum">     718 </span>                :            :      */</a>
+<a name="719"><span class="lineNum">     719 </span>                :            :     virtual QgsRasterLayer *addRasterLayer( const QString &amp;url, const QString &amp;layerName, const QString &amp;providerKey ) = 0;</a>
+<a name="720"><span class="lineNum">     720 </span>                :            : </a>
+<a name="721"><span class="lineNum">     721 </span>                :            :     /**</a>
+<a name="722"><span class="lineNum">     722 </span>                :            :      * Adds a mesh layer to the current project.</a>
+<a name="723"><span class="lineNum">     723 </span>                :            :      */</a>
+<a name="724"><span class="lineNum">     724 </span>                :            :     virtual QgsMeshLayer *addMeshLayer( const QString &amp;url, const QString &amp;baseName, const QString &amp;providerKey ) = 0;</a>
+<a name="725"><span class="lineNum">     725 </span>                :            : </a>
+<a name="726"><span class="lineNum">     726 </span>                :            :     /**</a>
+<a name="727"><span class="lineNum">     727 </span>                :            :      * Adds a vector tile layer to the current project.</a>
+<a name="728"><span class="lineNum">     728 </span>                :            :      * \since QGIS 3.14</a>
+<a name="729"><span class="lineNum">     729 </span>                :            :      */</a>
+<a name="730"><span class="lineNum">     730 </span>                :            :     virtual QgsVectorTileLayer *addVectorTileLayer( const QString &amp;url, const QString &amp;baseName ) = 0;</a>
+<a name="731"><span class="lineNum">     731 </span>                :            : </a>
+<a name="732"><span class="lineNum">     732 </span>                :            :     /**</a>
+<a name="733"><span class="lineNum">     733 </span>                :            :      * Adds a point cloud layer to the current project.</a>
+<a name="734"><span class="lineNum">     734 </span>                :            :      * \since QGIS 3.18</a>
+<a name="735"><span class="lineNum">     735 </span>                :            :      */</a>
+<a name="736"><span class="lineNum">     736 </span>                :            :     virtual QgsPointCloudLayer *addPointCloudLayer( const QString &amp;url, const QString &amp;baseName, const QString &amp;providerKey ) = 0;</a>
+<a name="737"><span class="lineNum">     737 </span>                :            : </a>
+<a name="738"><span class="lineNum">     738 </span>                :            :     //! Adds (opens) a project</a>
+<a name="739"><span class="lineNum">     739 </span>                :            :     virtual bool addProject( const QString &amp;project ) = 0;</a>
+<a name="740"><span class="lineNum">     740 </span>                :            : </a>
+<a name="741"><span class="lineNum">     741 </span>                :            :     /**</a>
+<a name="742"><span class="lineNum">     742 </span>                :            :      * Starts a new blank project.</a>
+<a name="743"><span class="lineNum">     743 </span>                :            :      *</a>
+<a name="744"><span class="lineNum">     744 </span>                :            :      * If \a promptToSaveFlag is TRUE then users will be prompted to save any currently open</a>
+<a name="745"><span class="lineNum">     745 </span>                :            :      * project (if that project has changes). If the flag is FALSE, then the current project will</a>
+<a name="746"><span class="lineNum">     746 </span>                :            :      * be closed without prompting to save (possibly resulting in data loss).</a>
+<a name="747"><span class="lineNum">     747 </span>                :            :      *</a>
+<a name="748"><span class="lineNum">     748 </span>                :            :      * Since QGIS 3.10.1, returns TRUE if a new project was created, or FALSE if the operation was not successful (e.g.</a>
+<a name="749"><span class="lineNum">     749 </span>                :            :      * the user opted to cancel when prompted to save the current project).</a>
+<a name="750"><span class="lineNum">     750 </span>                :            :      */</a>
+<a name="751"><span class="lineNum">     751 </span>                :            :     virtual bool newProject( bool promptToSaveFlag = false ) = 0;</a>
+<a name="752"><span class="lineNum">     752 </span>                :            : </a>
+<a name="753"><span class="lineNum">     753 </span>                :            :     /**</a>
+<a name="754"><span class="lineNum">     754 </span>                :            :      * Triggered when connections have changed.</a>
+<a name="755"><span class="lineNum">     755 </span>                :            :      * This calls reloadConnections in the main application and triggers a signal that is</a>
+<a name="756"><span class="lineNum">     756 </span>                :            :      * forwarded to the GUI elements that needs to be updated (i.e. the source</a>
+<a name="757"><span class="lineNum">     757 </span>                :            :      * select dialogs and the browser widgets)</a>
+<a name="758"><span class="lineNum">     758 </span>                :            :      * \since QGIS 3.0</a>
+<a name="759"><span class="lineNum">     759 </span>                :            :      */</a>
+<a name="760"><span class="lineNum">     760 </span>                :            :     virtual void reloadConnections( ) = 0;</a>
+<a name="761"><span class="lineNum">     761 </span>                :            : </a>
+<a name="762"><span class="lineNum">     762 </span>                :            :     /**</a>
+<a name="763"><span class="lineNum">     763 </span>                :            :      * Set the active layer (layer gets selected in the legend)</a>
+<a name="764"><span class="lineNum">     764 </span>                :            :      * returns TRUE if the layer exists, FALSE otherwise</a>
+<a name="765"><span class="lineNum">     765 </span>                :            :      */</a>
+<a name="766"><span class="lineNum">     766 </span>                :            :     virtual bool setActiveLayer( QgsMapLayer * ) = 0;</a>
+<a name="767"><span class="lineNum">     767 </span>                :            : </a>
+<a name="768"><span class="lineNum">     768 </span>                :            :     /**</a>
+<a name="769"><span class="lineNum">     769 </span>                :            :      * Copy selected features from the layer to clipboard</a>
+<a name="770"><span class="lineNum">     770 </span>                :            :      * \since QGIS 3.0</a>
+<a name="771"><span class="lineNum">     771 </span>                :            :      */</a>
+<a name="772"><span class="lineNum">     772 </span>                :            :     virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;</a>
+<a name="773"><span class="lineNum">     773 </span>                :            : </a>
+<a name="774"><span class="lineNum">     774 </span>                :            :     /**</a>
+<a name="775"><span class="lineNum">     775 </span>                :            :      * Paste features from clipboard to the layer</a>
+<a name="776"><span class="lineNum">     776 </span>                :            :      * \since QGIS 3.0</a>
+<a name="777"><span class="lineNum">     777 </span>                :            :      */</a>
+<a name="778"><span class="lineNum">     778 </span>                :            :     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;</a>
+<a name="779"><span class="lineNum">     779 </span>                :            : </a>
+<a name="780"><span class="lineNum">     780 </span>                :            :     //! Add an icon to the plugins toolbar</a>
+<a name="781"><span class="lineNum">     781 </span>                :            :     virtual int addToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="782"><span class="lineNum">     782 </span>                :            : </a>
+<a name="783"><span class="lineNum">     783 </span>                :            :     /**</a>
+<a name="784"><span class="lineNum">     784 </span>                :            :      * Add a widget to the plugins toolbar.</a>
+<a name="785"><span class="lineNum">     785 </span>                :            :      * To remove this widget again, call removeToolBarIcon()</a>
+<a name="786"><span class="lineNum">     786 </span>                :            :      * with the returned QAction.</a>
+<a name="787"><span class="lineNum">     787 </span>                :            :      *</a>
+<a name="788"><span class="lineNum">     788 </span>                :            :      * \param widget widget to add. The toolbar will take ownership of this widget</a>
+<a name="789"><span class="lineNum">     789 </span>                :            :      * \returns the QAction you can use to remove this widget from the toolbar</a>
+<a name="790"><span class="lineNum">     790 </span>                :            :      */</a>
+<a name="791"><span class="lineNum">     791 </span>                :            :     virtual QAction *addToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;</a>
+<a name="792"><span class="lineNum">     792 </span>                :            : </a>
+<a name="793"><span class="lineNum">     793 </span>                :            :     //! Remove an action (icon) from the plugin toolbar</a>
+<a name="794"><span class="lineNum">     794 </span>                :            :     virtual void removeToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="795"><span class="lineNum">     795 </span>                :            : </a>
+<a name="796"><span class="lineNum">     796 </span>                :            :     /**</a>
+<a name="797"><span class="lineNum">     797 </span>                :            :      * Add a widget to the raster toolbar.</a>
+<a name="798"><span class="lineNum">     798 </span>                :            :      * To remove this widget again, call removeRasterToolBarIcon()</a>
+<a name="799"><span class="lineNum">     799 </span>                :            :      * with the returned QAction.</a>
+<a name="800"><span class="lineNum">     800 </span>                :            :      *</a>
+<a name="801"><span class="lineNum">     801 </span>                :            :      * \param widget widget to add. The toolbar will take ownership of this widget</a>
+<a name="802"><span class="lineNum">     802 </span>                :            :      * \returns the QAction you can use to remove this widget from the toolbar</a>
+<a name="803"><span class="lineNum">     803 </span>                :            :      */</a>
+<a name="804"><span class="lineNum">     804 </span>                :            :     virtual QAction *addRasterToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;</a>
+<a name="805"><span class="lineNum">     805 </span>                :            : </a>
+<a name="806"><span class="lineNum">     806 </span>                :            :     //! Add an icon to the Raster toolbar</a>
+<a name="807"><span class="lineNum">     807 </span>                :            :     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="808"><span class="lineNum">     808 </span>                :            : </a>
+<a name="809"><span class="lineNum">     809 </span>                :            :     //! Remove an action (icon) from the Raster toolbar</a>
+<a name="810"><span class="lineNum">     810 </span>                :            :     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="811"><span class="lineNum">     811 </span>                :            : </a>
+<a name="812"><span class="lineNum">     812 </span>                :            :     //! Add an icon to the Vector toolbar</a>
+<a name="813"><span class="lineNum">     813 </span>                :            :     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="814"><span class="lineNum">     814 </span>                :            : </a>
+<a name="815"><span class="lineNum">     815 </span>                :            :     /**</a>
+<a name="816"><span class="lineNum">     816 </span>                :            :      * Add a widget to the vector toolbar.</a>
+<a name="817"><span class="lineNum">     817 </span>                :            :      * To remove this widget again, call removeVectorToolBarIcon()</a>
+<a name="818"><span class="lineNum">     818 </span>                :            :      * with the returned QAction.</a>
+<a name="819"><span class="lineNum">     819 </span>                :            :      *</a>
+<a name="820"><span class="lineNum">     820 </span>                :            :      * \param widget widget to add. The toolbar will take ownership of this widget</a>
+<a name="821"><span class="lineNum">     821 </span>                :            :      * \returns the QAction you can use to remove this widget from the toolbar</a>
+<a name="822"><span class="lineNum">     822 </span>                :            :      */</a>
+<a name="823"><span class="lineNum">     823 </span>                :            :     virtual QAction *addVectorToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;</a>
+<a name="824"><span class="lineNum">     824 </span>                :            : </a>
+<a name="825"><span class="lineNum">     825 </span>                :            :     //! Remove an action (icon) from the Vector toolbar</a>
+<a name="826"><span class="lineNum">     826 </span>                :            :     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="827"><span class="lineNum">     827 </span>                :            : </a>
+<a name="828"><span class="lineNum">     828 </span>                :            :     //! Add an icon to the Database toolbar</a>
+<a name="829"><span class="lineNum">     829 </span>                :            :     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="830"><span class="lineNum">     830 </span>                :            : </a>
+<a name="831"><span class="lineNum">     831 </span>                :            :     /**</a>
+<a name="832"><span class="lineNum">     832 </span>                :            :      * Add a widget to the database toolbar.</a>
+<a name="833"><span class="lineNum">     833 </span>                :            :      * To remove this widget again, call removeDatabaseToolBarIcon()</a>
+<a name="834"><span class="lineNum">     834 </span>                :            :      * with the returned QAction.</a>
+<a name="835"><span class="lineNum">     835 </span>                :            :      *</a>
+<a name="836"><span class="lineNum">     836 </span>                :            :      * \param widget widget to add. The toolbar will take ownership of this widget</a>
+<a name="837"><span class="lineNum">     837 </span>                :            :      * \returns the QAction you can use to remove this widget from the toolbar</a>
+<a name="838"><span class="lineNum">     838 </span>                :            :      */</a>
+<a name="839"><span class="lineNum">     839 </span>                :            :     virtual QAction *addDatabaseToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;</a>
+<a name="840"><span class="lineNum">     840 </span>                :            : </a>
+<a name="841"><span class="lineNum">     841 </span>                :            :     //! Remove an action (icon) from the Database toolbar</a>
+<a name="842"><span class="lineNum">     842 </span>                :            :     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="843"><span class="lineNum">     843 </span>                :            : </a>
+<a name="844"><span class="lineNum">     844 </span>                :            :     //! Add an icon to the Web toolbar</a>
+<a name="845"><span class="lineNum">     845 </span>                :            :     virtual int addWebToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="846"><span class="lineNum">     846 </span>                :            : </a>
+<a name="847"><span class="lineNum">     847 </span>                :            :     /**</a>
+<a name="848"><span class="lineNum">     848 </span>                :            :      * Add a widget to the web toolbar.</a>
+<a name="849"><span class="lineNum">     849 </span>                :            :      * To remove this widget again, call removeWebToolBarIcon()</a>
+<a name="850"><span class="lineNum">     850 </span>                :            :      * with the returned QAction.</a>
+<a name="851"><span class="lineNum">     851 </span>                :            :      *</a>
+<a name="852"><span class="lineNum">     852 </span>                :            :      * \param widget widget to add. The toolbar will take ownership of this widget</a>
+<a name="853"><span class="lineNum">     853 </span>                :            :      * \returns the QAction you can use to remove this widget from the toolbar</a>
+<a name="854"><span class="lineNum">     854 </span>                :            :      */</a>
+<a name="855"><span class="lineNum">     855 </span>                :            :     virtual QAction *addWebToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;</a>
+<a name="856"><span class="lineNum">     856 </span>                :            : </a>
+<a name="857"><span class="lineNum">     857 </span>                :            :     //! Remove an action (icon) from the Web toolbar</a>
+<a name="858"><span class="lineNum">     858 </span>                :            :     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;</a>
+<a name="859"><span class="lineNum">     859 </span>                :            : </a>
+<a name="860"><span class="lineNum">     860 </span>                :            :     //! Add toolbar with specified name</a>
+<a name="861"><span class="lineNum">     861 </span>                :            :     virtual QToolBar *addToolBar( const QString &amp;name ) = 0 SIP_FACTORY;</a>
+<a name="862"><span class="lineNum">     862 </span>                :            : </a>
+<a name="863"><span class="lineNum">     863 </span>                :            :     /**</a>
+<a name="864"><span class="lineNum">     864 </span>                :            :      * Add a toolbar</a>
+<a name="865"><span class="lineNum">     865 </span>                :            :      * \since QGIS 2.3</a>
+<a name="866"><span class="lineNum">     866 </span>                :            :      */</a>
+<a name="867"><span class="lineNum">     867 </span>                :            :     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;</a>
+<a name="868"><span class="lineNum">     868 </span>                :            : </a>
+<a name="869"><span class="lineNum">     869 </span>                :            :     /**</a>
+<a name="870"><span class="lineNum">     870 </span>                :            :      * Opens the message log dock widget.</a>
+<a name="871"><span class="lineNum">     871 </span>                :            :      */</a>
+<a name="872"><span class="lineNum">     872 </span>                :            :     virtual void openMessageLog() = 0;</a>
+<a name="873"><span class="lineNum">     873 </span>                :            : </a>
+<a name="874"><span class="lineNum">     874 </span>                :            :     //! Adds a widget to the user input tool bar.</a>
+<a name="875"><span class="lineNum">     875 </span>                :            :     virtual void addUserInputWidget( QWidget *widget ) = 0;</a>
+<a name="876"><span class="lineNum">     876 </span>                :            : </a>
+<a name="877"><span class="lineNum">     877 </span>                :            :     /**</a>
+<a name="878"><span class="lineNum">     878 </span>                :            :      * Opens the layout manager dialog.</a>
+<a name="879"><span class="lineNum">     879 </span>                :            :      * \since QGIS 3.0</a>
+<a name="880"><span class="lineNum">     880 </span>                :            :      */</a>
+<a name="881"><span class="lineNum">     881 </span>                :            :     virtual void showLayoutManager() = 0;</a>
+<a name="882"><span class="lineNum">     882 </span>                :            : </a>
+<a name="883"><span class="lineNum">     883 </span>                :            :     /**</a>
+<a name="884"><span class="lineNum">     884 </span>                :            :      * Opens a new layout designer dialog for the specified \a layout, or</a>
+<a name="885"><span class="lineNum">     885 </span>                :            :      * brings an already open designer window to the foreground if one</a>
+<a name="886"><span class="lineNum">     886 </span>                :            :      * is already created for the layout.</a>
+<a name="887"><span class="lineNum">     887 </span>                :            :      * \since QGIS 3.0</a>
+<a name="888"><span class="lineNum">     888 </span>                :            :      */</a>
+<a name="889"><span class="lineNum">     889 </span>                :            :     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;</a>
+<a name="890"><span class="lineNum">     890 </span>                :            : </a>
+<a name="891"><span class="lineNum">     891 </span>                :            :     /**</a>
+<a name="892"><span class="lineNum">     892 </span>                :            :      * Opens the options dialog. The \a currentPage argument can be used to force</a>
+<a name="893"><span class="lineNum">     893 </span>                :            :      * the dialog to open at a specific page.</a>
+<a name="894"><span class="lineNum">     894 </span>                :            :      * \since QGIS 3.0</a>
+<a name="895"><span class="lineNum">     895 </span>                :            :      */</a>
+<a name="896"><span class="lineNum">     896 </span>                :            :     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &amp;currentPage = QString() ) = 0;</a>
+<a name="897"><span class="lineNum">     897 </span>                :            : </a>
+<a name="898"><span class="lineNum">     898 </span>                :            :     /**</a>
+<a name="899"><span class="lineNum">     899 </span>                :            :      * Opens the project properties dialog. The \a currentPage argument can be used to force</a>
+<a name="900"><span class="lineNum">     900 </span>                :            :      * the dialog to open at a specific page.</a>
+<a name="901"><span class="lineNum">     901 </span>                :            :      * \since QGIS 3.16</a>
+<a name="902"><span class="lineNum">     902 </span>                :            :      */</a>
+<a name="903"><span class="lineNum">     903 </span>                :            :     virtual void showProjectPropertiesDialog( const QString &amp;currentPage = QString() ) = 0;</a>
+<a name="904"><span class="lineNum">     904 </span>                :            : </a>
+<a name="905"><span class="lineNum">     905 </span>                :            :     /**</a>
+<a name="906"><span class="lineNum">     906 </span>                :            :      * Generate stylesheet</a>
+<a name="907"><span class="lineNum">     907 </span>                :            :      * \param opts generated default option values, or a changed copy of them</a>
+<a name="908"><span class="lineNum">     908 </span>                :            :      */</a>
+<a name="909"><span class="lineNum">     909 </span>                :            :     virtual void buildStyleSheet( const QMap&lt;QString, QVariant&gt; &amp;opts ) = 0;</a>
+<a name="910"><span class="lineNum">     910 </span>                :            : </a>
+<a name="911"><span class="lineNum">     911 </span>                :            :     //! Save changed default option keys/values to user settings</a>
+<a name="912"><span class="lineNum">     912 </span>                :            :     virtual void saveStyleSheetOptions( const QMap&lt;QString, QVariant&gt; &amp;opts ) = 0;</a>
+<a name="913"><span class="lineNum">     913 </span>                :            : </a>
+<a name="914"><span class="lineNum">     914 </span>                :            :     //! Add action to the plugins menu</a>
+<a name="915"><span class="lineNum">     915 </span>                :            :     virtual void addPluginToMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="916"><span class="lineNum">     916 </span>                :            : </a>
+<a name="917"><span class="lineNum">     917 </span>                :            :     //! Remove action from the plugins menu</a>
+<a name="918"><span class="lineNum">     918 </span>                :            :     virtual void removePluginMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="919"><span class="lineNum">     919 </span>                :            : </a>
+<a name="920"><span class="lineNum">     920 </span>                :            :     //! Add &quot;add layer&quot; action to layer menu</a>
+<a name="921"><span class="lineNum">     921 </span>                :            :     virtual void insertAddLayerAction( QAction *action ) = 0;</a>
+<a name="922"><span class="lineNum">     922 </span>                :            : </a>
+<a name="923"><span class="lineNum">     923 </span>                :            :     //! Remove &quot;add layer&quot; action from layer menu</a>
+<a name="924"><span class="lineNum">     924 </span>                :            :     virtual void removeAddLayerAction( QAction *action ) = 0;</a>
+<a name="925"><span class="lineNum">     925 </span>                :            : </a>
+<a name="926"><span class="lineNum">     926 </span>                :            :     //! Add action to the Database menu</a>
+<a name="927"><span class="lineNum">     927 </span>                :            :     virtual void addPluginToDatabaseMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="928"><span class="lineNum">     928 </span>                :            : </a>
+<a name="929"><span class="lineNum">     929 </span>                :            :     //! Remove action from the Database menu</a>
+<a name="930"><span class="lineNum">     930 </span>                :            :     virtual void removePluginDatabaseMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="931"><span class="lineNum">     931 </span>                :            : </a>
+<a name="932"><span class="lineNum">     932 </span>                :            :     //! Add action to the Raster menu</a>
+<a name="933"><span class="lineNum">     933 </span>                :            :     virtual void addPluginToRasterMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="934"><span class="lineNum">     934 </span>                :            : </a>
+<a name="935"><span class="lineNum">     935 </span>                :            :     //! Remove action from the Raster menu</a>
+<a name="936"><span class="lineNum">     936 </span>                :            :     virtual void removePluginRasterMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="937"><span class="lineNum">     937 </span>                :            : </a>
+<a name="938"><span class="lineNum">     938 </span>                :            :     //! Add action to the Vector menu</a>
+<a name="939"><span class="lineNum">     939 </span>                :            :     virtual void addPluginToVectorMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="940"><span class="lineNum">     940 </span>                :            : </a>
+<a name="941"><span class="lineNum">     941 </span>                :            :     //! Remove action from the Vector menu</a>
+<a name="942"><span class="lineNum">     942 </span>                :            :     virtual void removePluginVectorMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="943"><span class="lineNum">     943 </span>                :            : </a>
+<a name="944"><span class="lineNum">     944 </span>                :            :     //! Add action to the Web menu</a>
+<a name="945"><span class="lineNum">     945 </span>                :            :     virtual void addPluginToWebMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="946"><span class="lineNum">     946 </span>                :            : </a>
+<a name="947"><span class="lineNum">     947 </span>                :            :     //! Remove action from the Web menu</a>
+<a name="948"><span class="lineNum">     948 </span>                :            :     virtual void removePluginWebMenu( const QString &amp;name, QAction *action ) = 0;</a>
+<a name="949"><span class="lineNum">     949 </span>                :            : </a>
+<a name="950"><span class="lineNum">     950 </span>                :            :     /**</a>
+<a name="951"><span class="lineNum">     951 </span>                :            :      * Adds a \a dock widget to the main window, in the specified dock \a area.</a>
+<a name="952"><span class="lineNum">     952 </span>                :            :      *</a>
+<a name="953"><span class="lineNum">     953 </span>                :            :      * \see addTabifiedDockWidget()</a>
+<a name="954"><span class="lineNum">     954 </span>                :            :      * \see removeDockWidget()</a>
+<a name="955"><span class="lineNum">     955 </span>                :            :      */</a>
+<a name="956"><span class="lineNum">     956 </span>                :            :     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;</a>
+<a name="957"><span class="lineNum">     957 </span>                :            : </a>
+<a name="958"><span class="lineNum">     958 </span>                :            :     /**</a>
+<a name="959"><span class="lineNum">     959 </span>                :            :      * Add a dock widget to the given area and tabify it (if other dock widgets</a>
+<a name="960"><span class="lineNum">     960 </span>                :            :      * exist in the same \a area). The new tab will be below other tabs unless</a>
+<a name="961"><span class="lineNum">     961 </span>                :            :      * \a raiseTab is passed as TRUE.</a>
+<a name="962"><span class="lineNum">     962 </span>                :            :      *</a>
+<a name="963"><span class="lineNum">     963 </span>                :            :      * \a tabifyWith is a list of dock widget object names, ordered by</a>
+<a name="964"><span class="lineNum">     964 </span>                :            :      * priority, with which the new dock widget should be tabified. Only the</a>
+<a name="965"><span class="lineNum">     965 </span>                :            :      * first matching object name will be picked. If none of the given object</a>
+<a name="966"><span class="lineNum">     966 </span>                :            :      * names is found in that \a area (or if \a tabifyWith is not given at</a>
+<a name="967"><span class="lineNum">     967 </span>                :            :      * all), the new dock widget will be created anyways, but its location</a>
+<a name="968"><span class="lineNum">     968 </span>                :            :      * within that \a area will be unpredictable.</a>
+<a name="969"><span class="lineNum">     969 </span>                :            :      *</a>
+<a name="970"><span class="lineNum">     970 </span>                :            :      * \since QGIS 3.14</a>
+<a name="971"><span class="lineNum">     971 </span>                :            :      */</a>
+<a name="972"><span class="lineNum">     972 </span>                :            :     virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &amp;tabifyWith = QStringList(), bool raiseTab = false ) = 0;</a>
+<a name="973"><span class="lineNum">     973 </span>                :            : </a>
+<a name="974"><span class="lineNum">     974 </span>                :            :     /**</a>
+<a name="975"><span class="lineNum">     975 </span>                :            :      * Removes the specified \a dock widget from main window (without deleting it).</a>
+<a name="976"><span class="lineNum">     976 </span>                :            :      *</a>
+<a name="977"><span class="lineNum">     977 </span>                :            :      * \see addDockWidget()</a>
+<a name="978"><span class="lineNum">     978 </span>                :            :      */</a>
+<a name="979"><span class="lineNum">     979 </span>                :            :     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;</a>
+<a name="980"><span class="lineNum">     980 </span>                :            : </a>
+<a name="981"><span class="lineNum">     981 </span>                :            :     /**</a>
+<a name="982"><span class="lineNum">     982 </span>                :            :      * Opens layer properties dialog for the layer \a l.</a>
+<a name="983"><span class="lineNum">     983 </span>                :            :      * Optionally, a \a page to open can be specified (since QGIS 3.20).</a>
+<a name="984"><span class="lineNum">     984 </span>                :            :      * The list below contains valid page names:</a>
+<a name="985"><span class="lineNum">     985 </span>                :            :      *</a>
+<a name="986"><span class="lineNum">     986 </span>                :            :      * Vector Layer:</a>
+<a name="987"><span class="lineNum">     987 </span>                :            :      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Labels,</a>
+<a name="988"><span class="lineNum">     988 </span>                :            :      * mOptsPage_Masks, mOptsPage_Diagrams, mOptsPage_SourceFields, mOptsPage_AttributesForm,</a>
+<a name="989"><span class="lineNum">     989 </span>                :            :      * mOptsPage_Joins, mOptsPage_AuxiliaryStorage, mOptsPage_Actions, mOptsPage_Display,</a>
+<a name="990"><span class="lineNum">     990 </span>                :            :      * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Metadata,</a>
+<a name="991"><span class="lineNum">     991 </span>                :            :      * mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server</a>
+<a name="992"><span class="lineNum">     992 </span>                :            :      *</a>
+<a name="993"><span class="lineNum">     993 </span>                :            :      * Raster Layer:</a>
+<a name="994"><span class="lineNum">     994 </span>                :            :      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Transparency,</a>
+<a name="995"><span class="lineNum">     995 </span>                :            :      * mOptsPage_Histogram, mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Pyramids,</a>
+<a name="996"><span class="lineNum">     996 </span>                :            :      * mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server</a>
+<a name="997"><span class="lineNum">     997 </span>                :            :      *</a>
+<a name="998"><span class="lineNum">     998 </span>                :            :      * Mesh Layer:</a>
+<a name="999"><span class="lineNum">     999 </span>                :            :      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent,</a>
+<a name="1000"><span class="lineNum">    1000 </span>                :            :      * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata</a>
+<a name="1001"><span class="lineNum">    1001 </span>                :            :      *</a>
+<a name="1002"><span class="lineNum">    1002 </span>                :            :      * Point Cloud Layer:</a>
+<a name="1003"><span class="lineNum">    1003 </span>                :            :      * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics</a>
+<a name="1004"><span class="lineNum">    1004 </span>                :            :      *</a>
+<a name="1005"><span class="lineNum">    1005 </span>                :            :      * Vector Tile Layer:</a>
+<a name="1006"><span class="lineNum">    1006 </span>                :            :      * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata</a>
+<a name="1007"><span class="lineNum">    1007 </span>                :            :      *</a>
+<a name="1008"><span class="lineNum">    1008 </span>                :            :      * \note Page names are subject to change without notice between QGIS versions,</a>
+<a name="1009"><span class="lineNum">    1009 </span>                :            :      * they are not considered part of the stable API.</a>
+<a name="1010"><span class="lineNum">    1010 </span>                :            :      *</a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            :      * \note More strings may be available depending on the context, e.g. via plugins.</a>
+<a name="1012"><span class="lineNum">    1012 </span>                :            :      */</a>
+<a name="1013"><span class="lineNum">    1013 </span>                :            :     virtual void showLayerProperties( QgsMapLayer *l, const QString &amp;page = QString() ) = 0;</a>
+<a name="1014"><span class="lineNum">    1014 </span>                :            : </a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            :     //! Open attribute table dialog</a>
+<a name="1016"><span class="lineNum">    1016 </span>                :            :     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &amp;filterExpression = QString() ) = 0;</a>
+<a name="1017"><span class="lineNum">    1017 </span>                :            : </a>
+<a name="1018"><span class="lineNum">    1018 </span>                :            :     /**</a>
+<a name="1019"><span class="lineNum">    1019 </span>                :            :      * Add window to Window menu. The action title is the window title</a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            :      * and the action should raise, unminimize and activate the window.</a>
+<a name="1021"><span class="lineNum">    1021 </span>                :            :     */</a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            :     virtual void addWindow( QAction *action ) = 0;</a>
+<a name="1023"><span class="lineNum">    1023 </span>                :            : </a>
+<a name="1024"><span class="lineNum">    1024 </span>                :            :     /**</a>
+<a name="1025"><span class="lineNum">    1025 </span>                :            :      * Remove window from Window menu. Calling this is necessary only for</a>
+<a name="1026"><span class="lineNum">    1026 </span>                :            :      * windows which are hidden rather than deleted when closed.</a>
+<a name="1027"><span class="lineNum">    1027 </span>                :            :     */</a>
+<a name="1028"><span class="lineNum">    1028 </span>                :            :     virtual void removeWindow( QAction *action ) = 0;</a>
+<a name="1029"><span class="lineNum">    1029 </span>                :            : </a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            :     //! Register action to the shortcuts manager so its shortcut can be changed in GUI</a>
+<a name="1031"><span class="lineNum">    1031 </span>                :            :     virtual bool registerMainWindowAction( QAction *action, const QString &amp;defaultShortcut ) = 0;</a>
+<a name="1032"><span class="lineNum">    1032 </span>                :            : </a>
+<a name="1033"><span class="lineNum">    1033 </span>                :            :     //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded)</a>
+<a name="1034"><span class="lineNum">    1034 </span>                :            :     virtual bool unregisterMainWindowAction( QAction *action ) = 0;</a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : </a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            :     /**</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :            :      * Register a new tab in the map layer properties dialog.</a>
+<a name="1038"><span class="lineNum">    1038 </span>                :            :      * \note Ownership of the factory is not transferred, and the factory must</a>
+<a name="1039"><span class="lineNum">    1039 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1040"><span class="lineNum">    1040 </span>                :            :      * \see QgsMapLayerConfigWidgetFactory</a>
+<a name="1041"><span class="lineNum">    1041 </span>                :            :      * \see unregisterMapLayerConfigWidgetFactory()</a>
+<a name="1042"><span class="lineNum">    1042 </span>                :            :      * \since QGIS 2.16</a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            :      */</a>
+<a name="1044"><span class="lineNum">    1044 </span>                :            :     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;</a>
+<a name="1045"><span class="lineNum">    1045 </span>                :            : </a>
+<a name="1046"><span class="lineNum">    1046 </span>                :            :     /**</a>
+<a name="1047"><span class="lineNum">    1047 </span>                :            :      * Unregister a previously registered tab in the map layer properties dialog.</a>
+<a name="1048"><span class="lineNum">    1048 </span>                :            :      * \see QgsMapLayerConfigWidgetFactory</a>
+<a name="1049"><span class="lineNum">    1049 </span>                :            :      * \see registerMapLayerConfigWidgetFactory()</a>
+<a name="1050"><span class="lineNum">    1050 </span>                :            :      * \since QGIS 2.16</a>
+<a name="1051"><span class="lineNum">    1051 </span>                :            :     */</a>
+<a name="1052"><span class="lineNum">    1052 </span>                :            :     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;</a>
+<a name="1053"><span class="lineNum">    1053 </span>                :            : </a>
+<a name="1054"><span class="lineNum">    1054 </span>                :            :     /**</a>
+<a name="1055"><span class="lineNum">    1055 </span>                :            :      * Register a new tab in the options dialog.</a>
+<a name="1056"><span class="lineNum">    1056 </span>                :            :      * \note Ownership of the factory is not transferred, and the factory must</a>
+<a name="1057"><span class="lineNum">    1057 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1058"><span class="lineNum">    1058 </span>                :            :      * \see QgsOptionsWidgetFactory</a>
+<a name="1059"><span class="lineNum">    1059 </span>                :            :      * \see unregisterOptionsWidgetFactory()</a>
+<a name="1060"><span class="lineNum">    1060 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1061"><span class="lineNum">    1061 </span>                :            :      */</a>
+<a name="1062"><span class="lineNum">    1062 </span>                :            :     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;</a>
+<a name="1063"><span class="lineNum">    1063 </span>                :            : </a>
+<a name="1064"><span class="lineNum">    1064 </span>                :            :     /**</a>
+<a name="1065"><span class="lineNum">    1065 </span>                :            :      * Unregister a previously registered tab in the options dialog.</a>
+<a name="1066"><span class="lineNum">    1066 </span>                :            :      * \see QgsOptionsWidgetFactory</a>
+<a name="1067"><span class="lineNum">    1067 </span>                :            :      * \see registerOptionsWidgetFactory()</a>
+<a name="1068"><span class="lineNum">    1068 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1069"><span class="lineNum">    1069 </span>                :            :     */</a>
+<a name="1070"><span class="lineNum">    1070 </span>                :            :     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;</a>
+<a name="1071"><span class="lineNum">    1071 </span>                :            : </a>
+<a name="1072"><span class="lineNum">    1072 </span>                :            :     /**</a>
+<a name="1073"><span class="lineNum">    1073 </span>                :            :      * Register a new tab in the project properties dialog.</a>
+<a name="1074"><span class="lineNum">    1074 </span>                :            :      * \note Ownership of the factory is not transferred, and the factory must</a>
+<a name="1075"><span class="lineNum">    1075 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1076"><span class="lineNum">    1076 </span>                :            :      * \see QgsOptionsWidgetFactory</a>
+<a name="1077"><span class="lineNum">    1077 </span>                :            :      * \see unregisterProjectPropertiesWidgetFactory()</a>
+<a name="1078"><span class="lineNum">    1078 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1079"><span class="lineNum">    1079 </span>                :            :      */</a>
+<a name="1080"><span class="lineNum">    1080 </span>                :            :     virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;</a>
+<a name="1081"><span class="lineNum">    1081 </span>                :            : </a>
+<a name="1082"><span class="lineNum">    1082 </span>                :            :     /**</a>
+<a name="1083"><span class="lineNum">    1083 </span>                :            :      * Unregister a previously registered tab in the options dialog.</a>
+<a name="1084"><span class="lineNum">    1084 </span>                :            :      * \see QgsOptionsWidgetFactory</a>
+<a name="1085"><span class="lineNum">    1085 </span>                :            :      * \see registerProjectPropertiesWidgetFactory()</a>
+<a name="1086"><span class="lineNum">    1086 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1087"><span class="lineNum">    1087 </span>                :            :     */</a>
+<a name="1088"><span class="lineNum">    1088 </span>                :            :     virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;</a>
+<a name="1089"><span class="lineNum">    1089 </span>                :            : </a>
+<a name="1090"><span class="lineNum">    1090 </span>                :            :     /**</a>
+<a name="1091"><span class="lineNum">    1091 </span>                :            :      * Register a new tool in the development/debugging tools dock.</a>
+<a name="1092"><span class="lineNum">    1092 </span>                :            :      * \note Ownership of the factory is not transferred, and the factory must</a>
+<a name="1093"><span class="lineNum">    1093 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1094"><span class="lineNum">    1094 </span>                :            :      * \see unregisterDevToolWidgetFactory()</a>
+<a name="1095"><span class="lineNum">    1095 </span>                :            :      * \since QGIS 3.14</a>
+<a name="1096"><span class="lineNum">    1096 </span>                :            :      */</a>
+<a name="1097"><span class="lineNum">    1097 </span>                :            :     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;</a>
+<a name="1098"><span class="lineNum">    1098 </span>                :            : </a>
+<a name="1099"><span class="lineNum">    1099 </span>                :            :     /**</a>
+<a name="1100"><span class="lineNum">    1100 </span>                :            :      * Unregister a previously registered tool factory from the development/debugging tools dock.</a>
+<a name="1101"><span class="lineNum">    1101 </span>                :            :      * \see registerDevToolWidgetFactory()</a>
+<a name="1102"><span class="lineNum">    1102 </span>                :            :      * \since QGIS 3.14</a>
+<a name="1103"><span class="lineNum">    1103 </span>                :            :     */</a>
+<a name="1104"><span class="lineNum">    1104 </span>                :            :     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;</a>
+<a name="1105"><span class="lineNum">    1105 </span>                :            : </a>
+<a name="1106"><span class="lineNum">    1106 </span>                :            :     /**</a>
+<a name="1107"><span class="lineNum">    1107 </span>                :            :      * Register a new application exit blocker, which can be used to prevent the QGIS application</a>
+<a name="1108"><span class="lineNum">    1108 </span>                :            :      * from exiting while a plugin or script has unsaved changes.</a>
+<a name="1109"><span class="lineNum">    1109 </span>                :            :      *</a>
+<a name="1110"><span class="lineNum">    1110 </span>                :            :      * \note Ownership of \a blocker is not transferred, and the blocker must</a>
+<a name="1111"><span class="lineNum">    1111 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1112"><span class="lineNum">    1112 </span>                :            :      *</a>
+<a name="1113"><span class="lineNum">    1113 </span>                :            :      * \see unregisterApplicationExitBlocker()</a>
+<a name="1114"><span class="lineNum">    1114 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1115"><span class="lineNum">    1115 </span>                :            :      */</a>
+<a name="1116"><span class="lineNum">    1116 </span>                :            :     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;</a>
+<a name="1117"><span class="lineNum">    1117 </span>                :            : </a>
+<a name="1118"><span class="lineNum">    1118 </span>                :            :     /**</a>
+<a name="1119"><span class="lineNum">    1119 </span>                :            :      * Unregister a previously registered application exit \a blocker.</a>
+<a name="1120"><span class="lineNum">    1120 </span>                :            :      * \see registerApplicationExitBlocker()</a>
+<a name="1121"><span class="lineNum">    1121 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1122"><span class="lineNum">    1122 </span>                :            :     */</a>
+<a name="1123"><span class="lineNum">    1123 </span>                :            :     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;</a>
+<a name="1124"><span class="lineNum">    1124 </span>                :            : </a>
+<a name="1125"><span class="lineNum">    1125 </span>                :            :     /**</a>
+<a name="1126"><span class="lineNum">    1126 </span>                :            :      * Register a new application map tool \a handler, which can be used to automatically setup all connections</a>
+<a name="1127"><span class="lineNum">    1127 </span>                :            :      * and logic required to switch to a custom map tool whenever the state of the QGIS application</a>
+<a name="1128"><span class="lineNum">    1128 </span>                :            :      * permits.</a>
+<a name="1129"><span class="lineNum">    1129 </span>                :            :      *</a>
+<a name="1130"><span class="lineNum">    1130 </span>                :            :      * \note Ownership of \a handler is not transferred, and the handler must</a>
+<a name="1131"><span class="lineNum">    1131 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1132"><span class="lineNum">    1132 </span>                :            :      *</a>
+<a name="1133"><span class="lineNum">    1133 </span>                :            :      * \see QgsAbstractMapToolHandler</a>
+<a name="1134"><span class="lineNum">    1134 </span>                :            :      * \see unregisterMapToolHandler()</a>
+<a name="1135"><span class="lineNum">    1135 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1136"><span class="lineNum">    1136 </span>                :            :      */</a>
+<a name="1137"><span class="lineNum">    1137 </span>                :            :     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;</a>
+<a name="1138"><span class="lineNum">    1138 </span>                :            : </a>
+<a name="1139"><span class="lineNum">    1139 </span>                :            :     /**</a>
+<a name="1140"><span class="lineNum">    1140 </span>                :            :      * Unregister a previously registered map tool \a handler.</a>
+<a name="1141"><span class="lineNum">    1141 </span>                :            :      * \see registerMapToolHandler()</a>
+<a name="1142"><span class="lineNum">    1142 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1143"><span class="lineNum">    1143 </span>                :            :     */</a>
+<a name="1144"><span class="lineNum">    1144 </span>                :            :     virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;</a>
+<a name="1145"><span class="lineNum">    1145 </span>                :            : </a>
+<a name="1146"><span class="lineNum">    1146 </span>                :            :     /**</a>
+<a name="1147"><span class="lineNum">    1147 </span>                :            :      * Register a new custom drop \a handler.</a>
+<a name="1148"><span class="lineNum">    1148 </span>                :            :      * \note Ownership of \a handler is not transferred, and the handler must</a>
+<a name="1149"><span class="lineNum">    1149 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1150"><span class="lineNum">    1150 </span>                :            :      * \see QgsCustomDropHandler</a>
+<a name="1151"><span class="lineNum">    1151 </span>                :            :      * \see unregisterCustomDropHandler()</a>
+<a name="1152"><span class="lineNum">    1152 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1153"><span class="lineNum">    1153 </span>                :            :      */</a>
+<a name="1154"><span class="lineNum">    1154 </span>                :            :     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;</a>
+<a name="1155"><span class="lineNum">    1155 </span>                :            : </a>
+<a name="1156"><span class="lineNum">    1156 </span>                :            :     /**</a>
+<a name="1157"><span class="lineNum">    1157 </span>                :            :      * Unregister a previously registered custom drop \a handler.</a>
+<a name="1158"><span class="lineNum">    1158 </span>                :            :      * \see QgsCustomDropHandler</a>
+<a name="1159"><span class="lineNum">    1159 </span>                :            :      * \see registerCustomDropHandler()</a>
+<a name="1160"><span class="lineNum">    1160 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1161"><span class="lineNum">    1161 </span>                :            :      */</a>
+<a name="1162"><span class="lineNum">    1162 </span>                :            :     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;</a>
+<a name="1163"><span class="lineNum">    1163 </span>                :            : </a>
+<a name="1164"><span class="lineNum">    1164 </span>                :            :     /**</a>
+<a name="1165"><span class="lineNum">    1165 </span>                :            :      * Register a new custom project open \a handler.</a>
+<a name="1166"><span class="lineNum">    1166 </span>                :            :      * \note Ownership of \a handler is not transferred, and the handler must</a>
+<a name="1167"><span class="lineNum">    1167 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1168"><span class="lineNum">    1168 </span>                :            :      * \see QgsCustomProjectOpenHandler</a>
+<a name="1169"><span class="lineNum">    1169 </span>                :            :      * \see unregisterCustomProjectOpenHandler()</a>
+<a name="1170"><span class="lineNum">    1170 </span>                :            :      * \since QGIS 3.14</a>
+<a name="1171"><span class="lineNum">    1171 </span>                :            :      */</a>
+<a name="1172"><span class="lineNum">    1172 </span>                :            :     virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;</a>
+<a name="1173"><span class="lineNum">    1173 </span>                :            : </a>
+<a name="1174"><span class="lineNum">    1174 </span>                :            :     /**</a>
+<a name="1175"><span class="lineNum">    1175 </span>                :            :      * Unregister a previously registered custom project open \a handler.</a>
+<a name="1176"><span class="lineNum">    1176 </span>                :            :      * \see QgsCustomDropHandler</a>
+<a name="1177"><span class="lineNum">    1177 </span>                :            :      * \see registerCustomProjectOpenHandler()</a>
+<a name="1178"><span class="lineNum">    1178 </span>                :            :      * \since QGIS 3.14</a>
+<a name="1179"><span class="lineNum">    1179 </span>                :            :      */</a>
+<a name="1180"><span class="lineNum">    1180 </span>                :            :     virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;</a>
+<a name="1181"><span class="lineNum">    1181 </span>                :            : </a>
+<a name="1182"><span class="lineNum">    1182 </span>                :            :     /**</a>
+<a name="1183"><span class="lineNum">    1183 </span>                :            :      * Register a new custom drop \a handler for layout windows.</a>
+<a name="1184"><span class="lineNum">    1184 </span>                :            :      * \note Ownership of \a handler is not transferred, and the handler must</a>
+<a name="1185"><span class="lineNum">    1185 </span>                :            :      *       be unregistered when plugin is unloaded.</a>
+<a name="1186"><span class="lineNum">    1186 </span>                :            :      * \see QgsLayoutCustomDropHandler</a>
+<a name="1187"><span class="lineNum">    1187 </span>                :            :      * \see unregisterCustomLayoutDropHandler()</a>
+<a name="1188"><span class="lineNum">    1188 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1189"><span class="lineNum">    1189 </span>                :            :      */</a>
+<a name="1190"><span class="lineNum">    1190 </span>                :            :     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;</a>
+<a name="1191"><span class="lineNum">    1191 </span>                :            : </a>
+<a name="1192"><span class="lineNum">    1192 </span>                :            :     /**</a>
+<a name="1193"><span class="lineNum">    1193 </span>                :            :      * Unregister a previously registered custom drop \a handler for layout windows.</a>
+<a name="1194"><span class="lineNum">    1194 </span>                :            :      * \see QgsLayoutCustomDropHandler</a>
+<a name="1195"><span class="lineNum">    1195 </span>                :            :      * \see registerCustomLayoutDropHandler()</a>
+<a name="1196"><span class="lineNum">    1196 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1197"><span class="lineNum">    1197 </span>                :            :      */</a>
+<a name="1198"><span class="lineNum">    1198 </span>                :            :     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;</a>
+<a name="1199"><span class="lineNum">    1199 </span>                :            : </a>
+<a name="1200"><span class="lineNum">    1200 </span>                :            :     // TODO is this deprecated in favour of QgsContextHelp?</a>
+<a name="1201"><span class="lineNum">    1201 </span>                :            : </a>
+<a name="1202"><span class="lineNum">    1202 </span>                :            :     /**</a>
+<a name="1203"><span class="lineNum">    1203 </span>                :            :      * Open a url in the users browser. By default the QGIS doc directory is used</a>
+<a name="1204"><span class="lineNum">    1204 </span>                :            :      * as the base for the URL. To open a URL that is not relative to the installed</a>
+<a name="1205"><span class="lineNum">    1205 </span>                :            :      * QGIS documentation, set useQgisDocDirectory to FALSE.</a>
+<a name="1206"><span class="lineNum">    1206 </span>                :            :      * \param url URL to open</a>
+<a name="1207"><span class="lineNum">    1207 </span>                :            :      * \param useQgisDocDirectory If TRUE, the URL will be formed by concatenating</a>
+<a name="1208"><span class="lineNum">    1208 </span>                :            :      * url to the QGIS documentation directory path (prefix/share/doc)</a>
+<a name="1209"><span class="lineNum">    1209 </span>                :            :      * \deprecated Use QDesktopServices instead</a>
+<a name="1210"><span class="lineNum">    1210 </span>                :            :      */</a>
+<a name="1211"><span class="lineNum">    1211 </span>                :            : #ifndef Q_MOC_RUN</a>
+<a name="1212"><span class="lineNum">    1212 </span>                :            :     Q_DECL_DEPRECATED</a>
+<a name="1213"><span class="lineNum">    1213 </span>                :            : #endif</a>
+<a name="1214"><span class="lineNum">    1214 </span>                :            :     virtual void openURL( const QString &amp;url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;</a>
+<a name="1215"><span class="lineNum">    1215 </span>                :            : </a>
+<a name="1216"><span class="lineNum">    1216 </span>                :            :     /**</a>
+<a name="1217"><span class="lineNum">    1217 </span>                :            :      * Opens a new feature form.</a>
+<a name="1218"><span class="lineNum">    1218 </span>                :            :      * Returns TRUE if dialog was accepted (if shown modal, TRUE otherwise).</a>
+<a name="1219"><span class="lineNum">    1219 </span>                :            :      * \param l vector layer</a>
+<a name="1220"><span class="lineNum">    1220 </span>                :            :      * \param f feature to show/modify</a>
+<a name="1221"><span class="lineNum">    1221 </span>                :            :      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]</a>
+<a name="1222"><span class="lineNum">    1222 </span>                :            :      * \param showModal if TRUE, will wait for the dialog to be executed (only shown otherwise)</a>
+<a name="1223"><span class="lineNum">    1223 </span>                :            :      */</a>
+<a name="1224"><span class="lineNum">    1224 </span>                :            :     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &amp;f, bool updateFeatureOnly = false, bool showModal = true ) = 0;</a>
+<a name="1225"><span class="lineNum">    1225 </span>                :            : </a>
+<a name="1226"><span class="lineNum">    1226 </span>                :            :     /**</a>
+<a name="1227"><span class="lineNum">    1227 </span>                :            :      * Returns a feature form for a given feature.</a>
+<a name="1228"><span class="lineNum">    1228 </span>                :            :      *</a>
+<a name="1229"><span class="lineNum">    1229 </span>                :            :      * \param l The layer for which the dialog will be created</a>
+<a name="1230"><span class="lineNum">    1230 </span>                :            :      * \param f The feature for which the dialog will be created</a>
+<a name="1231"><span class="lineNum">    1231 </span>                :            :      *</a>
+<a name="1232"><span class="lineNum">    1232 </span>                :            :      * \returns A feature form</a>
+<a name="1233"><span class="lineNum">    1233 </span>                :            :      */</a>
+<a name="1234"><span class="lineNum">    1234 </span>                :            :     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &amp;f ) = 0;</a>
+<a name="1235"><span class="lineNum">    1235 </span>                :            : </a>
+<a name="1236"><span class="lineNum">    1236 </span>                :            :     /**</a>
+<a name="1237"><span class="lineNum">    1237 </span>                :            :      * This method is only needed when using a UI form with a custom widget plugin and calling</a>
+<a name="1238"><span class="lineNum">    1238 </span>                :            :      * openFeatureForm or getFeatureForm from Python (PyQt) and you haven't used the info tool first.</a>
+<a name="1239"><span class="lineNum">    1239 </span>                :            :      * Python will crash bringing QGIS with it</a>
+<a name="1240"><span class="lineNum">    1240 </span>                :            :      * if the custom form is not loaded from a C++ method call.</a>
+<a name="1241"><span class="lineNum">    1241 </span>                :            :      *</a>
+<a name="1242"><span class="lineNum">    1242 </span>                :            :      * This method uses a QTimer to call QUiLoader in order to load the form via C++.</a>
+<a name="1243"><span class="lineNum">    1243 </span>                :            :      * You only need to call this once. After that you can call openFeatureForm/getFeatureForm</a>
+<a name="1244"><span class="lineNum">    1244 </span>                :            :      * like usual.</a>
+<a name="1245"><span class="lineNum">    1245 </span>                :            :      *</a>
+<a name="1246"><span class="lineNum">    1246 </span>                :            :      * More information here: http://qt-project.org/forums/viewthread/27098/</a>
+<a name="1247"><span class="lineNum">    1247 </span>                :            :      */</a>
+<a name="1248"><span class="lineNum">    1248 </span>                :            :     virtual void preloadForm( const QString &amp;uifile ) = 0;</a>
+<a name="1249"><span class="lineNum">    1249 </span>                :            : </a>
+<a name="1250"><span class="lineNum">    1250 </span>                :            :     /**</a>
+<a name="1251"><span class="lineNum">    1251 </span>                :            :      * This will perform a search in the locator bar</a>
+<a name="1252"><span class="lineNum">    1252 </span>                :            :      * by setting the line edit text to \a searchText</a>
+<a name="1253"><span class="lineNum">    1253 </span>                :            :      * and automatically displaying any results.</a>
+<a name="1254"><span class="lineNum">    1254 </span>                :            :      * \since QGIS 3.10</a>
+<a name="1255"><span class="lineNum">    1255 </span>                :            :      */</a>
+<a name="1256"><span class="lineNum">    1256 </span>                :            :     virtual void locatorSearch( const QString &amp;searchText ) = 0;</a>
+<a name="1257"><span class="lineNum">    1257 </span>                :            : </a>
+<a name="1258"><span class="lineNum">    1258 </span>                :            :     /**</a>
+<a name="1259"><span class="lineNum">    1259 </span>                :            :      * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the</a>
+<a name="1260"><span class="lineNum">    1260 </span>                :            :      * locator.</a>
+<a name="1261"><span class="lineNum">    1261 </span>                :            :      * \warning Plugins which register filters to the locator bar must take care to correctly call</a>
+<a name="1262"><span class="lineNum">    1262 </span>                :            :      * deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.</a>
+<a name="1263"><span class="lineNum">    1263 </span>                :            :      * \see deregisterLocatorFilter()</a>
+<a name="1264"><span class="lineNum">    1264 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1265"><span class="lineNum">    1265 </span>                :            :      */</a>
+<a name="1266"><span class="lineNum">    1266 </span>                :            :     virtual void registerLocatorFilter( QgsLocatorFilter *filter SIP_TRANSFER ) = 0;</a>
+<a name="1267"><span class="lineNum">    1267 </span>                :            : </a>
+<a name="1268"><span class="lineNum">    1268 </span>                :            :     /**</a>
+<a name="1269"><span class="lineNum">    1269 </span>                :            :      * Deregisters a locator \a filter from the app's locator bar and deletes it. Calling this will block whilst</a>
+<a name="1270"><span class="lineNum">    1270 </span>                :            :      * any currently running query is terminated.</a>
+<a name="1271"><span class="lineNum">    1271 </span>                :            :      *</a>
+<a name="1272"><span class="lineNum">    1272 </span>                :            :      * Plugins which register filters to the locator bar must take care to correctly call</a>
+<a name="1273"><span class="lineNum">    1273 </span>                :            :      * deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.</a>
+<a name="1274"><span class="lineNum">    1274 </span>                :            :      *</a>
+<a name="1275"><span class="lineNum">    1275 </span>                :            :      * \see registerLocatorFilter()</a>
+<a name="1276"><span class="lineNum">    1276 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1277"><span class="lineNum">    1277 </span>                :            :      */</a>
+<a name="1278"><span class="lineNum">    1278 </span>                :            :     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;</a>
+<a name="1279"><span class="lineNum">    1279 </span>                :            : </a>
+<a name="1280"><span class="lineNum">    1280 </span>                :            :     /**</a>
+<a name="1281"><span class="lineNum">    1281 </span>                :            :      * Invalidate results from the locator filter.</a>
+<a name="1282"><span class="lineNum">    1282 </span>                :            :      *</a>
+<a name="1283"><span class="lineNum">    1283 </span>                :            :      * This might be useful if the configuration of the filter changed without going through main application settings.</a>
+<a name="1284"><span class="lineNum">    1284 </span>                :            :      *</a>
+<a name="1285"><span class="lineNum">    1285 </span>                :            :      * \since QGIS 3.2</a>
+<a name="1286"><span class="lineNum">    1286 </span>                :            :      */</a>
+<a name="1287"><span class="lineNum">    1287 </span>                :            :     virtual void invalidateLocatorResults() = 0;</a>
+<a name="1288"><span class="lineNum">    1288 </span>                :            : </a>
+<a name="1289"><span class="lineNum">    1289 </span>                :            :     /**</a>
+<a name="1290"><span class="lineNum">    1290 </span>                :            :       * Checks available datum transforms and ask user if several are available and none</a>
+<a name="1291"><span class="lineNum">    1291 </span>                :            :       * is chosen. Dialog is shown only if global option is set accordingly.</a>
+<a name="1292"><span class="lineNum">    1292 </span>                :            :       * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.</a>
+<a name="1293"><span class="lineNum">    1293 </span>                :            :       * \since 3.0</a>
+<a name="1294"><span class="lineNum">    1294 </span>                :            :       */</a>
+<a name="1295"><span class="lineNum">    1295 </span>                :            :     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;</a>
+<a name="1296"><span class="lineNum">    1296 </span>                :            : </a>
+<a name="1297"><span class="lineNum">    1297 </span>                :            :     /**</a>
+<a name="1298"><span class="lineNum">    1298 </span>                :            :      * Returns the application browser model. Using this shared model is more efficient than</a>
+<a name="1299"><span class="lineNum">    1299 </span>                :            :      * creating a new browser model for every use.</a>
+<a name="1300"><span class="lineNum">    1300 </span>                :            :      * \since QGIS 3.4</a>
+<a name="1301"><span class="lineNum">    1301 </span>                :            :      */</a>
+<a name="1302"><span class="lineNum">    1302 </span>                :            :     virtual QgsBrowserGuiModel *browserModel() = 0;</a>
+<a name="1303"><span class="lineNum">    1303 </span>                :            : </a>
+<a name="1304"><span class="lineNum">    1304 </span>                :            :     /**</a>
+<a name="1305"><span class="lineNum">    1305 </span>                :            :      * Sets a GPS \a connection to use within the GPS Panel widget.</a>
+<a name="1306"><span class="lineNum">    1306 </span>                :            :      *</a>
+<a name="1307"><span class="lineNum">    1307 </span>                :            :      * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection</a>
+<a name="1308"><span class="lineNum">    1308 </span>                :            :      * is automatically registered within the QgsApplication::gpsConnectionRegistry().</a>
+<a name="1309"><span class="lineNum">    1309 </span>                :            :      *</a>
+<a name="1310"><span class="lineNum">    1310 </span>                :            :      * \since QGIS 3.16</a>
+<a name="1311"><span class="lineNum">    1311 </span>                :            :      */</a>
+<a name="1312"><span class="lineNum">    1312 </span>                :            :     virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;</a>
+<a name="1313"><span class="lineNum">    1313 </span>                :            : </a>
+<a name="1314"><span class="lineNum">    1314 </span>                :            :   signals:</a>
+<a name="1315"><span class="lineNum">    1315 </span>                :            : </a>
+<a name="1316"><span class="lineNum">    1316 </span>                :            :     /**</a>
+<a name="1317"><span class="lineNum">    1317 </span>                :            :      * Emitted whenever current (selected) layer changes.</a>
+<a name="1318"><span class="lineNum">    1318 </span>                :            :      *  The pointer to layer can be NULLPTR if no layer is selected.</a>
+<a name="1319"><span class="lineNum">    1319 </span>                :            :      */</a>
+<a name="1320"><span class="lineNum">    1320 </span>                :            :     void currentLayerChanged( QgsMapLayer *layer );</a>
+<a name="1321"><span class="lineNum">    1321 </span>                :            : </a>
+<a name="1322"><span class="lineNum">    1322 </span>                :            :     /**</a>
+<a name="1323"><span class="lineNum">    1323 </span>                :            :      * Emitted when the current \a theme is changed so plugins</a>
+<a name="1324"><span class="lineNum">    1324 </span>                :            :      * can change their tool button icons.</a>
+<a name="1325"><span class="lineNum">    1325 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1326"><span class="lineNum">    1326 </span>                :            :     */</a>
+<a name="1327"><span class="lineNum">    1327 </span>                :            :     void currentThemeChanged( const QString &amp;theme );</a>
+<a name="1328"><span class="lineNum">    1328 </span>                :            : </a>
+<a name="1329"><span class="lineNum">    1329 </span>                :            :     /**</a>
+<a name="1330"><span class="lineNum">    1330 </span>                :            :      * Emitted when a new layout \a designer has been opened.</a>
+<a name="1331"><span class="lineNum">    1331 </span>                :            :      * \see layoutDesignerWillBeClosed()</a>
+<a name="1332"><span class="lineNum">    1332 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1333"><span class="lineNum">    1333 </span>                :            :      */</a>
+<a name="1334"><span class="lineNum">    1334 </span>                :            :     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );</a>
+<a name="1335"><span class="lineNum">    1335 </span>                :            : </a>
+<a name="1336"><span class="lineNum">    1336 </span>                :            :     /**</a>
+<a name="1337"><span class="lineNum">    1337 </span>                :            :      * Emitted before a layout \a designer is going to be closed</a>
+<a name="1338"><span class="lineNum">    1338 </span>                :            :      * and deleted.</a>
+<a name="1339"><span class="lineNum">    1339 </span>                :            :      * \see layoutDesignerClosed()</a>
+<a name="1340"><span class="lineNum">    1340 </span>                :            :      * \see layoutDesignerOpened()</a>
+<a name="1341"><span class="lineNum">    1341 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1342"><span class="lineNum">    1342 </span>                :            :      */</a>
+<a name="1343"><span class="lineNum">    1343 </span>                :            :     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );</a>
+<a name="1344"><span class="lineNum">    1344 </span>                :            : </a>
+<a name="1345"><span class="lineNum">    1345 </span>                :            :     /**</a>
+<a name="1346"><span class="lineNum">    1346 </span>                :            :      * Emitted after a layout designer window is closed.</a>
+<a name="1347"><span class="lineNum">    1347 </span>                :            :      * \see layoutDesignerWillBeClosed()</a>
+<a name="1348"><span class="lineNum">    1348 </span>                :            :      * \see layoutDesignerOpened()</a>
+<a name="1349"><span class="lineNum">    1349 </span>                :            :      * \since QGIS 3.0</a>
+<a name="1350"><span class="lineNum">    1350 </span>                :            :      */</a>
+<a name="1351"><span class="lineNum">    1351 </span>                :            :     void layoutDesignerClosed();</a>
+<a name="1352"><span class="lineNum">    1352 </span>                :            : </a>
+<a name="1353"><span class="lineNum">    1353 </span>                :            :     /**</a>
+<a name="1354"><span class="lineNum">    1354 </span>                :            :      * Emitted when the initialization is complete.</a>
+<a name="1355"><span class="lineNum">    1355 </span>                :            :      */</a>
+<a name="1356"><span class="lineNum">    1356 </span>                :            :     void initializationCompleted();</a>
+<a name="1357"><span class="lineNum">    1357 </span>                :            : </a>
+<a name="1358"><span class="lineNum">    1358 </span>                :            :     /**</a>
+<a name="1359"><span class="lineNum">    1359 </span>                :            :      * Emitted when a project file is successfully read.</a>
+<a name="1360"><span class="lineNum">    1360 </span>                :            :      * \note This is useful for plugins that store properties with project files.</a>
+<a name="1361"><span class="lineNum">    1361 </span>                :            :      *       A plugin can connect to this signal. When it is emitted the plugin</a>
+<a name="1362"><span class="lineNum">    1362 </span>                :            :      *       knows to then check the project properties for any relevant state.</a>
+<a name="1363"><span class="lineNum">    1363 </span>                :            :      */</a>
+<a name="1364"><span class="lineNum">    1364 </span>                :            :     void projectRead();</a>
+<a name="1365"><span class="lineNum">    1365 </span>                :            : </a>
+<a name="1366"><span class="lineNum">    1366 </span>                :            :     /**</a>
+<a name="1367"><span class="lineNum">    1367 </span>                :            :      * Emitted when starting an entirely new project.</a>
+<a name="1368"><span class="lineNum">    1368 </span>                :            :      * \note This is similar to projectRead(); plugins might want to be notified</a>
+<a name="1369"><span class="lineNum">    1369 </span>                :            :      *       that they're in a new project. Yes, projectRead() could have been</a>
+<a name="1370"><span class="lineNum">    1370 </span>                :            :      *       overloaded to be used in the case of new projects instead. However,</a>
+<a name="1371"><span class="lineNum">    1371 </span>                :            :      *       it's probably more semantically correct to have an entirely separate</a>
+<a name="1372"><span class="lineNum">    1372 </span>                :            :      *       signal for when this happens.</a>
+<a name="1373"><span class="lineNum">    1373 </span>                :            :      */</a>
+<a name="1374"><span class="lineNum">    1374 </span>                :            :     void newProjectCreated();</a>
+<a name="1375"><span class="lineNum">    1375 </span>                :            : </a>
+<a name="1376"><span class="lineNum">    1376 </span>                :            :     /**</a>
+<a name="1377"><span class="lineNum">    1377 </span>                :            :      * Emitted when a layer has been saved using save as.</a>
+<a name="1378"><span class="lineNum">    1378 </span>                :            :      * \since QGIS 2.7</a>
+<a name="1379"><span class="lineNum">    1379 </span>                :            :      */</a>
+<a name="1380"><span class="lineNum">    1380 </span>                :            :     void layerSavedAs( QgsMapLayer *l, const QString &amp;path );</a>
+<a name="1381"><span class="lineNum">    1381 </span>                :            : </a>
+<a name="1382"><span class="lineNum">    1382 </span>                :            : };</a>
+<a name="1383"><span class="lineNum">    1383 </span>                :            : Q_NOWARN_DEPRECATED_POP</a>
+<a name="1384"><span class="lineNum">    1384 </span>                :            : </a>
+<a name="1385"><span class="lineNum">    1385 </span>                :            : #endif //#ifndef QGISINTERFACE_H</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - gui/codeeditors/qgscodeeditorpython.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">gui/codeeditors</a> - qgscodeeditorpython.cpp<span style="font-size: 80%;"> (source / <a href="qgscodeeditorpython.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">141</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-04 07:08:52</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /***************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :     qgscodeeditorpython.cpp  - A Python editor based on QScintilla</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :     --------------------------------------</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :     Date                 : 06-Oct-2013</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :     Copyright            : (C) 2013 by Salvatore Larosa</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :     Email                : lrssvtml (at) gmail (dot) com</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :  ***************************************************************************</a>
+<a name="8"><span class="lineNum">       8 </span>                :            :  *                                                                         *</a>
+<a name="9"><span class="lineNum">       9 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="10"><span class="lineNum">      10 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *                                                                         *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  ***************************************************************************/</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : #include &quot;qgsapplication.h&quot;</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : #include &quot;qgscodeeditorpython.h&quot;</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #include &quot;qgslogger.h&quot;</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : #include &quot;qgssymbollayerutils.h&quot;</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #include &quot;qgssettings.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;qgis.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : </a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &lt;QWidget&gt;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &lt;QString&gt;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &lt;QFont&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &lt;QUrl&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &lt;QFileInfo&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &lt;QMessageBox&gt;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &lt;QTextStream&gt;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &lt;Qsci/qscilexerpython.h&gt;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &lt;QDesktopServices&gt;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : </a>
+<a name="33"><span class="lineNum">      33 </span>                :<span class="lineNoCov">          0 : QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList&lt;QString&gt; &amp;filenames )</span></a>
+<a name="34"><span class="lineNum">      34 </span>                :<span class="lineNoCov">          0 :   : QgsCodeEditor( parent )</span></a>
+<a name="35"><span class="lineNum">      35 </span>                :<span class="lineNoCov">          0 :   , mAPISFilesList( filenames )</span></a>
+<a name="36"><span class="lineNum">      36 </span>                :<span class="lineNoCov">          0 : {</span></a>
+<a name="37"><span class="lineNum">      37 </span>                :<span class="lineNoCov">          0 :   if ( !parent )</span></a>
+<a name="38"><span class="lineNum">      38 </span>                :            :   {</a>
+<a name="39"><span class="lineNum">      39 </span>                :<span class="lineNoCov">          0 :     setTitle( tr( &quot;Python Editor&quot; ) );</span></a>
+<a name="40"><span class="lineNum">      40 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="41"><span class="lineNum">      41 </span>                :            : </a>
+<a name="42"><span class="lineNum">      42 </span>                :<span class="lineNoCov">          0 :   setCaretWidth( 2 );</span></a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :<span class="lineNoCov">          0 :   QgsCodeEditorPython::initializeLexer();</span></a>
+<a name="45"><span class="lineNum">      45 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="46"><span class="lineNum">      46 </span>                :            : </a>
+<a name="47"><span class="lineNum">      47 </span>                :<span class="lineNoCov">          0 : void QgsCodeEditorPython::initializeLexer()</span></a>
+<a name="48"><span class="lineNum">      48 </span>                :            : {</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :   // current line</a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineNoCov">          0 :   setEdgeMode( QsciScintilla::EdgeLine );</span></a>
+<a name="51"><span class="lineNum">      51 </span>                :<span class="lineNoCov">          0 :   setEdgeColumn( 80 );</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineNoCov">          0 :   setEdgeColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :            : </a>
+<a name="54"><span class="lineNum">      54 </span>                :<span class="lineNoCov">          0 :   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );</span></a>
+<a name="55"><span class="lineNum">      55 </span>                :            : </a>
+<a name="56"><span class="lineNum">      56 </span>                :<span class="lineNoCov">          0 :   QFont font = lexerFont();</span></a>
+<a name="57"><span class="lineNum">      57 </span>                :<span class="lineNoCov">          0 :   const QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );</span></a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :<span class="lineNoCov">          0 :   QsciLexerPython *pyLexer = new QgsQsciLexerPython( this );</span></a>
+<a name="60"><span class="lineNum">      60 </span>                :            : </a>
+<a name="61"><span class="lineNum">      61 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setIndentationWarning( QsciLexerPython::Inconsistent );</span></a>
+<a name="62"><span class="lineNum">      62 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFoldComments( true );</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFoldQuotes( true );</span></a>
+<a name="64"><span class="lineNum">      64 </span>                :            : </a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setDefaultFont( font );</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setDefaultColor( defaultColor );</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );</span></a>
+<a name="68"><span class="lineNum">      68 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFont( font, -1 );</span></a>
+<a name="69"><span class="lineNum">      69 </span>                :            : </a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineNoCov">          0 :   font.setItalic( true );</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFont( font, QsciLexerPython::Comment );</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFont( font, QsciLexerPython::CommentBlock );</span></a>
+<a name="73"><span class="lineNum">      73 </span>                :            : </a>
+<a name="74"><span class="lineNum">      74 </span>                :<span class="lineNoCov">          0 :   font.setItalic( false );</span></a>
+<a name="75"><span class="lineNum">      75 </span>                :<span class="lineNoCov">          0 :   font.setBold( true );</span></a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFont( font, QsciLexerPython::SingleQuotedString );</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setFont( font, QsciLexerPython::DoubleQuotedString );</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :            : </a>
+<a name="79"><span class="lineNum">      79 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( defaultColor, QsciLexerPython::Default );</span></a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerPython::ClassName );</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerPython::FunctionMethodName );</span></a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerPython::Number );</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Operator ), QsciLexerPython::Operator );</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerPython::Identifier );</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerPython::Comment );</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerPython::Keyword );</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Decoration ), QsciLexerPython::Decorator );</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );</span></a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :   pyLexer-&gt;setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineNoCov">          0 :   QsciAPIs *apis = new QsciAPIs( pyLexer );</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :            : </a>
+<a name="96"><span class="lineNum">      96 </span>                :<span class="lineNoCov">          0 :   const QgsSettings settings;</span></a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :<span class="lineNoCov">          0 :   if ( mAPISFilesList.isEmpty() )</span></a>
+<a name="99"><span class="lineNum">      99 </span>                :            :   {</a>
+<a name="100"><span class="lineNum">     100 </span>                :<span class="lineNoCov">          0 :     if ( settings.value( QStringLiteral( &quot;pythonConsole/preloadAPI&quot; ), true ).toBool() )</span></a>
+<a name="101"><span class="lineNum">     101 </span>                :            :     {</a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineNoCov">          0 :       mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( &quot;/python/qsci_apis/pyqgis.pap&quot; );</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :<span class="lineNoCov">          0 :       apis-&gt;loadPrepared( mPapFile );</span></a>
+<a name="104"><span class="lineNum">     104 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineNoCov">          0 :     else if ( settings.value( QStringLiteral( &quot;pythonConsole/usePreparedAPIFile&quot; ), false ).toBool() )</span></a>
+<a name="106"><span class="lineNum">     106 </span>                :            :     {</a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineNoCov">          0 :       apis-&gt;loadPrepared( settings.value( QStringLiteral( &quot;pythonConsole/preparedAPIFile&quot; ) ).toString() );</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="109"><span class="lineNum">     109 </span>                :            :     else</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :     {</a>
+<a name="111"><span class="lineNum">     111 </span>                :<span class="lineNoCov">          0 :       const QStringList apiPaths = settings.value( QStringLiteral( &quot;pythonConsole/userAPI&quot; ) ).toStringList();</span></a>
+<a name="112"><span class="lineNum">     112 </span>                :<span class="lineNoCov">          0 :       for ( const QString &amp;path : apiPaths )</span></a>
+<a name="113"><span class="lineNum">     113 </span>                :            :       {</a>
+<a name="114"><span class="lineNum">     114 </span>                :<span class="lineNoCov">          0 :         if ( !QFileInfo::exists( path ) )</span></a>
+<a name="115"><span class="lineNum">     115 </span>                :            :         {</a>
+<a name="116"><span class="lineNum">     116 </span>                :<span class="lineNoCov">          0 :           QgsDebugMsg( QStringLiteral( &quot;The apis file %1 was not found&quot; ).arg( path ) );</span></a>
+<a name="117"><span class="lineNum">     117 </span>                :<span class="lineNoCov">          0 :         }</span></a>
+<a name="118"><span class="lineNum">     118 </span>                :            :         else</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :         {</a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :           apis-&gt;load( path );</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :            :         }</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :       }</a>
+<a name="123"><span class="lineNum">     123 </span>                :<span class="lineNoCov">          0 :       apis-&gt;prepare();</span></a>
+<a name="124"><span class="lineNum">     124 </span>                :<span class="lineNoCov">          0 :       pyLexer-&gt;setAPIs( apis );</span></a>
+<a name="125"><span class="lineNum">     125 </span>                :<span class="lineNoCov">          0 :     }</span></a>
+<a name="126"><span class="lineNum">     126 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="127"><span class="lineNum">     127 </span>                :<span class="lineNoCov">          0 :   else if ( mAPISFilesList.length() == 1 &amp;&amp; mAPISFilesList[0].right( 3 ) == QLatin1String( &quot;pap&quot; ) )</span></a>
+<a name="128"><span class="lineNum">     128 </span>                :            :   {</a>
+<a name="129"><span class="lineNum">     129 </span>                :<span class="lineNoCov">          0 :     if ( !QFileInfo::exists( mAPISFilesList[0] ) )</span></a>
+<a name="130"><span class="lineNum">     130 </span>                :            :     {</a>
+<a name="131"><span class="lineNum">     131 </span>                :<span class="lineNoCov">          0 :       QgsDebugMsg( QStringLiteral( &quot;The apis file %1 not found&quot; ).arg( mAPISFilesList.at( 0 ) ) );</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :<span class="lineNoCov">          0 :       return;</span></a>
+<a name="133"><span class="lineNum">     133 </span>                :            :     }</a>
+<a name="134"><span class="lineNum">     134 </span>                :<span class="lineNoCov">          0 :     mPapFile = mAPISFilesList[0];</span></a>
+<a name="135"><span class="lineNum">     135 </span>                :<span class="lineNoCov">          0 :     apis-&gt;loadPrepared( mPapFile );</span></a>
+<a name="136"><span class="lineNum">     136 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="137"><span class="lineNum">     137 </span>                :            :   else</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :   {</a>
+<a name="139"><span class="lineNum">     139 </span>                :<span class="lineNoCov">          0 :     for ( const QString &amp;path : mAPISFilesList )</span></a>
+<a name="140"><span class="lineNum">     140 </span>                :            :     {</a>
+<a name="141"><span class="lineNum">     141 </span>                :<span class="lineNoCov">          0 :       if ( !QFileInfo::exists( path ) )</span></a>
+<a name="142"><span class="lineNum">     142 </span>                :            :       {</a>
+<a name="143"><span class="lineNum">     143 </span>                :<span class="lineNoCov">          0 :         QgsDebugMsg( QStringLiteral( &quot;The apis file %1 was not found&quot; ).arg( path ) );</span></a>
+<a name="144"><span class="lineNum">     144 </span>                :<span class="lineNoCov">          0 :       }</span></a>
+<a name="145"><span class="lineNum">     145 </span>                :            :       else</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :       {</a>
+<a name="147"><span class="lineNum">     147 </span>                :<span class="lineNoCov">          0 :         apis-&gt;load( path );</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :            :       }</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :     }</a>
+<a name="150"><span class="lineNum">     150 </span>                :<span class="lineNoCov">          0 :     apis-&gt;prepare();</span></a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 :     pyLexer-&gt;setAPIs( apis );</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            :   }</a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :   setLexer( pyLexer );</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :            : </a>
+<a name="155"><span class="lineNum">     155 </span>                :<span class="lineNoCov">          0 :   const int threshold = settings.value( QStringLiteral( &quot;pythonConsole/autoCompThreshold&quot; ), 2 ).toInt();</span></a>
+<a name="156"><span class="lineNum">     156 </span>                :<span class="lineNoCov">          0 :   setAutoCompletionThreshold( threshold );</span></a>
+<a name="157"><span class="lineNum">     157 </span>                :<span class="lineNoCov">          0 :   if ( !settings.value( &quot;pythonConsole/autoCompleteEnabled&quot;, true ).toBool() )</span></a>
+<a name="158"><span class="lineNum">     158 </span>                :            :   {</a>
+<a name="159"><span class="lineNum">     159 </span>                :<span class="lineNoCov">          0 :     setAutoCompletionSource( AcsNone );</span></a>
+<a name="160"><span class="lineNum">     160 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="161"><span class="lineNum">     161 </span>                :            :   else</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :   {</a>
+<a name="163"><span class="lineNum">     163 </span>                :<span class="lineNoCov">          0 :     const QString autoCompleteSource = settings.value( QStringLiteral( &quot;pythonConsole/autoCompleteSource&quot; ), QStringLiteral( &quot;fromAPI&quot; ) ).toString();</span></a>
+<a name="164"><span class="lineNum">     164 </span>                :<span class="lineNoCov">          0 :     if ( autoCompleteSource == QLatin1String( &quot;fromDoc&quot; ) )</span></a>
+<a name="165"><span class="lineNum">     165 </span>                :<span class="lineNoCov">          0 :       setAutoCompletionSource( AcsDocument );</span></a>
+<a name="166"><span class="lineNum">     166 </span>                :<span class="lineNoCov">          0 :     else if ( autoCompleteSource == QLatin1String( &quot;fromDocAPI&quot; ) )</span></a>
+<a name="167"><span class="lineNum">     167 </span>                :<span class="lineNoCov">          0 :       setAutoCompletionSource( AcsAll );</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :            :     else</a>
+<a name="169"><span class="lineNum">     169 </span>                :<span class="lineNoCov">          0 :       setAutoCompletionSource( AcsAPIs );</span></a>
+<a name="170"><span class="lineNum">     170 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="171"><span class="lineNum">     171 </span>                :            : </a>
+<a name="172"><span class="lineNum">     172 </span>                :<span class="lineNoCov">          0 :   setLineNumbersVisible( true );</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :<span class="lineNoCov">          0 :   setFoldingVisible( true );</span></a>
+<a name="174"><span class="lineNum">     174 </span>                :<span class="lineNoCov">          0 :   setIndentationsUseTabs( false );</span></a>
+<a name="175"><span class="lineNum">     175 </span>                :<span class="lineNoCov">          0 :   setIndentationGuides( true );</span></a>
+<a name="176"><span class="lineNum">     176 </span>                :            : </a>
+<a name="177"><span class="lineNum">     177 </span>                :<span class="lineNoCov">          0 :   runPostLexerConfigurationTasks();</span></a>
+<a name="178"><span class="lineNum">     178 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="179"><span class="lineNum">     179 </span>                :            : </a>
+<a name="180"><span class="lineNum">     180 </span>                :<span class="lineNoCov">          0 : void QgsCodeEditorPython::autoComplete()</span></a>
+<a name="181"><span class="lineNum">     181 </span>                :            : {</a>
+<a name="182"><span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :   switch ( autoCompletionSource() )</span></a>
+<a name="183"><span class="lineNum">     183 </span>                :            :   {</a>
+<a name="184"><span class="lineNum">     184 </span>                :            :     case AcsDocument:</a>
+<a name="185"><span class="lineNum">     185 </span>                :<span class="lineNoCov">          0 :       autoCompleteFromDocument();</span></a>
+<a name="186"><span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :            :     case AcsAPIs:</a>
+<a name="189"><span class="lineNum">     189 </span>                :<span class="lineNoCov">          0 :       autoCompleteFromAPIs();</span></a>
+<a name="190"><span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="191"><span class="lineNum">     191 </span>                :            : </a>
+<a name="192"><span class="lineNum">     192 </span>                :            :     case AcsAll:</a>
+<a name="193"><span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 :       autoCompleteFromAll();</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="195"><span class="lineNum">     195 </span>                :            : </a>
+<a name="196"><span class="lineNum">     196 </span>                :            :     case AcsNone:</a>
+<a name="197"><span class="lineNum">     197 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="198"><span class="lineNum">     198 </span>                :            :   }</a>
+<a name="199"><span class="lineNum">     199 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="200"><span class="lineNum">     200 </span>                :            : </a>
+<a name="201"><span class="lineNum">     201 </span>                :<span class="lineNoCov">          0 : void QgsCodeEditorPython::loadAPIs( const QList&lt;QString&gt; &amp;filenames )</span></a>
+<a name="202"><span class="lineNum">     202 </span>                :            : {</a>
+<a name="203"><span class="lineNum">     203 </span>                :<span class="lineNoCov">          0 :   mAPISFilesList = filenames;</span></a>
+<a name="204"><span class="lineNum">     204 </span>                :            :   //QgsDebugMsg( QStringLiteral( &quot;The apis files: %1&quot; ).arg( mAPISFilesList[0] ) );</a>
+<a name="205"><span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 :   initializeLexer();</span></a>
+<a name="206"><span class="lineNum">     206 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="207"><span class="lineNum">     207 </span>                :            : </a>
+<a name="208"><span class="lineNum">     208 </span>                :<span class="lineNoCov">          0 : bool QgsCodeEditorPython::loadScript( const QString &amp;script )</span></a>
+<a name="209"><span class="lineNum">     209 </span>                :            : {</a>
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineNoCov">          0 :   QgsDebugMsgLevel( QStringLiteral( &quot;The script file: %1&quot; ).arg( script ), 2 );</span></a>
+<a name="211"><span class="lineNum">     211 </span>                :<span class="lineNoCov">          0 :   QFile file( script );</span></a>
+<a name="212"><span class="lineNum">     212 </span>                :<span class="lineNoCov">          0 :   if ( !file.open( QIODevice::ReadOnly ) )</span></a>
+<a name="213"><span class="lineNum">     213 </span>                :            :   {</a>
+<a name="214"><span class="lineNum">     214 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :            :   }</a>
+<a name="216"><span class="lineNum">     216 </span>                :            : </a>
+<a name="217"><span class="lineNum">     217 </span>                :<span class="lineNoCov">          0 :   QTextStream in( &amp;file );</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            : </a>
+<a name="219"><span class="lineNum">     219 </span>                :<span class="lineNoCov">          0 :   setText( in.readAll().trimmed() );</span></a>
+<a name="220"><span class="lineNum">     220 </span>                :<span class="lineNoCov">          0 :   file.close();</span></a>
+<a name="221"><span class="lineNum">     221 </span>                :            : </a>
+<a name="222"><span class="lineNum">     222 </span>                :<span class="lineNoCov">          0 :   initializeLexer();</span></a>
+<a name="223"><span class="lineNum">     223 </span>                :<span class="lineNoCov">          0 :   return true;</span></a>
+<a name="224"><span class="lineNum">     224 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="225"><span class="lineNum">     225 </span>                :            : </a>
+<a name="226"><span class="lineNum">     226 </span>                :<span class="lineNoCov">          0 : void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()</span></a>
+<a name="227"><span class="lineNum">     227 </span>                :            : {</a>
+<a name="228"><span class="lineNum">     228 </span>                :<span class="lineNoCov">          0 :   if ( !hasSelectedText() )</span></a>
+<a name="229"><span class="lineNum">     229 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="230"><span class="lineNum">     230 </span>                :            : </a>
+<a name="231"><span class="lineNum">     231 </span>                :<span class="lineNoCov">          0 :   QString text = selectedText();</span></a>
+<a name="232"><span class="lineNum">     232 </span>                :<span class="lineNoCov">          0 :   text = text.replace( QLatin1String( &quot;&gt;&gt;&gt; &quot; ), QString() ).replace( QLatin1String( &quot;... &quot; ), QString() ).trimmed(); // removing prompts</span></a>
+<a name="233"><span class="lineNum">     233 </span>                :<span class="lineNoCov">          0 :   const QString version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );</span></a>
+<a name="234"><span class="lineNum">     234 </span>                :<span class="lineNoCov">          0 :   QDesktopServices::openUrl( QUrl( QStringLiteral( &quot;https://qgis.org/pyqgis/%1/search.html?q=%2&quot; ).arg( version, text ) ) );</span></a>
+<a name="235"><span class="lineNum">     235 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="236"><span class="lineNum">     236 </span>                :            : </a>
+<a name="237"><span class="lineNum">     237 </span>                :            : ///@cond PRIVATE</a>
+<a name="238"><span class="lineNum">     238 </span>                :            : //</a>
+<a name="239"><span class="lineNum">     239 </span>                :            : // QgsQsciLexerPython</a>
+<a name="240"><span class="lineNum">     240 </span>                :            : //</a>
+<a name="241"><span class="lineNum">     241 </span>                :<span class="lineNoCov">          0 : QgsQsciLexerPython::QgsQsciLexerPython( QObject *parent )</span></a>
+<a name="242"><span class="lineNum">     242 </span>                :<span class="lineNoCov">          0 :   : QsciLexerPython( parent )</span></a>
+<a name="243"><span class="lineNum">     243 </span>                :<span class="lineNoCov">          0 : {</span></a>
+<a name="244"><span class="lineNum">     244 </span>                :            : </a>
+<a name="245"><span class="lineNum">     245 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="246"><span class="lineNum">     246 </span>                :            : </a>
+<a name="247"><span class="lineNum">     247 </span>                :<span class="lineNoCov">          0 : const char *QgsQsciLexerPython::keywords( int set ) const</span></a>
+<a name="248"><span class="lineNum">     248 </span>                :            : {</a>
+<a name="249"><span class="lineNum">     249 </span>                :<span class="lineNoCov">          0 :   if ( set == 1 )</span></a>
+<a name="250"><span class="lineNum">     250 </span>                :            :   {</a>
+<a name="251"><span class="lineNum">     251 </span>                :<span class="lineNoCov">          0 :     return &quot;True False and as assert break class continue def del elif else except exec &quot;</span></a>
+<a name="252"><span class="lineNum">     252 </span>                :            :            &quot;finally for from global if import in is lambda None not or pass &quot;</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :            &quot;print raise return try while with yield&quot;;</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :   }</a>
+<a name="255"><span class="lineNum">     255 </span>                :            : </a>
+<a name="256"><span class="lineNum">     256 </span>                :<span class="lineNoCov">          0 :   return QsciLexerPython::keywords( set );</span></a>
+<a name="257"><span class="lineNum">     257 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="258"><span class="lineNum">     258 </span>                :            : ///@endcond PRIVATE</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
