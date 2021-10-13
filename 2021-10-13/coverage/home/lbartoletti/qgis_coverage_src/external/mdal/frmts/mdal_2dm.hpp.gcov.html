@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - /home/lbartoletti/qgis_coverage_src/external/mdal/frmts/mdal_2dm.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../index.html">top level</a> - <a href="index.html">home/lbartoletti/qgis_coverage_src/external/mdal/frmts</a> - mdal_2dm.hpp<span style="font-size: 80%;"> (source / <a href="mdal_2dm.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-13 17:24:53</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /*</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :  MDAL - Mesh Data Abstraction Library (MIT License)</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : */</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : #ifndef MDAL_2DM_HPP</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : #define MDAL_2DM_HPP</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : </a>
+<a name="9"><span class="lineNum">       9 </span>                :            : #include &lt;string&gt;</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : #include &lt;memory&gt;</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : </a>
+<a name="12"><span class="lineNum">      12 </span>                :            : #include &quot;mdal_data_model.hpp&quot;</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : #include &quot;mdal_memory_data_model.hpp&quot;</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : #include &quot;mdal.h&quot;</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : #include &quot;mdal_driver.hpp&quot;</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : </a>
+<a name="17"><span class="lineNum">      17 </span>                :            : namespace MDAL</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : {</a>
+<a name="19"><span class="lineNum">      19 </span>                :            :   class Mesh2dm: public MemoryMesh</a>
+<a name="20"><span class="lineNum">      20 </span>                :            :   {</a>
+<a name="21"><span class="lineNum">      21 </span>                :            :     public:</a>
+<a name="22"><span class="lineNum">      22 </span>                :            :       Mesh2dm( size_t faceVerticesMaximumCount,</a>
+<a name="23"><span class="lineNum">      23 </span>                :            :                const std::string &amp;uri,</a>
+<a name="24"><span class="lineNum">      24 </span>                :            :                const std::map&lt;size_t, size_t&gt; vertexIDtoIndex</a>
+<a name="25"><span class="lineNum">      25 </span>                :            :              );</a>
+<a name="26"><span class="lineNum">      26 </span>                :            :       ~Mesh2dm() override;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :            : </a>
+<a name="29"><span class="lineNum">      29 </span>                :            :       //! HYDRO_AS-2D supports gaps in the vertex indexing,</a>
+<a name="30"><span class="lineNum">      30 </span>                :            :       //! but we use continuos array of vertices in MDAL</a>
+<a name="31"><span class="lineNum">      31 </span>                :            :       //! \param vertexID internal index/ID of the vertex that native format uses</a>
+<a name="32"><span class="lineNum">      32 </span>                :            :       //! \returns index of the vertex in the continuous array of vertices we returned by readVertices().</a>
+<a name="33"><span class="lineNum">      33 </span>                :            :       //!          For invalid vertexID it is returned index that is out of vertices array bounds.</a>
+<a name="34"><span class="lineNum">      34 </span>                :            :       virtual size_t vertexIndex( size_t vertexID ) const;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : </a>
+<a name="36"><span class="lineNum">      36 </span>                :            :       //! Returns maximum vertex ID.</a>
+<a name="37"><span class="lineNum">      37 </span>                :            :       //! For meshes without gaps in vertex indexing, it is vertex count - 1</a>
+<a name="38"><span class="lineNum">      38 </span>                :            :       virtual size_t maximumVertexId() const;</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<a name="40"><span class="lineNum">      40 </span>                :            :     private:</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :       //! 2dm supports &quot;gaps&quot; in the mesh indexing</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :       //! Store only the indices that have different index and ID</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :       //! https://github.com/lutraconsulting/MDAL/issues/51</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :       std::map&lt;size_t, size_t&gt; mVertexIDtoIndex;</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :   };</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : </a>
+<a name="47"><span class="lineNum">      47 </span>                :            :   /**</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :    * 2DM format specification used in TUFLOW, HYDRO_AS-2D and BASEMENET solvers</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :    * Text file format representing mesh vertices (ND) and faces (E**)</a>
+<a name="50"><span class="lineNum">      50 </span>                :            :    * ND id x y z</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :    * The format supports lines, triangles and quads, where the elememts could be</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :    * stored with some intermediate points (e.g. triangle defined by 6 vertices, vertices</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :    * and the middle of the edges) We do support only simple definition, so E6T, E8Q and E9Q</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :    * are not supported.</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :    * E3T id 1 2 3 mat_id -&gt; face type, id, vertex indices ..., material index</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :    *</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :    * full specification here: https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :    *</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :    * This will process as many material IDs as promised by the NUM_MATERIALS_PER_ELEM tag and add them as face</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :    * dataset groups. The naming for these groups is &quot;Material ID&quot; for the first, &quot;Bed Elevation (Face)&quot; for the</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :    * second, and finally &quot;Auxiliary Material ID &lt;X&gt;&quot; for any subsequent materials, X being a counter to ensure</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :    * unique group names:</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :    * E** id 1 2 3 [Material ID] [Bed Elevation (Face)] [Auxiliary Material ID 1] [Auxiliary Material ID 2] ...</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :    * If the NUM_MATERIALS_PER_ELEM tag is not provided, a fallback mode is used that will only check for the</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :    * second MATID column and add it under the name &quot;Bed Elevation (Face)&quot; if found.</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :    * Noe that this is purely a compatibility mode for BASEMENT 3.x releases; NUM_MATERIALS_... is a required</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :    * tag according to the 2DM specification.</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :    *</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :    * Note that some 2dm formats do have some extra columns after mat_id column with</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :    * data with unknown origin/name (e.g. tests/data/2dm/regular_grid.2dm)</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :    *</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :    * HYDRO_AS-2D also allows gaps in vertex indexing. In this case we support only files</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :    * where the vertices are sorted by ID in the source file (limitation of the implementation)</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :    *</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :    * Vertex/Face IDs should be indexed from 1. We support indexing from 0 for datasets in xmdf format,</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :    * but not for ascii dat format (since the loop is from 0 to maximumVertexId() which is in this case</a>
+<a name="77"><span class="lineNum">      77 </span>                :            :    * numberical_limits&lt;size_t&gt;::max(); (limitation of the implementation)</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :    */</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :   class Driver2dm: public Driver</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :   {</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :     public:</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :       Driver2dm();</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :       ~Driver2dm() override;</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :       Driver2dm *create() override;</a>
+<a name="85"><span class="lineNum">      85 </span>                :            : </a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :       int faceVerticesMaximumCount() const override {return 6;}</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :            : </a>
+<a name="88"><span class="lineNum">      88 </span>                :            :       bool canReadMesh( const std::string &amp;uri ) override;</a>
+<a name="89"><span class="lineNum">      89 </span>                :            :       std::unique_ptr&lt; Mesh &gt; load( const std::string &amp;meshFile, const std::string &amp;meshName = &quot;&quot; ) override;</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :       void save( const std::string &amp;fileName, const std::string &amp;, Mesh *mesh ) override;</a>
+<a name="91"><span class="lineNum">      91 </span>                :            : </a>
+<a name="92"><span class="lineNum">      92 </span>                :            :       std::string saveMeshOnFileSuffix() const override;</a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :            :     private:</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :       std::string mMeshFile;</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   };</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            : } // namespace MDAL</a>
+<a name="99"><span class="lineNum">      99 </span>                :            : #endif //MDAL_2DM_HPP</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

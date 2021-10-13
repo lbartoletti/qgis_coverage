@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - core/layout/qgslayoutobject.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">core/layout</a> - qgslayoutobject.cpp<span style="font-size: 80%;"> (source / <a href="qgslayoutobject.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">133</td>
+            <td class="headerCovTableEntryLo">0.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-13 17:24:53</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /***************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :                             qgslayoutobject.cpp</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :                              -------------------</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :     begin                : June 2017</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :     copyright            : (C) 2017 by Nyall Dawson</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :     email                : nyall dot dawson at gmail dot com</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :  ***************************************************************************/</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : </a>
+<a name="9"><span class="lineNum">       9 </span>                :            : /***************************************************************************</a>
+<a name="10"><span class="lineNum">      10 </span>                :            :  *                                                                         *</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="15"><span class="lineNum">      15 </span>                :            :  *                                                                         *</a>
+<a name="16"><span class="lineNum">      16 </span>                :            :  ***************************************************************************/</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : </a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #include &lt;QPainter&gt;</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #include &quot;qgslayout.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;qgslayoutrendercontext.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;qgslayoutreportcontext.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;qgslayoutobject.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;qgsfeedback.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;qgsexpressioncontextutils.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : </a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :<span class="lineCov">         32 : QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;</span></a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :<span class="lineNoCov">          0 : void QgsLayoutObject::initPropertyDefinitions()</span></a>
+<a name="31"><span class="lineNum">      31 </span>                :            : {</a>
+<a name="32"><span class="lineNum">      32 </span>                :<span class="lineNoCov">          0 :   if ( !sPropertyDefinitions.isEmpty() )</span></a>
+<a name="33"><span class="lineNum">      33 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="34"><span class="lineNum">      34 </span>                :            : </a>
+<a name="35"><span class="lineNum">      35 </span>                :<span class="lineNoCov">          0 :   sPropertyDefinitions = QgsPropertiesDefinition</span></a>
+<a name="36"><span class="lineNum">      36 </span>                :<span class="lineNoCov">          0 :   {</span></a>
+<a name="37"><span class="lineNum">      37 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::TestProperty, QgsPropertyDefinition( &quot;dataDefinedProperty&quot;, QgsPropertyDefinition::DataTypeString, &quot;invalid property&quot;, QString() ) },</span></a>
+<a name="38"><span class="lineNum">      38 </span>                :<span class="lineNoCov">          0 :     {</span></a>
+<a name="39"><span class="lineNum">      39 </span>                :<span class="lineNoCov">          0 :       QgsLayoutObject::PresetPaperSize, QgsPropertyDefinition( &quot;dataDefinedPaperSize&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Paper size&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;A5&lt;/b&gt;|&lt;b&gt;A4&lt;/b&gt;|&lt;b&gt;A3&lt;/b&gt;|&lt;b&gt;A2&lt;/b&gt;|&lt;b&gt;A1&lt;/b&gt;|&lt;b&gt;A0&lt;/b&gt;&quot;</span></a>
+<a name="40"><span class="lineNum">      40 </span>                :            :           &quot;|&lt;b&gt;B5&lt;/b&gt;|&lt;b&gt;B4&lt;/b&gt;|&lt;b&gt;B3&lt;/b&gt;|&lt;b&gt;B2&lt;/b&gt;|&lt;b&gt;B1&lt;/b&gt;|&lt;b&gt;B0&lt;/b&gt;&quot;</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :           &quot;|&lt;b&gt;Legal&lt;/b&gt;|&lt;b&gt;Ansi A&lt;/b&gt;|&lt;b&gt;Ansi B&lt;/b&gt;|&lt;b&gt;Ansi C&lt;/b&gt;|&lt;b&gt;Ansi D&lt;/b&gt;|&lt;b&gt;Ansi E&lt;/b&gt;&quot;</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :           &quot;|&lt;b&gt;Arch A&lt;/b&gt;|&lt;b&gt;Arch B&lt;/b&gt;|&lt;b&gt;Arch C&lt;/b&gt;|&lt;b&gt;Arch D&lt;/b&gt;|&lt;b&gt;Arch E&lt;/b&gt;|&lt;b&gt;Arch E1&lt;/b&gt;]&quot;</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :                                                                                                                                                                                                    ) )</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :     },</a>
+<a name="45"><span class="lineNum">      45 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PaperWidth, QgsPropertyDefinition( &quot;dataDefinedPaperWidth&quot;, QObject::tr( &quot;Page width&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="46"><span class="lineNum">      46 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PaperHeight, QgsPropertyDefinition( &quot;dataDefinedPaperHeight&quot;, QObject::tr( &quot;Page height&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="47"><span class="lineNum">      47 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::NumPages, QgsPropertyDefinition( &quot;dataDefinedNumPages&quot;, QObject::tr( &quot;Number of pages&quot; ), QgsPropertyDefinition::IntegerPositive ) },</span></a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PaperOrientation, QgsPropertyDefinition( &quot;dataDefinedPaperOrientation&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Symbol size&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;portrait&lt;/b&gt;|&lt;b&gt;landscape&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PageNumber, QgsPropertyDefinition( &quot;dataDefinedPageNumber&quot;, QObject::tr( &quot;Page number&quot; ), QgsPropertyDefinition::IntegerPositive ) },</span></a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PositionX, QgsPropertyDefinition( &quot;dataDefinedPositionX&quot;, QObject::tr( &quot;Position (X)&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="51"><span class="lineNum">      51 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PositionY, QgsPropertyDefinition( &quot;dataDefinedPositionY&quot;, QObject::tr( &quot;Position (Y)&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ItemWidth, QgsPropertyDefinition( &quot;dataDefinedWidth&quot;, QObject::tr( &quot;Width&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ItemHeight, QgsPropertyDefinition( &quot;dataDefinedHeight&quot;, QObject::tr( &quot;Height&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="54"><span class="lineNum">      54 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ItemRotation, QgsPropertyDefinition( &quot;dataDefinedRotation&quot;, QObject::tr( &quot;Rotation angle&quot; ), QgsPropertyDefinition::Rotation ) },</span></a>
+<a name="55"><span class="lineNum">      55 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::Transparency, QgsPropertyDefinition( &quot;dataDefinedTransparency&quot;, QObject::tr( &quot;Transparency&quot; ), QgsPropertyDefinition::Opacity ) },</span></a>
+<a name="56"><span class="lineNum">      56 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::Opacity, QgsPropertyDefinition( &quot;dataDefinedOpacity&quot;, QObject::tr( &quot;Opacity&quot; ), QgsPropertyDefinition::Opacity ) },</span></a>
+<a name="57"><span class="lineNum">      57 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::BlendMode, QgsPropertyDefinition( &quot;dataDefinedBlendMode&quot;, QObject::tr( &quot;Blend mode&quot; ), QgsPropertyDefinition::BlendMode ) },</span></a>
+<a name="58"><span class="lineNum">      58 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ExcludeFromExports, QgsPropertyDefinition( &quot;dataDefinedExcludeExports&quot;, QObject::tr( &quot;Exclude item from exports&quot; ), QgsPropertyDefinition::Boolean ) },</span></a>
+<a name="59"><span class="lineNum">      59 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::FrameColor, QgsPropertyDefinition( &quot;dataDefinedFrameColor&quot;, QObject::tr( &quot;Frame color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="60"><span class="lineNum">      60 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::BackgroundColor, QgsPropertyDefinition( &quot;dataDefinedBackgroundColor&quot;, QObject::tr( &quot;Background color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="61"><span class="lineNum">      61 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapRotation, QgsPropertyDefinition( &quot;dataDefinedMapRotation&quot;, QObject::tr( &quot;Map rotation&quot; ), QgsPropertyDefinition::Rotation ) },</span></a>
+<a name="62"><span class="lineNum">      62 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapScale, QgsPropertyDefinition( &quot;dataDefinedMapScale&quot;, QObject::tr( &quot;Map scale&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapXMin, QgsPropertyDefinition( &quot;dataDefinedMapXMin&quot;, QObject::tr( &quot;Extent minimum X&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="64"><span class="lineNum">      64 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapYMin, QgsPropertyDefinition( &quot;dataDefinedMapYMin&quot;, QObject::tr( &quot;Extent minimum Y&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapXMax, QgsPropertyDefinition( &quot;dataDefinedMapXMax&quot;, QObject::tr( &quot;Extent maximum X&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapYMax, QgsPropertyDefinition( &quot;dataDefinedMapYMax&quot;, QObject::tr( &quot;Extent maximum Y&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapLabelMargin, QgsPropertyDefinition( &quot;dataDefinedMapLabelMargin&quot;, QObject::tr( &quot;Label margin&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="68"><span class="lineNum">      68 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapAtlasMargin, QgsPropertyDefinition( &quot;dataDefinedMapAtlasMargin&quot;, QObject::tr( &quot;Atlas margin&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="69"><span class="lineNum">      69 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapLayers, QgsPropertyDefinition( &quot;dataDefinedMapLayers&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map Layers&quot; ), tr( &quot;list of map layer names separated by | characters&quot; ) ) },</span></a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapStylePreset, QgsPropertyDefinition( &quot;dataDefinedMapStylePreset&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map theme&quot; ), tr( &quot;name of an existing map theme (case-sensitive)&quot; ) ) },</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridEnabled, QgsPropertyDefinition( &quot;dataDefinedMapGridEnabled&quot;, QObject::tr( &quot;Grid enabled&quot; ), QgsPropertyDefinition::Boolean ) },</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridIntervalX, QgsPropertyDefinition( &quot;dataDefinedMapGridIntervalX&quot;, QObject::tr( &quot;Grid interval X&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridIntervalY, QgsPropertyDefinition( &quot;dataDefinedMapGridIntervalY&quot;, QObject::tr( &quot;Grid interval Y&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="74"><span class="lineNum">      74 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridOffsetX, QgsPropertyDefinition( &quot;dataDefinedMapGridOffsetX&quot;, QObject::tr( &quot;Grid offset X&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="75"><span class="lineNum">      75 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridOffsetY, QgsPropertyDefinition( &quot;dataDefinedMapGridOffsetY&quot;, QObject::tr( &quot;Grid offset Y&quot; ), QgsPropertyDefinition::Double ) },</span></a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameSize, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameSize&quot;, QObject::tr( &quot;Grid frame size&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameLineThickness, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameLineThickness&quot;, QObject::tr( &quot;Grid frame line thickness&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridCrossSize, QgsPropertyDefinition( &quot;dataDefinedMapGridCrossSize&quot;, QObject::tr( &quot;Grid cross size&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameMargin, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameMargin&quot;, QObject::tr( &quot;Grid frame margin&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridLabelDistance, QgsPropertyDefinition( &quot;dataDefinedMapGridLabelDistance&quot;, QObject::tr( &quot;Grid label distance&quot; ), QgsPropertyDefinition::DoublePositive ) },</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridAnnotationDisplayLeft, QgsPropertyDefinition( &quot;dataDefinedMapGridAnnotationDisplayLeft&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid annotation display left&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridAnnotationDisplayRight, QgsPropertyDefinition( &quot;dataDefinedMapGridAnnotationDisplayRight&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid annotation display right&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridAnnotationDisplayTop, QgsPropertyDefinition( &quot;dataDefinedMapGridAnnotationDisplayTop&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid annotation display top&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridAnnotationDisplayBottom, QgsPropertyDefinition( &quot;dataDefinedMapGridAnnotationDisplayBottom&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid annotation display bottom&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameDivisionsLeft, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameDivisionsLeft&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid frame divisions display left&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameDivisionsRight, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameDivisionsRight&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid frame divisions display right&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameDivisionsTop, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameDivisionsTop&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid frame divisions display top&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapGridFrameDivisionsBottom, QgsPropertyDefinition( &quot;dataDefinedMapGridFrameDivisionsBottom&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map grid frame divisions display bottom&quot; ), QObject::tr( &quot;string &quot; ) + QLatin1String( &quot;[&lt;b&gt;all&lt;/b&gt;|&lt;b&gt;x_only&lt;/b&gt;|&lt;b&gt;y_only&lt;/b&gt;|&lt;b&gt;disabled&lt;/b&gt;]&quot; ) ) },</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PictureSource, QgsPropertyDefinition( &quot;dataDefinedSource&quot;, QObject::tr( &quot;Picture source (URL)&quot; ), QgsPropertyDefinition::String ) },</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::SourceUrl, QgsPropertyDefinition( &quot;dataDefinedSourceUrl&quot;, QObject::tr( &quot;Source URL&quot; ), QgsPropertyDefinition::String ) },</span></a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PictureSvgBackgroundColor, QgsPropertyDefinition( &quot;dataDefinedSvgBackgroundColor&quot;, QObject::tr( &quot;SVG background color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PictureSvgStrokeColor, QgsPropertyDefinition( &quot;dataDefinedSvgStrokeColor&quot;, QObject::tr( &quot;SVG stroke color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::PictureSvgStrokeWidth, QgsPropertyDefinition( &quot;dataDefinedSvgStrokeWidth&quot;, QObject::tr( &quot;SVG stroke width&quot; ), QgsPropertyDefinition::StrokeWidth ) },</span></a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::LegendTitle, QgsPropertyDefinition( &quot;dataDefinedLegendTitle&quot;, QObject::tr( &quot;Legend title&quot; ), QgsPropertyDefinition::String ) },</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::LegendColumnCount, QgsPropertyDefinition( &quot;dataDefinedLegendColumns&quot;, QObject::tr( &quot;Number of columns&quot; ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },</span></a>
+<a name="96"><span class="lineNum">      96 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ScalebarFillColor, QgsPropertyDefinition( &quot;dataDefinedScalebarFill&quot;, QObject::tr( &quot;Fill color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="97"><span class="lineNum">      97 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ScalebarFillColor2, QgsPropertyDefinition( &quot;dataDefinedScalebarFill2&quot;, QObject::tr( &quot;Secondary fill color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="98"><span class="lineNum">      98 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ScalebarLineColor, QgsPropertyDefinition( &quot;dataDefinedScalebarLineColor&quot;, QObject::tr( &quot;Line color&quot; ), QgsPropertyDefinition::ColorWithAlpha ) },</span></a>
+<a name="99"><span class="lineNum">      99 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( &quot;dataDefinedScalebarLineWidth&quot;, QObject::tr( &quot;Line width&quot; ), QgsPropertyDefinition::StrokeWidth ) },</span></a>
+<a name="100"><span class="lineNum">     100 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( &quot;dataDefinedAttributeTableSourceLayer&quot;, QObject::tr( &quot;Table source layer&quot; ), QgsPropertyDefinition::String ) },</span></a>
+<a name="101"><span class="lineNum">     101 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::MapCrs, QgsPropertyDefinition( &quot;dataDefinedCrs&quot;, QgsPropertyDefinition::DataTypeString, QObject::tr( &quot;Map CRS&quot; ), QObject::tr( &quot;string representing a CRS, either an authority/id pair (e.g. \&quot;EPSG:4326\&quot;), a proj string prefixes by \&quot;PROJ:\&quot; (e.g. \&quot;PROJ: +proj=...\&quot;) or a WKT string prefixed by \&quot;WKT:\&quot; (e.g. \&quot;WKT:GEOGCS[\&quot;WGS 84\&quot;...)&quot; ) ) },</span></a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( &quot;dataDefinedStartDateTime&quot;, QObject::tr( &quot;Temporal range start date / time&quot; ), QgsPropertyDefinition::DateTime ) },</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :<span class="lineNoCov">          0 :     { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( &quot;dataDefinedEndDateTime&quot;, QObject::tr( &quot;Temporal range end date / time&quot; ), QgsPropertyDefinition::DateTime ) },</span></a>
+<a name="104"><span class="lineNum">     104 </span>                :            :   };</a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="106"><span class="lineNum">     106 </span>                :            : </a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineNoCov">          0 : const QgsPropertiesDefinition &amp;QgsLayoutObject::propertyDefinitions()</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :            : {</a>
+<a name="109"><span class="lineNum">     109 </span>                :<span class="lineNoCov">          0 :   QgsLayoutObject::initPropertyDefinitions();</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :<span class="lineNoCov">          0 :   return sPropertyDefinitions;</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :            : }</a>
+<a name="112"><span class="lineNum">     112 </span>                :            : </a>
+<a name="113"><span class="lineNum">     113 </span>                :<span class="lineNoCov">          0 : bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::DataDefinedProperty property )</span></a>
+<a name="114"><span class="lineNum">     114 </span>                :            : {</a>
+<a name="115"><span class="lineNum">     115 </span>                :<span class="lineNoCov">          0 :   switch ( property )</span></a>
+<a name="116"><span class="lineNum">     116 </span>                :            :   {</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :     case QgsLayoutObject::SourceUrl:</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :     case QgsLayoutObject::AttributeTableSourceLayer:</a>
+<a name="119"><span class="lineNum">     119 </span>                :<span class="lineNoCov">          0 :       return true;</span></a>
+<a name="120"><span class="lineNum">     120 </span>                :            : </a>
+<a name="121"><span class="lineNum">     121 </span>                :            :     case QgsLayoutObject::NoProperty:</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :     case QgsLayoutObject::AllProperties:</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :     case QgsLayoutObject::TestProperty:</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     case QgsLayoutObject::PresetPaperSize:</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     case QgsLayoutObject::PaperWidth:</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :     case QgsLayoutObject::PaperHeight:</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     case QgsLayoutObject::NumPages:</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     case QgsLayoutObject::PaperOrientation:</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :     case QgsLayoutObject::PageNumber:</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :     case QgsLayoutObject::PositionX:</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :     case QgsLayoutObject::PositionY:</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :     case QgsLayoutObject::ItemWidth:</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :     case QgsLayoutObject::ItemHeight:</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :     case QgsLayoutObject::ItemRotation:</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :     case QgsLayoutObject::Transparency:</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :     case QgsLayoutObject::Opacity:</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :     case QgsLayoutObject::BlendMode:</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :     case QgsLayoutObject::ExcludeFromExports:</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :     case QgsLayoutObject::FrameColor:</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :     case QgsLayoutObject::BackgroundColor:</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :     case QgsLayoutObject::MapRotation:</a>
+<a name="142"><span class="lineNum">     142 </span>                :            :     case QgsLayoutObject::MapScale:</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :     case QgsLayoutObject::MapXMin:</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :     case QgsLayoutObject::MapYMin:</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :     case QgsLayoutObject::MapXMax:</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :     case QgsLayoutObject::MapYMax:</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :     case QgsLayoutObject::MapAtlasMargin:</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :     case QgsLayoutObject::MapLayers:</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :     case QgsLayoutObject::MapStylePreset:</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :     case QgsLayoutObject::MapLabelMargin:</a>
+<a name="151"><span class="lineNum">     151 </span>                :            :     case QgsLayoutObject::MapGridEnabled:</a>
+<a name="152"><span class="lineNum">     152 </span>                :            :     case QgsLayoutObject::MapGridIntervalX:</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :     case QgsLayoutObject::MapGridIntervalY:</a>
+<a name="154"><span class="lineNum">     154 </span>                :            :     case QgsLayoutObject::MapGridOffsetX:</a>
+<a name="155"><span class="lineNum">     155 </span>                :            :     case QgsLayoutObject::MapGridOffsetY:</a>
+<a name="156"><span class="lineNum">     156 </span>                :            :     case QgsLayoutObject::MapGridFrameSize:</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :     case QgsLayoutObject::MapGridFrameMargin:</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :     case QgsLayoutObject::MapGridLabelDistance:</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :     case QgsLayoutObject::MapGridCrossSize:</a>
+<a name="160"><span class="lineNum">     160 </span>                :            :     case QgsLayoutObject::MapGridFrameLineThickness:</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :     case QgsLayoutObject::MapGridAnnotationDisplayLeft:</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :     case QgsLayoutObject::MapGridAnnotationDisplayRight:</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :     case QgsLayoutObject::MapGridAnnotationDisplayTop:</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :     case QgsLayoutObject::MapGridAnnotationDisplayBottom:</a>
+<a name="165"><span class="lineNum">     165 </span>                :            :     case QgsLayoutObject::MapGridFrameDivisionsLeft:</a>
+<a name="166"><span class="lineNum">     166 </span>                :            :     case QgsLayoutObject::MapGridFrameDivisionsRight:</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :     case QgsLayoutObject::MapGridFrameDivisionsTop:</a>
+<a name="168"><span class="lineNum">     168 </span>                :            :     case QgsLayoutObject::MapGridFrameDivisionsBottom:</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :     case QgsLayoutObject::PictureSource:</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :     case QgsLayoutObject::PictureSvgBackgroundColor:</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :     case QgsLayoutObject::PictureSvgStrokeColor:</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :     case QgsLayoutObject::PictureSvgStrokeWidth:</a>
+<a name="173"><span class="lineNum">     173 </span>                :            :     case QgsLayoutObject::LegendTitle:</a>
+<a name="174"><span class="lineNum">     174 </span>                :            :     case QgsLayoutObject::LegendColumnCount:</a>
+<a name="175"><span class="lineNum">     175 </span>                :            :     case QgsLayoutObject::ScalebarFillColor:</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :     case QgsLayoutObject::ScalebarFillColor2:</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :     case QgsLayoutObject::ScalebarLineColor:</a>
+<a name="178"><span class="lineNum">     178 </span>                :            :     case QgsLayoutObject::ScalebarLineWidth:</a>
+<a name="179"><span class="lineNum">     179 </span>                :            :     case QgsLayoutObject::MapCrs:</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :     case QgsLayoutObject::StartDateTime:</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :     case QgsLayoutObject::EndDateTime:</a>
+<a name="182"><span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :       return false;</span></a>
+<a name="183"><span class="lineNum">     183 </span>                :            :   }</a>
+<a name="184"><span class="lineNum">     184 </span>                :<span class="lineNoCov">          0 :   return false;</span></a>
+<a name="185"><span class="lineNum">     185 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="186"><span class="lineNum">     186 </span>                :            : </a>
+<a name="187"><span class="lineNum">     187 </span>                :<span class="lineNoCov">          0 : QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )</span></a>
+<a name="188"><span class="lineNum">     188 </span>                :<span class="lineNoCov">          0 :   : QObject( nullptr )</span></a>
+<a name="189"><span class="lineNum">     189 </span>                :<span class="lineNoCov">          0 :   , mLayout( layout )</span></a>
+<a name="190"><span class="lineNum">     190 </span>                :<span class="lineNoCov">          0 : {</span></a>
+<a name="191"><span class="lineNum">     191 </span>                :<span class="lineNoCov">          0 :   initPropertyDefinitions();</span></a>
+<a name="192"><span class="lineNum">     192 </span>                :            : </a>
+<a name="193"><span class="lineNum">     193 </span>                :<span class="lineNoCov">          0 :   if ( mLayout )</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :            :   {</a>
+<a name="195"><span class="lineNum">     195 </span>                :<span class="lineNoCov">          0 :     connect( mLayout, &amp;QgsLayout::refreshed, this, &amp;QgsLayoutObject::refresh );</span></a>
+<a name="196"><span class="lineNum">     196 </span>                :<span class="lineNoCov">          0 :     connect( &amp;mLayout-&gt;reportContext(), &amp;QgsLayoutReportContext::changed, this, &amp;QgsLayoutObject::refresh );</span></a>
+<a name="197"><span class="lineNum">     197 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="198"><span class="lineNum">     198 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="199"><span class="lineNum">     199 </span>                :            : </a>
+<a name="200"><span class="lineNum">     200 </span>                :<span class="lineNoCov">          0 : const QgsLayout *QgsLayoutObject::layout() const</span></a>
+<a name="201"><span class="lineNum">     201 </span>                :            : {</a>
+<a name="202"><span class="lineNum">     202 </span>                :<span class="lineNoCov">          0 :   return mLayout.data();</span></a>
+<a name="203"><span class="lineNum">     203 </span>                :            : }</a>
+<a name="204"><span class="lineNum">     204 </span>                :            : </a>
+<a name="205"><span class="lineNum">     205 </span>                :<span class="lineNoCov">          0 : QgsLayout *QgsLayoutObject::layout()</span></a>
+<a name="206"><span class="lineNum">     206 </span>                :            : {</a>
+<a name="207"><span class="lineNum">     207 </span>                :<span class="lineNoCov">          0 :   return mLayout.data();</span></a>
+<a name="208"><span class="lineNum">     208 </span>                :            : }</a>
+<a name="209"><span class="lineNum">     209 </span>                :            : </a>
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineNoCov">          0 : void QgsLayoutObject::setCustomProperty( const QString &amp;key, const QVariant &amp;value )</span></a>
+<a name="211"><span class="lineNum">     211 </span>                :            : {</a>
+<a name="212"><span class="lineNum">     212 </span>                :<span class="lineNoCov">          0 :   mCustomProperties.setValue( key, value );</span></a>
+<a name="213"><span class="lineNum">     213 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="214"><span class="lineNum">     214 </span>                :            : </a>
+<a name="215"><span class="lineNum">     215 </span>                :<span class="lineNoCov">          0 : QVariant QgsLayoutObject::customProperty( const QString &amp;key, const QVariant &amp;defaultValue ) const</span></a>
+<a name="216"><span class="lineNum">     216 </span>                :            : {</a>
+<a name="217"><span class="lineNum">     217 </span>                :<span class="lineNoCov">          0 :   return mCustomProperties.value( key, defaultValue );</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            : }</a>
+<a name="219"><span class="lineNum">     219 </span>                :            : </a>
+<a name="220"><span class="lineNum">     220 </span>                :<span class="lineNoCov">          0 : void QgsLayoutObject::removeCustomProperty( const QString &amp;key )</span></a>
+<a name="221"><span class="lineNum">     221 </span>                :            : {</a>
+<a name="222"><span class="lineNum">     222 </span>                :<span class="lineNoCov">          0 :   mCustomProperties.remove( key );</span></a>
+<a name="223"><span class="lineNum">     223 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="224"><span class="lineNum">     224 </span>                :            : </a>
+<a name="225"><span class="lineNum">     225 </span>                :<span class="lineNoCov">          0 : QStringList QgsLayoutObject::customProperties() const</span></a>
+<a name="226"><span class="lineNum">     226 </span>                :            : {</a>
+<a name="227"><span class="lineNum">     227 </span>                :<span class="lineNoCov">          0 :   return mCustomProperties.keys();</span></a>
+<a name="228"><span class="lineNum">     228 </span>                :            : }</a>
+<a name="229"><span class="lineNum">     229 </span>                :            : </a>
+<a name="230"><span class="lineNum">     230 </span>                :<span class="lineNoCov">          0 : QgsExpressionContext QgsLayoutObject::createExpressionContext() const</span></a>
+<a name="231"><span class="lineNum">     231 </span>                :            : {</a>
+<a name="232"><span class="lineNum">     232 </span>                :<span class="lineNoCov">          0 :   if ( mLayout )</span></a>
+<a name="233"><span class="lineNum">     233 </span>                :            :   {</a>
+<a name="234"><span class="lineNum">     234 </span>                :<span class="lineNoCov">          0 :     return mLayout-&gt;createExpressionContext();</span></a>
+<a name="235"><span class="lineNum">     235 </span>                :            :   }</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :   else</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :   {</a>
+<a name="238"><span class="lineNum">     238 </span>                :<span class="lineNoCov">          0 :     return QgsExpressionContext() &lt;&lt; QgsExpressionContextUtils::globalScope();</span></a>
+<a name="239"><span class="lineNum">     239 </span>                :            :   }</a>
+<a name="240"><span class="lineNum">     240 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :            : </a>
+<a name="242"><span class="lineNum">     242 </span>                :<span class="lineNoCov">          0 : bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &amp;parentElement, QDomDocument &amp;document, const QgsReadWriteContext &amp; ) const</span></a>
+<a name="243"><span class="lineNum">     243 </span>                :            : {</a>
+<a name="244"><span class="lineNum">     244 </span>                :<span class="lineNoCov">          0 :   if ( parentElement.isNull() )</span></a>
+<a name="245"><span class="lineNum">     245 </span>                :            :   {</a>
+<a name="246"><span class="lineNum">     246 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="247"><span class="lineNum">     247 </span>                :            :   }</a>
+<a name="248"><span class="lineNum">     248 </span>                :            : </a>
+<a name="249"><span class="lineNum">     249 </span>                :            :   //create object element</a>
+<a name="250"><span class="lineNum">     250 </span>                :<span class="lineNoCov">          0 :   QDomElement objectElement = document.createElement( QStringLiteral( &quot;LayoutObject&quot; ) );</span></a>
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<a name="252"><span class="lineNum">     252 </span>                :<span class="lineNoCov">          0 :   QDomElement ddPropsElement = document.createElement( QStringLiteral( &quot;dataDefinedProperties&quot; ) );</span></a>
+<a name="253"><span class="lineNum">     253 </span>                :<span class="lineNoCov">          0 :   mDataDefinedProperties.writeXml( ddPropsElement, sPropertyDefinitions );</span></a>
+<a name="254"><span class="lineNum">     254 </span>                :<span class="lineNoCov">          0 :   objectElement.appendChild( ddPropsElement );</span></a>
+<a name="255"><span class="lineNum">     255 </span>                :            : </a>
+<a name="256"><span class="lineNum">     256 </span>                :            :   //custom properties</a>
+<a name="257"><span class="lineNum">     257 </span>                :<span class="lineNoCov">          0 :   mCustomProperties.writeXml( objectElement, document );</span></a>
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<a name="259"><span class="lineNum">     259 </span>                :<span class="lineNoCov">          0 :   parentElement.appendChild( objectElement );</span></a>
+<a name="260"><span class="lineNum">     260 </span>                :<span class="lineNoCov">          0 :   return true;</span></a>
+<a name="261"><span class="lineNum">     261 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="262"><span class="lineNum">     262 </span>                :            : </a>
+<a name="263"><span class="lineNum">     263 </span>                :<span class="lineNoCov">          0 : bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &amp;parentElement, const QDomDocument &amp;document, const QgsReadWriteContext &amp; )</span></a>
+<a name="264"><span class="lineNum">     264 </span>                :            : {</a>
+<a name="265"><span class="lineNum">     265 </span>                :<span class="lineNoCov">          0 :   Q_UNUSED( document )</span></a>
+<a name="266"><span class="lineNum">     266 </span>                :<span class="lineNoCov">          0 :   if ( parentElement.isNull() )</span></a>
+<a name="267"><span class="lineNum">     267 </span>                :            :   {</a>
+<a name="268"><span class="lineNum">     268 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="269"><span class="lineNum">     269 </span>                :            :   }</a>
+<a name="270"><span class="lineNum">     270 </span>                :            : </a>
+<a name="271"><span class="lineNum">     271 </span>                :<span class="lineNoCov">          0 :   const QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( &quot;LayoutObject&quot; ) );</span></a>
+<a name="272"><span class="lineNum">     272 </span>                :<span class="lineNoCov">          0 :   if ( objectNodeList.size() &lt; 1 )</span></a>
+<a name="273"><span class="lineNum">     273 </span>                :            :   {</a>
+<a name="274"><span class="lineNum">     274 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="275"><span class="lineNum">     275 </span>                :            :   }</a>
+<a name="276"><span class="lineNum">     276 </span>                :<span class="lineNoCov">          0 :   const QDomElement objectElement = objectNodeList.at( 0 ).toElement();</span></a>
+<a name="277"><span class="lineNum">     277 </span>                :            : </a>
+<a name="278"><span class="lineNum">     278 </span>                :<span class="lineNoCov">          0 :   const QDomNode propsNode = objectElement.namedItem( QStringLiteral( &quot;dataDefinedProperties&quot; ) );</span></a>
+<a name="279"><span class="lineNum">     279 </span>                :<span class="lineNoCov">          0 :   if ( !propsNode.isNull() )</span></a>
+<a name="280"><span class="lineNum">     280 </span>                :            :   {</a>
+<a name="281"><span class="lineNum">     281 </span>                :<span class="lineNoCov">          0 :     mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );</span></a>
+<a name="282"><span class="lineNum">     282 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="283"><span class="lineNum">     283 </span>                :            : </a>
+<a name="284"><span class="lineNum">     284 </span>                :            :   //custom properties</a>
+<a name="285"><span class="lineNum">     285 </span>                :<span class="lineNoCov">          0 :   mCustomProperties.readXml( objectElement );</span></a>
+<a name="286"><span class="lineNum">     286 </span>                :            : </a>
+<a name="287"><span class="lineNum">     287 </span>                :<span class="lineNoCov">          0 :   return true;</span></a>
+<a name="288"><span class="lineNum">     288 </span>                :<span class="lineNoCov">          0 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

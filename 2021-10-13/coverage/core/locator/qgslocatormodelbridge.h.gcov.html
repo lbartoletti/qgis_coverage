@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info.cleaned - core/locator/qgslocatormodelbridge.h</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">core/locator</a> - qgslocatormodelbridge.h<span style="font-size: 80%;"> (source / <a href="qgslocatormodelbridge.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info.cleaned</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-10-13 17:24:53</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /***************************************************************************</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :                          qgslocatormodelbridge.h</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :                          ------------------</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :     begin                : November 2018</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :     copyright            : (C) 2018 by Denis Rouzaud</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :     email                : denis@opengis.ch</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :  ***************************************************************************/</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : </a>
+<a name="9"><span class="lineNum">       9 </span>                :            : /***************************************************************************</a>
+<a name="10"><span class="lineNum">      10 </span>                :            :  *                                                                         *</a>
+<a name="11"><span class="lineNum">      11 </span>                :            :  *   This program is free software; you can redistribute it and/or modify  *</a>
+<a name="12"><span class="lineNum">      12 </span>                :            :  *   it under the terms of the GNU General Public License as published by  *</a>
+<a name="13"><span class="lineNum">      13 </span>                :            :  *   the Free Software Foundation; either version 2 of the License, or     *</a>
+<a name="14"><span class="lineNum">      14 </span>                :            :  *   (at your option) any later version.                                   *</a>
+<a name="15"><span class="lineNum">      15 </span>                :            :  *                                                                         *</a>
+<a name="16"><span class="lineNum">      16 </span>                :            :  ***************************************************************************/</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : </a>
+<a name="18"><span class="lineNum">      18 </span>                :            : #ifndef QGSLOCATORMODELBRIDGE_H</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : #define QGSLOCATORMODELBRIDGE_H</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &lt;QObject&gt;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : </a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;qgis_core.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;qgscoordinatereferencesystem.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;qgscoordinatetransformcontext.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;qgsrectangle.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :            : class QgsLocatorResult;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : class QgsLocator;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : class QgsLocatorContext;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : class QgsLocatorModel;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : class QgsLocatorProxyModel;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : </a>
+<a name="34"><span class="lineNum">      34 </span>                :            : </a>
+<a name="35"><span class="lineNum">      35 </span>                :            : /**</a>
+<a name="36"><span class="lineNum">      36 </span>                :            :  * \ingroup core</a>
+<a name="37"><span class="lineNum">      37 </span>                :            :  * \brief The QgsLocatorModelBridge class provides the core functionality</a>
+<a name="38"><span class="lineNum">      38 </span>                :            :  * to be used in a locator widget.</a>
+<a name="39"><span class="lineNum">      39 </span>                :            :  * \since QGIS 3.6</a>
+<a name="40"><span class="lineNum">      40 </span>                :            :  */</a>
+<a name="41"><span class="lineNum">      41 </span>                :            : class CORE_EXPORT QgsLocatorModelBridge : public QObject</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : {</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :     Q_OBJECT</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :     Q_PROPERTY( bool isRunning READ isRunning NOTIFY isRunningChanged )</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :   public:</a>
+<a name="46"><span class="lineNum">      46 </span>                :            :     //! Constructor of QgsLocatorModelBridge</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :     explicit QgsLocatorModelBridge( QObject *parent = nullptr );</a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineNoCov">          0 :     virtual ~QgsLocatorModelBridge() = default;</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :            : </a>
+<a name="50"><span class="lineNum">      50 </span>                :            :     //! Perform a search</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :     Q_INVOKABLE void performSearch( const QString &amp;text );</a>
+<a name="52"><span class="lineNum">      52 </span>                :            : </a>
+<a name="53"><span class="lineNum">      53 </span>                :            :     //! Returns the locator</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :     QgsLocator *locator() const;</a>
+<a name="55"><span class="lineNum">      55 </span>                :            : </a>
+<a name="56"><span class="lineNum">      56 </span>                :            :     //! Returns the proxy model</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :     Q_INVOKABLE QgsLocatorProxyModel *proxyModel() const;</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :            :     //! Returns TRUE if some text to be search is pending in the queue</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :     bool hasQueueRequested() const;</a>
+<a name="61"><span class="lineNum">      61 </span>                :            : </a>
+<a name="62"><span class="lineNum">      62 </span>                :            :     //! Returns TRUE if the a search is currently running</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :     bool isRunning() const;</a>
+<a name="64"><span class="lineNum">      64 </span>                :            : </a>
+<a name="65"><span class="lineNum">      65 </span>                :            :     //! Triggers the result at given \a index and with optional \a actionId if an additional action was triggered</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :     void triggerResult( const QModelIndex &amp;index,  const int actionId = -1 );</a>
+<a name="67"><span class="lineNum">      67 </span>                :            : </a>
+<a name="68"><span class="lineNum">      68 </span>                :            :     /**</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :      * Returns the coordinate transform context, which should be used whenever the</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :      * locator constructs a coordinate transform.</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :      *</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :      * \see setTransformContext()</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :      * \since QGIS 3.18</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :      */</a>
+<a name="75"><span class="lineNum">      75 </span>                :<span class="lineNoCov">          0 :     QgsCoordinateTransformContext transformContext() const { return mTransformContext; }</span></a>
+<a name="76"><span class="lineNum">      76 </span>                :            : </a>
+<a name="77"><span class="lineNum">      77 </span>                :            :     /**</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :      * Sets the coordinate transform \a context, which should be used whenever the</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :      * locator constructs a coordinate transform.</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :      *</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :      * \see transformContext()</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :      * \since QGIS 3.18</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :      */</a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :     void setTransformContext( const QgsCoordinateTransformContext &amp;context ) { mTransformContext = context; }</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :            : </a>
+<a name="86"><span class="lineNum">      86 </span>                :            :   signals:</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :     //! Emitted when a result is added</a>
+<a name="88"><span class="lineNum">      88 </span>                :            :     void resultAdded();</a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            :     //! Emitted when the running status changes</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :     void isRunningChanged();</a>
+<a name="92"><span class="lineNum">      92 </span>                :            : </a>
+<a name="93"><span class="lineNum">      93 </span>                :            :     //! Emitted when the results are cleared</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :     void resultsCleared();</a>
+<a name="95"><span class="lineNum">      95 </span>                :            : </a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   public slots:</a>
+<a name="97"><span class="lineNum">      97 </span>                :            :     //! This will invalidate current search results</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :     void invalidateResults();</a>
+<a name="99"><span class="lineNum">      99 </span>                :            : </a>
+<a name="100"><span class="lineNum">     100 </span>                :            :     //! Update the canvas extent used to create search context</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :     void updateCanvasExtent( const QgsRectangle &amp;extent );</a>
+<a name="102"><span class="lineNum">     102 </span>                :            : </a>
+<a name="103"><span class="lineNum">     103 </span>                :            :     //! Update the canvas CRS used to create search context</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :     void updateCanvasCrs( const QgsCoordinateReferenceSystem &amp;crs );</a>
+<a name="105"><span class="lineNum">     105 </span>                :            : </a>
+<a name="106"><span class="lineNum">     106 </span>                :            :   private slots:</a>
+<a name="107"><span class="lineNum">     107 </span>                :            :     void searchFinished();</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :     void addResult( const QgsLocatorResult &amp;result );</a>
+<a name="109"><span class="lineNum">     109 </span>                :            : </a>
+<a name="110"><span class="lineNum">     110 </span>                :            :   private:</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :     QgsLocatorContext createContext();</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :     void setIsRunning( bool isRunning );</a>
+<a name="113"><span class="lineNum">     113 </span>                :            : </a>
+<a name="114"><span class="lineNum">     114 </span>                :            :     QgsLocator *mLocator = nullptr;</a>
+<a name="115"><span class="lineNum">     115 </span>                :            :     QgsLocatorModel *mLocatorModel = nullptr;</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     QgsLocatorProxyModel *mProxyModel = nullptr;</a>
+<a name="117"><span class="lineNum">     117 </span>                :            : </a>
+<a name="118"><span class="lineNum">     118 </span>                :            :     QString mNextRequestedString;</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :     bool mHasQueuedRequest = false;</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :     bool mIsRunning = false;</a>
+<a name="121"><span class="lineNum">     121 </span>                :            : </a>
+<a name="122"><span class="lineNum">     122 </span>                :            :     // keep track of map canvas extent and CRS</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :     // if much if needed, it would be possible to add</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     // a QgsMapCanvasController in core to achieve this</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     // see discussion in https://github.com/qgis/QGIS/pull/8404</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :     QgsRectangle mCanvasExtent;</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     QgsCoordinateReferenceSystem mCanvasCrs;</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     QgsCoordinateTransformContext mTransformContext;</a>
+<a name="129"><span class="lineNum">     129 </span>                :            : };</a>
+<a name="130"><span class="lineNum">     130 </span>                :            : </a>
+<a name="131"><span class="lineNum">     131 </span>                :            : #endif // QGSLOCATORMODELBRIDGE_H</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.15</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
